@@ -13,7 +13,7 @@ namespace SIMDSortSimu {
             float[] vs = (new float[n]).Select((_, idx) => (float)random.NextDouble()).ToArray();
 
             for (uint h = n * 10 / 13; h > 8; h = h * 10 / 13) {
-                CombSort.Iter(vs, h);
+                CombSortN8.Iter(vs, h);
 
                 using StreamWriter sw = new($"../../history/iter_{n}_{h}.csv");
 
@@ -22,8 +22,8 @@ namespace SIMDSortSimu {
                 }
             }
 
-            foreach (uint h in new[] { 8 }.Reverse()) {
-                RewindSortN8.Iter(vs, h);
+            foreach (uint h in new[] { 8 }) {
+                BubbleSortN8.Iter(vs);
 
                 using StreamWriter sw = new($"../../history/iter_{n}_{h}.csv");
 
@@ -32,8 +32,18 @@ namespace SIMDSortSimu {
                 }
             }
 
-            foreach (uint h in new[] { 4, 6 }.Reverse()) {
-                RewindSortN4.Iter(vs, h);
+            foreach (uint h in new[] { 6 }) {
+                CombSortN4.Iter(vs, h);
+
+                using StreamWriter sw = new($"../../history/iter_{n}_{h}.csv");
+
+                for (int i = 0; i < n; i++) {
+                    sw.WriteLine(vs[i]);
+                }
+            }
+
+            foreach (uint h in new[] { 4 }) {
+                BubbleSortN4.Iter(vs);
 
                 using StreamWriter sw = new($"../../history/iter_{n}_{h}.csv");
 
