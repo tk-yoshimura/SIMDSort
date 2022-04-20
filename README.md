@@ -1,6 +1,6 @@
 # SIMDSort
 
-Experimental of AVX Sort
+AVX sorting experiment
 
 ## Licence
 [MIT](https://github.com/tk-yoshimura/SIMDSort/blob/main/LICENSE)
