@@ -20,10 +20,10 @@ namespace SIMDSortSimu {
 
                 swaps++;
             }
-            {
-                MM256 x = MM256.Load(vs, e);
+            for (uint i = MM256.AVX2_FLOAT_STRIDE / 2; i < e; i += MM256.AVX2_FLOAT_STRIDE) {
+                MM256 x = MM256.Load(vs, i);
                 MM256 y = MM256.Sort(x);
-                MM256.Store(vs, e, y);
+                MM256.Store(vs, i, y);
 
                 swaps++;
             }
