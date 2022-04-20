@@ -3,7 +3,7 @@
 namespace SIMDSortSimu {
     public static class CombSortN8 {
 
-        public static void Iter(float[] vs, uint h) {
+        public static int Iter(float[] vs, uint h) {
             if (h < MM256.AVX2_FLOAT_STRIDE) {
                 throw new ArgumentException(null, nameof(h));
             }
@@ -11,10 +11,12 @@ namespace SIMDSortSimu {
             uint n = (uint)vs.Length;
 
             if (n < MM256.AVX2_FLOAT_STRIDE || n - MM256.AVX2_FLOAT_STRIDE < h) {
-                return;
+                return 0;
             }
 
             uint e = n - h - MM256.AVX2_FLOAT_STRIDE;
+
+            int swaps = 0;
 
             for (uint i = 0; i < e; i += MM256.AVX2_FLOAT_STRIDE) {
                 MM256 x = MM256.Load(vs, i);
@@ -24,6 +26,8 @@ namespace SIMDSortSimu {
 
                 MM256.Store(vs, i, a);
                 MM256.Store(vs, i + h, b);
+
+                swaps++;
             }
             {
                 MM256 x = MM256.Load(vs, e);
@@ -33,7 +37,11 @@ namespace SIMDSortSimu {
 
                 MM256.Store(vs, e, a);
                 MM256.Store(vs, e + h, b);
+
+                swaps++;
             }
+
+            return swaps;
         }
     }
 }

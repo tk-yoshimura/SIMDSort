@@ -1,20 +1,24 @@
 ﻿namespace SIMDSortSimu {
     public static class BubbleSortN4 {
 
-        public static void Iter(float[] vs) {
+        public static int Iter(float[] vs) {
             uint n = (uint)vs.Length;
 
             if (n < MM128.AVX1_FLOAT_STRIDE * 2) {
-                return;
+                return 0;
             }
 
             uint i = 0, e = n - 2 * MM128.AVX1_FLOAT_STRIDE;
             MM128 x = MM128.Load(vs, 0), y;
 
+            int swaps = 0;
+
             while (true) {
                 y = MM128.Load(vs, i + MM128.AVX1_FLOAT_STRIDE);
 
                 (_, uint index, MM128 a, MM128 b) = MM128.CmpSwapGt(x, y);
+
+                swaps++;
 
                 if (index < MM128.AVX1_FLOAT_STRIDE) {
                     MM128.Store(vs, i, a);
@@ -41,6 +45,8 @@
                     break;
                 }
             }
+
+            return swaps;
         }
     }
 }
