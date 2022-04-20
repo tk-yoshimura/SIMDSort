@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace SIMDSortSimu {
-    static class CombSortN4 {
+    public static class CombSortN4 {
 
         public static void Iter(float[] vs, uint h) {
             if (h < MM128.AVX1_FLOAT_STRIDE) {

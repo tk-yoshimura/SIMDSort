@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IO;
 
 namespace SIMDSortSimu {
     public static class ScanSortN8 {
         public static void Iter(float[] vs) {
             uint n = (uint)vs.Length;
-
-            using StreamWriter sw = new($"../../history/swap_{n}_1.csv");
 
             if (n < MM256.AVX2_FLOAT_STRIDE) {
                 Array.Sort(vs);
@@ -32,8 +29,6 @@ namespace SIMDSortSimu {
                     MM256.Store(vs, i, y);
 
                     (_, uint index) = MM256.CmpEq(x, y);
-
-                    sw.WriteLine($"{i} {index}");
 
                     if (index < MM256.AVX2_FLOAT_STRIDE) {
                         uint back = MM256.AVX2_FLOAT_STRIDE - index - 1;

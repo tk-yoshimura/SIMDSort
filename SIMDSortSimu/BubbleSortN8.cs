@@ -1,12 +1,8 @@
-﻿using System.IO;
-
-namespace SIMDSortSimu {
-    static class BubbleSortN8 {
+﻿namespace SIMDSortSimu {
+    public static class BubbleSortN8 {
 
         public static void Iter(float[] vs) {
             uint n = (uint)vs.Length;
-
-            using StreamWriter sw = new($"../../history/swap_{n}_4.csv");
 
             if (n < MM256.AVX2_FLOAT_STRIDE * 2) {
                 return;
@@ -19,8 +15,6 @@ namespace SIMDSortSimu {
                 y = MM256.Load(vs, i + MM256.AVX2_FLOAT_STRIDE);
 
                 (_, uint index, MM256 a, MM256 b) = MM256.CmpSwapGt(x, y);
-
-                sw.WriteLine($"{i} <-> {i + MM256.AVX2_FLOAT_STRIDE} {index}");
 
                 if (index < MM256.AVX2_FLOAT_STRIDE) {
                     MM256.Store(vs, i, a);
