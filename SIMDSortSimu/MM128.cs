@@ -41,21 +41,13 @@ namespace SIMDSortSimu {
             return y;
         }
 
-        public static MM128 Perm(MM128 x) {
-            MM128 y = new();
-            Array.Copy(x.vs, 1, y.vs, 0, AVX1_FLOAT_STRIDE - 1);
-            y.vs[^1] = x.vs[0];
-
-            return y;
-        }
-
         public static (bool swaped, uint index, MM128 a, MM128 b) CmpSwapGt(MM128 x, MM128 y) {
             bool swaped = false;
             uint index = AVX1_FLOAT_STRIDE;
             MM128 a = new(), b = new();
 
             for (uint i = 0; i < AVX1_FLOAT_STRIDE; i++) {
-                if (x.vs[i] > y.vs[i]) {
+                if (!(x.vs[i] <= y.vs[i]) && !float.IsNaN(x.vs[i])) {
                     a.vs[i] = y.vs[i];
                     b.vs[i] = x.vs[i];
 

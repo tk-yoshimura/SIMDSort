@@ -1,5 +1,5 @@
 ﻿namespace SIMDSortSimu {
-    public static class StepSortN8 {
+    public static class AvxSortN8 {
         public static (int swaps, int sorts) Sort(float[] vs) {
             uint n = (uint)vs.Length;
             

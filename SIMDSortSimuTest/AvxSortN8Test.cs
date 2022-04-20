@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SIMDSortSimuTest {
     [TestClass]
-    public class StepSortN8Test {
+    public class AvxSortN8Test {
         [TestMethod]
         public void RandomSortTest() {
             Random random = new();
@@ -17,7 +17,7 @@ namespace SIMDSortSimuTest {
                 float[] vs = (new float[n]).Select((_, idx) => (float)random.NextDouble()).ToArray();
                 float[] us = (float[])vs.Clone();
 
-                (int swaps, int sorts) = StepSortN8.Sort(vs);
+                (int swaps, int sorts) = AvxSortN8.Sort(vs);
                 Array.Sort(us);
 
                 CollectionAssert.AreEqual(us, vs, $"n = {n}");
@@ -35,7 +35,7 @@ namespace SIMDSortSimuTest {
                 float[] vs = (new float[n]).Select((_, idx) => (float)idx).Reverse().ToArray();
                 float[] us = (float[])vs.Clone();
 
-                (int swaps, int sorts) = StepSortN8.Sort(vs);
+                (int swaps, int sorts) = AvxSortN8.Sort(vs);
                 Array.Sort(us);
 
                 CollectionAssert.AreEqual(us, vs, $"n = {n}");
