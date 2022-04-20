@@ -10,27 +10,29 @@ namespace SIMDSortSimu {
 
             uint n = (uint)vs.Length;
 
-            if (n >= MM256.AVX2_FLOAT_STRIDE && n - MM256.AVX2_FLOAT_STRIDE >= h) {
-                uint e = n - h - MM256.AVX2_FLOAT_STRIDE;
+            if (n < MM256.AVX2_FLOAT_STRIDE || n - MM256.AVX2_FLOAT_STRIDE < h) {
+                return;
+            }
 
-                for (uint i = 0; i < e; i += MM256.AVX2_FLOAT_STRIDE) {
-                    MM256 x = MM256.Load(vs, i);
-                    MM256 y = MM256.Load(vs, i + h);
+            uint e = n - h - MM256.AVX2_FLOAT_STRIDE;
 
-                    (_, _, MM256 a, MM256 b) = MM256.CmpSwapGt(x, y);
+            for (uint i = 0; i < e; i += MM256.AVX2_FLOAT_STRIDE) {
+                MM256 x = MM256.Load(vs, i);
+                MM256 y = MM256.Load(vs, i + h);
 
-                    MM256.Store(vs, i, a);
-                    MM256.Store(vs, i + h, b);
-                }
-                {
-                    MM256 x = MM256.Load(vs, e);
-                    MM256 y = MM256.Load(vs, e + h);
+                (_, _, MM256 a, MM256 b) = MM256.CmpSwapGt(x, y);
 
-                    (_, _, MM256 a, MM256 b) = MM256.CmpSwapGt(x, y);
+                MM256.Store(vs, i, a);
+                MM256.Store(vs, i + h, b);
+            }
+            {
+                MM256 x = MM256.Load(vs, e);
+                MM256 y = MM256.Load(vs, e + h);
 
-                    MM256.Store(vs, e, a);
-                    MM256.Store(vs, e + h, b);
-                }
+                (_, _, MM256 a, MM256 b) = MM256.CmpSwapGt(x, y);
+
+                MM256.Store(vs, e, a);
+                MM256.Store(vs, e + h, b);
             }
         }
     }
