@@ -19,6 +19,9 @@
     <Filter Include="Source\Inline">
       <UniqueIdentifier>{26d9947e-17b7-46cd-bbd0-ca583a2afc5d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Tests">
+      <UniqueIdentifier>{725bf60f-ccb6-40bb-a756-dbab7ea7c015}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_main.cpp">
@@ -29,6 +32,9 @@
     </ClCompile>
     <ClCompile Include="Util\util_mm_mask.cpp">
       <Filter>Source\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\mm_sort_test.cpp">
+      <Filter>Source\Tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
