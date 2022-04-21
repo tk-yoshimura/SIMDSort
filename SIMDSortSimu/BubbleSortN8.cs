@@ -24,9 +24,21 @@
                     MM256.Store(vs, i, a);
                     MM256.Store(vs, i + MM256.AVX2_FLOAT_STRIDE, b);
 
-                    uint back = MM256.AVX2_FLOAT_STRIDE - index;
+                    if (i == 0) {
+                        i = MM256.AVX2_FLOAT_STRIDE;
+                        if (i <= e) {
+                            x = b;
+                            continue;
+                        }
+                        else {
+                            i = e;
+                        }
+                    }
+                    else {
+                        uint back = MM256.AVX2_FLOAT_STRIDE - index;
 
-                    i = i >= back ? i - back : 0;
+                        i = i >= back ? i - back : 0;
+                    }
                 }
                 else if (i < e) {
                     i += MM256.AVX2_FLOAT_STRIDE;

@@ -35,6 +35,15 @@ namespace SIMDSortSimu {
                     if (MM256.NeedsSort(x)) {
                         MM256 y = MM256.Sort(x);
                         MM256.Store(vs, i, y);
+                        swaps++;
+
+                        if (i == 0) {
+                            i = MM256.AVX2_FLOAT_STRIDE - 1;
+                            if (i > e) {
+                                i = e;
+                            }
+                            continue;
+                        }
 
                         (_, uint index) = MM256.CmpEq(x, y);
                         
@@ -42,7 +51,6 @@ namespace SIMDSortSimu {
 
                         i = (i > back) ? i - back : 0;
 
-                        swaps++;
                     }
                     else if (i < e) {
                         i += MM256.AVX2_FLOAT_STRIDE - 1;

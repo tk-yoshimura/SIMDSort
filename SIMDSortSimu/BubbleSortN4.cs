@@ -24,9 +24,21 @@
                     MM128.Store(vs, i, a);
                     MM128.Store(vs, i + MM128.AVX1_FLOAT_STRIDE, b);
 
-                    uint back = MM128.AVX1_FLOAT_STRIDE - index;
+                    if (i == 0) {
+                        i = MM128.AVX1_FLOAT_STRIDE;
+                        if (i <= e) {
+                            x = b;
+                            continue;
+                        }
+                        else {
+                            i = e;
+                        }
+                    }
+                    else {
+                        uint back = MM128.AVX1_FLOAT_STRIDE - index;
 
-                    i = i >= back ? i - back : 0;
+                        i = i >= back ? i - back : 0;
+                    }
                 }
                 else if (i < e) {
                     i += MM128.AVX1_FLOAT_STRIDE;

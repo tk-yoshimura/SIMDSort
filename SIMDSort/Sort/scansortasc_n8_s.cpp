@@ -75,6 +75,14 @@ int scansortasc_n8_s(const uint n, outfloats v_ptr) {
             __m256 y = _mm256_sortasc_ps(x);
             _mm256_storeu_ps(v_ptr + i, y);
 
+            if (i == 0) {
+                i = AVX2_FLOAT_STRIDE - 1;
+                if (i > e) {
+                    i = e;
+                }
+                continue;
+            }
+
             uint indexes = 0xFFu - _mm256_movemask_ps(_mm256_cmpeq_ignnan_ps(x, y));
 
             uint index = bsf(indexes);
