@@ -9,25 +9,37 @@
             }
 
             uint i = 0, e = n - 2 * MM256.AVX2_FLOAT_STRIDE;
-            MM256 x = MM256.Load(vs, 0), y;
+            MM256 a = MM256.Load(vs, 0), b;
 
             int swaps = 0;
 
-            while (true) {
-                y = MM256.Load(vs, i + MM256.AVX2_FLOAT_STRIDE);
+            if (e <= 0) { 
+                b = MM256.Load(vs, i + MM256.AVX2_FLOAT_STRIDE);
+                (_, _, MM256 x, MM256 y) = MM256.CmpSwapGt(a, b);
 
-                (_, uint index, MM256 a, MM256 b) = MM256.CmpSwapGt(x, y);
+                MM256.Store(vs, i, x);
+                MM256.Store(vs, i + MM256.AVX2_FLOAT_STRIDE, y);
+
+                swaps++;
+
+                return swaps;
+            }
+
+            while (true) {
+                b = MM256.Load(vs, i + MM256.AVX2_FLOAT_STRIDE);
+
+                (_, uint index, MM256 x, MM256 y) = MM256.CmpSwapGt(a, b);
 
                 swaps++;
 
                 if (index < MM256.AVX2_FLOAT_STRIDE) {
-                    MM256.Store(vs, i, a);
-                    MM256.Store(vs, i + MM256.AVX2_FLOAT_STRIDE, b);
+                    MM256.Store(vs, i, x);
+                    MM256.Store(vs, i + MM256.AVX2_FLOAT_STRIDE, y);
 
                     if (i == 0) {
                         i = MM256.AVX2_FLOAT_STRIDE;
                         if (i <= e) {
-                            x = b;
+                            a = y;
                             continue;
                         }
                         else {
@@ -44,7 +56,7 @@
                     i += MM256.AVX2_FLOAT_STRIDE;
 
                     if (i <= e) {
-                        x = y;
+                        a = b;
                         continue;
                     }
                     else {
@@ -55,7 +67,7 @@
                     break;
                 }
 
-                x = MM256.Load(vs, i);
+                a = MM256.Load(vs, i);
             }
 
             return swaps;

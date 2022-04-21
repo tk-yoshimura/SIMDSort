@@ -19,24 +19,24 @@ namespace SIMDSortSimu {
             int swaps = 0;
 
             for (uint i = 0; i < e; i += MM256.AVX2_FLOAT_STRIDE) {
-                MM256 x = MM256.Load(vs, i);
-                MM256 y = MM256.Load(vs, i + h);
+                MM256 a = MM256.Load(vs, i);
+                MM256 b = MM256.Load(vs, i + h);
 
-                (_, _, MM256 a, MM256 b) = MM256.CmpSwapGt(x, y);
+                (_, _, MM256 x, MM256 y) = MM256.CmpSwapGt(a, b);
 
-                MM256.Store(vs, i, a);
-                MM256.Store(vs, i + h, b);
+                MM256.Store(vs, i, x);
+                MM256.Store(vs, i + h, y);
 
                 swaps++;
             }
             {
-                MM256 x = MM256.Load(vs, e);
-                MM256 y = MM256.Load(vs, e + h);
+                MM256 a = MM256.Load(vs, e);
+                MM256 b = MM256.Load(vs, e + h);
 
-                (_, _, MM256 a, MM256 b) = MM256.CmpSwapGt(x, y);
+                (_, _, MM256 x, MM256 y) = MM256.CmpSwapGt(a, b);
 
-                MM256.Store(vs, e, a);
-                MM256.Store(vs, e + h, b);
+                MM256.Store(vs, e, x);
+                MM256.Store(vs, e + h, y);
 
                 swaps++;
             }
