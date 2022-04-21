@@ -22,6 +22,9 @@
     <Filter Include="Source\Tests">
       <UniqueIdentifier>{725bf60f-ccb6-40bb-a756-dbab7ea7c015}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Sort">
+      <UniqueIdentifier>{23f41bfd-de2f-4e45-ac33-6773dc11ea62}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="_main.cpp">
@@ -37,6 +40,30 @@
       <Filter>Source\Tests</Filter>
     </ClCompile>
     <ClCompile Include="Tests\mm_cmp_test.cpp">
+      <Filter>Source\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\combsort_n32_s.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\combsort_n24_s.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\combsort_n16_s.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\combsort_n8_s.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\bubblesortasc_n8_s.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\bubblesort_test.cpp">
+      <Filter>Source\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\scansortasc_n8_s.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\scansort_test.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
   </ItemGroup>
@@ -69,6 +96,9 @@
       <Filter>Source\Inline</Filter>
     </ClInclude>
     <ClInclude Include="Inline\inline_sort_s.hpp">
+      <Filter>Source\Inline</Filter>
+    </ClInclude>
+    <ClInclude Include="Inline\inline_misc.hpp">
       <Filter>Source\Inline</Filter>
     </ClInclude>
   </ItemGroup>

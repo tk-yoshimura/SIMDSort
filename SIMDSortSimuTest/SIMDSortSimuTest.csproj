@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <Reference Include="SIMDSortSimu">
-      <HintPath>..\SIMDSortSimu\bin\Release\net5.0\SIMDSortSimu.dll</HintPath>
+      <HintPath>..\SIMDSortSimu\bin\Debug\net5.0\SIMDSortSimu.dll</HintPath>
     </Reference>
   </ItemGroup>
 

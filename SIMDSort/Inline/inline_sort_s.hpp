@@ -71,6 +71,26 @@ __forceinline __m256 _mm256_sortasc_ps(__m256 x) {
     return x;
 }
 
+// needs ascending sort (ignore nan)
+__forceinline bool _mm_needssortasc_ps(__m128 x) {
+    __m128 y = _mm_permute_ps(x, _MM_PERM_DDCB);
+
+    bool needssort = _mm_movemask_ps(_mm_cmpgt_ignnan_ps(x, y)) > 0;
+
+    return needssort;
+}
+
+// needs ascending sort (ignore nan)
+__forceinline bool _mm256_needssortasc_ps(__m256 x) {
+    const __m256i perm = _mm256_setr_epi32(1, 2, 3, 4, 5, 6, 7, 7);
+
+    __m256 y = _mm256_permutevar8x32_ps(x, perm);
+
+    bool needssort = _mm256_movemask_ps(_mm256_cmpgt_ignnan_ps(x, y)) > 0;
+
+    return needssort;
+}
+
 #pragma endregion ascending sort
 
 #pragma region ascending sort minnan
@@ -139,6 +159,26 @@ __forceinline __m256 _mm256_sortasc_minnan_ps(__m256 x) {
     return x;
 }
 
+// needs ascending sort (min nan)
+__forceinline bool _mm_needssortasc_minnan_ps(__m128 x) {
+    __m128 y = _mm_permute_ps(x, _MM_PERM_DDCB);
+
+    bool needssort = _mm_movemask_ps(_mm_cmpgt_minnan_ps(x, y)) > 0;
+
+    return needssort;
+}
+
+// needs ascending sort (min nan)
+__forceinline bool _mm256_needssortasc_minnan_ps(__m256 x) {
+    const __m256i perm = _mm256_setr_epi32(1, 2, 3, 4, 5, 6, 7, 7);
+
+    __m256 y = _mm256_permutevar8x32_ps(x, perm);
+
+    bool needssort = _mm256_movemask_ps(_mm256_cmpgt_minnan_ps(x, y)) > 0;
+
+    return needssort;
+}
+
 #pragma endregion ascending sort minnan
 
 #pragma region ascending sort maxnan
@@ -205,6 +245,26 @@ __forceinline __m256 _mm256_sortasc_maxnan_ps(__m256 x) {
     x = _mm256_oddsortasc_maxnan_ps(x);
 
     return x;
+}
+
+// needs ascending sort (max nan)
+__forceinline bool _mm_needssortasc_maxnan_ps(__m128 x) {
+    __m128 y = _mm_permute_ps(x, _MM_PERM_DDCB);
+
+    bool needssort = _mm_movemask_ps(_mm_cmpgt_maxnan_ps(x, y)) > 0;
+
+    return needssort;
+}
+
+// needs ascending sort (max nan)
+__forceinline bool _mm256_needssortasc_maxnan_ps(__m256 x) {
+    const __m256i perm = _mm256_setr_epi32(1, 2, 3, 4, 5, 6, 7, 7);
+
+    __m256 y = _mm256_permutevar8x32_ps(x, perm);
+
+    bool needssort = _mm256_movemask_ps(_mm256_cmpgt_maxnan_ps(x, y)) > 0;
+
+    return needssort;
 }
 
 #pragma endregion ascending sort maxnan
@@ -276,6 +336,26 @@ __forceinline __m256 _mm256_sortdsc_ps(__m256 x) {
     return x;
 }
 
+// needs descending sort (ignore nan)
+__forceinline bool _mm_needssortdsc_ps(__m128 x) {
+    __m128 y = _mm_permute_ps(x, _MM_PERM_DDCB);
+
+    bool needssort = _mm_movemask_ps(_mm_cmplt_ignnan_ps(x, y)) > 0;
+
+    return needssort;
+}
+
+// needs descending sort (ignore nan)
+__forceinline bool _mm256_needssortdsc_ps(__m256 x) {
+    const __m256i perm = _mm256_setr_epi32(1, 2, 3, 4, 5, 6, 7, 7);
+
+    __m256 y = _mm256_permutevar8x32_ps(x, perm);
+
+    bool needssort = _mm256_movemask_ps(_mm256_cmplt_ignnan_ps(x, y)) > 0;
+
+    return needssort;
+}
+
 #pragma endregion descending sort
 
 #pragma region descending sort minnan
@@ -344,6 +424,26 @@ __forceinline __m256 _mm256_sortdsc_minnan_ps(__m256 x) {
     return x;
 }
 
+// needs descending sort (min nan)
+__forceinline bool _mm_needssortdsc_minnan_ps(__m128 x) {
+    __m128 y = _mm_permute_ps(x, _MM_PERM_DDCB);
+
+    bool needssort = _mm_movemask_ps(_mm_cmplt_minnan_ps(x, y)) > 0;
+
+    return needssort;
+}
+
+// needs descending sort (min nan)
+__forceinline bool _mm256_needssortdsc_minnan_ps(__m256 x) {
+    const __m256i perm = _mm256_setr_epi32(1, 2, 3, 4, 5, 6, 7, 7);
+
+    __m256 y = _mm256_permutevar8x32_ps(x, perm);
+
+    bool needssort = _mm256_movemask_ps(_mm256_cmplt_minnan_ps(x, y)) > 0;
+
+    return needssort;
+}
+
 #pragma endregion descending sort minnan
 
 #pragma region descending sort maxnan
@@ -410,6 +510,26 @@ __forceinline __m256 _mm256_sortdsc_maxnan_ps(__m256 x) {
     x = _mm256_oddsortdsc_maxnan_ps(x);
 
     return x;
+}
+
+// needs descending sort (max nan)
+__forceinline bool _mm_needssortdsc_maxnan_ps(__m128 x) {
+    __m128 y = _mm_permute_ps(x, _MM_PERM_DDCB);
+
+    bool needssort = _mm_movemask_ps(_mm_cmplt_maxnan_ps(x, y)) > 0;
+
+    return needssort;
+}
+
+// needs descending sort (max nan)
+__forceinline bool _mm256_needssortdsc_maxnan_ps(__m256 x) {
+    const __m256i perm = _mm256_setr_epi32(1, 2, 3, 4, 5, 6, 7, 7);
+
+    __m256 y = _mm256_permutevar8x32_ps(x, perm);
+
+    bool needssort = _mm256_movemask_ps(_mm256_cmplt_maxnan_ps(x, y)) > 0;
+
+    return needssort;
 }
 
 #pragma endregion descending sort maxnan

@@ -31,17 +31,18 @@ namespace SIMDSortSimu {
                 uint i = 0;
                 while (true) {
                     MM128 x = MM128.Load(vs, i);
-                    MM128 y = MM128.Sort(x);
-                    MM128.Store(vs, i, y);
 
-                    swaps++;
+                    if (MM128.NeedsSort(x)) {
+                        MM128 y = MM128.Sort(x);
+                        MM128.Store(vs, i, y);
 
-                    (_, uint index) = MM128.CmpEq(x, y);
-
-                    if (index < MM128.AVX1_FLOAT_STRIDE) {
+                        (_, uint index) = MM128.CmpEq(x, y);
+                        
                         uint back = MM128.AVX1_FLOAT_STRIDE - index - 1;
 
                         i = (i > back) ? i - back : 0;
+
+                        swaps++;
                     }
                     else if (i < e) {
                         i += MM128.AVX1_FLOAT_STRIDE - 1;

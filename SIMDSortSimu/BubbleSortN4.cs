@@ -27,23 +27,23 @@
                     uint back = MM128.AVX1_FLOAT_STRIDE - index;
 
                     i = i >= back ? i - back : 0;
-
-                    x = MM128.Load(vs, i);
                 }
                 else if (i < e) {
                     i += MM128.AVX1_FLOAT_STRIDE;
 
                     if (i <= e) {
                         x = y;
+                        continue;
                     }
                     else {
                         i = e;
-                        x = MM128.Load(vs, i);
                     }
                 }
                 else {
                     break;
                 }
+
+                x = MM128.Load(vs, i);
             }
 
             return swaps;

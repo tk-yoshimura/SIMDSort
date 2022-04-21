@@ -41,6 +41,16 @@ namespace SIMDSortSimu {
             return y;
         }
 
+        public static bool NeedsSort(MM128 x) {
+            for (uint i = 0; i < AVX1_FLOAT_STRIDE - 1; i++) {
+                if (!(x.vs[i] <= x.vs[i + 1]) && !float.IsNaN(x.vs[i])) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public static (bool swaped, uint index, MM128 a, MM128 b) CmpSwapGt(MM128 x, MM128 y) {
             bool swaped = false;
             uint index = AVX1_FLOAT_STRIDE;
