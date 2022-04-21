@@ -11,8 +11,22 @@ __forceinline __m256d _mm256_abs_pd(const __m256d x) {
     return ret;
 }
 
+__forceinline __m128d _mm_isnan_pd(__m128d x) {
+    __m128d y = _mm_cmp_pd(x, x, _CMP_NEQ_UQ);
+
+    return y;
+}
+
 __forceinline __m256d _mm256_isnan_pd(__m256d x) {
     __m256d y = _mm256_cmp_pd(x, x, _CMP_NEQ_UQ);
+
+    return y;
+}
+
+__forceinline __m128d _mm_not_ps(__m128d x) {
+    const __m128d setbits = _mm_castsi128_pd(_mm_set1_epi32(~0u));
+
+    __m128d y = _mm_xor_pd(x, setbits);
 
     return y;
 }
