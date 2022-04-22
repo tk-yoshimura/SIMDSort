@@ -35,66 +35,6 @@ __forceinline __m128 _mm_cmpgt_maxnan_ps(__m128 x, __m128 y) {
     return ret;
 }
 
-// compare and swap x > y ? y : x (ignore nan)
-__forceinline void _mm_cmpgtswap_ps(__m128 a, __m128 b, __m128& x, __m128& y) {
-    __m128 gtflag = _mm_cmpgt_ignnan_ps(a, b);
-
-    x = _mm_blendv_ps(a, b, gtflag);
-    y = _mm_blendv_ps(a, b, _mm_not_ps(gtflag));
-}
-
-// compare and swap x > y ? y : x (ignore nan)
-__forceinline uint _mm_cmpgtswap_indexed_ps(__m128 a, __m128 b, __m128& x, __m128& y) {
-    __m128 gtflag = _mm_cmpgt_ignnan_ps(a, b);
-
-    uint index = _mm_movemask_ps(gtflag);
-
-    x = _mm_blendv_ps(a, b, gtflag);
-    y = _mm_blendv_ps(a, b, _mm_not_ps(gtflag));
-
-    return index;
-}
-
-// compare and swap x > y ? y : x ... nan < minf < nval < pinf
-__forceinline void _mm_cmpgtswap_minnan_ps(__m128 a, __m128 b, __m128& x, __m128& y) {
-    __m128 gtflag = _mm_cmpgt_minnan_ps(a, b);
-
-    x = _mm_blendv_ps(a, b, gtflag);
-    y = _mm_blendv_ps(a, b, _mm_not_ps(gtflag));
-}
-
-// compare and swap x > y ? y : x ... nan < minf < nval < pinf
-__forceinline uint _mm_cmpgtswap_minnan_indexed_ps(__m128 a, __m128 b, __m128& x, __m128& y) {
-    __m128 gtflag = _mm_cmpgt_minnan_ps(a, b);
-
-    uint index = _mm_movemask_ps(gtflag);
-
-    x = _mm_blendv_ps(a, b, gtflag);
-    y = _mm_blendv_ps(a, b, _mm_not_ps(gtflag));
-
-    return index;
-}
-
-// compare and swap x > y ? y : x ... minf < nval < pinf < nan
-__forceinline void _mm_cmpgtswap_maxnan_ps(__m128 a, __m128 b, __m128& x, __m128& y) {
-    __m128 gtflag = _mm_cmpgt_maxnan_ps(a, b);
-
-    x = _mm_blendv_ps(a, b, gtflag);
-    y = _mm_blendv_ps(a, b, _mm_not_ps(gtflag));
-}
-
-// compare and swap x > y ? y : x ... minf < nval < pinf < nan
-__forceinline uint _mm_cmpgtswap_maxnan_indexed_ps(__m128 a, __m128 b, __m128& x, __m128& y) {
-    __m128 gtflag = _mm_cmpgt_maxnan_ps(a, b);
-
-    uint index = _mm_movemask_ps(gtflag);
-
-    x = _mm_blendv_ps(a, b, gtflag);
-    y = _mm_blendv_ps(a, b, _mm_not_ps(gtflag));
-
-    return index;
-}
-
 #pragma endregion greater than (x > y)
 
 #pragma region less than (x < y)
@@ -124,66 +64,6 @@ __forceinline __m128 _mm_cmplt_maxnan_ps(__m128 x, __m128 y) {
     __m128 ret = _mm_andnot_ps(xisnan, lt);
 
     return ret;
-}
-
-// compare and swap x < y ? y : x (ignore nan)
-__forceinline void _mm_cmpltswap_ps(__m128 a, __m128 b, __m128& x, __m128& y) {
-    __m128 ltflag = _mm_cmplt_ignnan_ps(a, b);
-
-    x = _mm_blendv_ps(a, b, ltflag);
-    y = _mm_blendv_ps(a, b, _mm_not_ps(ltflag));
-}
-
-// compare and swap x < y ? y : x (ignore nan)
-__forceinline uint _mm_cmpltswap_indexed_ps(__m128 a, __m128 b, __m128& x, __m128& y) {
-    __m128 ltflag = _mm_cmplt_ignnan_ps(a, b);
-
-    uint index = _mm_movemask_ps(ltflag);
-
-    x = _mm_blendv_ps(a, b, ltflag);
-    y = _mm_blendv_ps(a, b, _mm_not_ps(ltflag));
-
-    return index;
-}
-
-// compare and swap x < y ? y : x ... pinf > nval > minf > nan
-__forceinline void _mm_cmpltswap_minnan_ps(__m128 a, __m128 b, __m128& x, __m128& y) {
-    __m128 ltflag = _mm_cmplt_minnan_ps(a, b);
-
-    x = _mm_blendv_ps(a, b, ltflag);
-    y = _mm_blendv_ps(a, b, _mm_not_ps(ltflag));
-}
-
-// compare and swap x < y ? y : x ... pinf > nval > minf > nan
-__forceinline uint _mm_cmpltswap_minnan_indexed_ps(__m128 a, __m128 b, __m128& x, __m128& y) {
-    __m128 ltflag = _mm_cmplt_minnan_ps(a, b);
-
-    uint index = _mm_movemask_ps(ltflag);
-
-    x = _mm_blendv_ps(a, b, ltflag);
-    y = _mm_blendv_ps(a, b, _mm_not_ps(ltflag));
-
-    return index;
-}
-
-// compare and swap x < y ? y : x ... nan > pinf > nval > minf
-__forceinline void _mm_cmpltswap_maxnan_ps(__m128 a, __m128 b, __m128& x, __m128& y) {
-    __m128 ltflag = _mm_cmplt_maxnan_ps(a, b);
-
-    x = _mm_blendv_ps(a, b, ltflag);
-    y = _mm_blendv_ps(a, b, _mm_not_ps(ltflag));
-}
-
-// compare and swap x < y ? y : x ... nan > pinf > nval > minf
-__forceinline uint _mm_cmpltswap_maxnan_indexed_ps(__m128 a, __m128 b, __m128& x, __m128& y) {
-    __m128 ltflag = _mm_cmplt_maxnan_ps(a, b);
-
-    uint index = _mm_movemask_ps(ltflag);
-
-    x = _mm_blendv_ps(a, b, ltflag);
-    y = _mm_blendv_ps(a, b, _mm_not_ps(ltflag));
-
-    return index;
 }
 
 #pragma endregion less than (x < y)
@@ -237,66 +117,6 @@ __forceinline __m256 _mm256_cmpgt_maxnan_ps(__m256 x, __m256 y) {
     return ret;
 }
 
-// compare and swap x > y ? y : x (ignore nan)
-__forceinline void _mm256_cmpgtswap_ps(__m256 a, __m256 b, __m256& x, __m256& y) {
-    __m256 gtflag = _mm256_cmpgt_ignnan_ps(a, b);
-
-    x = _mm256_blendv_ps(a, b, gtflag);
-    y = _mm256_blendv_ps(a, b, _mm256_not_ps(gtflag));
-}
-
-// compare and swap x > y ? y : x (ignore nan)
-__forceinline uint _mm256_cmpgtswap_indexed_ps(__m256 a, __m256 b, __m256& x, __m256& y) {
-    __m256 gtflag = _mm256_cmpgt_ignnan_ps(a, b);
-
-    uint index = _mm256_movemask_ps(gtflag);
-
-    x = _mm256_blendv_ps(a, b, gtflag);
-    y = _mm256_blendv_ps(a, b, _mm256_not_ps(gtflag));
-
-    return index;
-}
-
-// compare and swap x > y ? y : x ... nan < minf < nval < pinf
-__forceinline void _mm256_cmpgtswap_minnan_ps(__m256 a, __m256 b, __m256& x, __m256& y) {
-    __m256 gtflag = _mm256_cmpgt_minnan_ps(a, b);
-
-    x = _mm256_blendv_ps(a, b, gtflag);
-    y = _mm256_blendv_ps(a, b, _mm256_not_ps(gtflag));
-}
-
-// compare and swap x > y ? y : x ... nan < minf < nval < pinf
-__forceinline uint _mm256_cmpgtswap_minnan_indexed_ps(__m256 a, __m256 b, __m256& x, __m256& y) {
-    __m256 gtflag = _mm256_cmpgt_minnan_ps(a, b);
-
-    uint index = _mm256_movemask_ps(gtflag);
-
-    x = _mm256_blendv_ps(a, b, gtflag);
-    y = _mm256_blendv_ps(a, b, _mm256_not_ps(gtflag));
-
-    return index;
-}
-
-// compare and swap x > y ? y : x ... minf < nval < pinf < nan
-__forceinline void _mm256_cmpgtswap_maxnan_ps(__m256 a, __m256 b, __m256& x, __m256& y) {
-    __m256 gtflag = _mm256_cmpgt_maxnan_ps(a, b);
-
-    x = _mm256_blendv_ps(a, b, gtflag);
-    y = _mm256_blendv_ps(a, b, _mm256_not_ps(gtflag));
-}
-
-// compare and swap x > y ? y : x ... minf < nval < pinf < nan
-__forceinline uint _mm256_cmpgtswap_maxnan_indexed_ps(__m256 a, __m256 b, __m256& x, __m256& y) {
-    __m256 gtflag = _mm256_cmpgt_maxnan_ps(a, b);
-
-    uint index = _mm256_movemask_ps(gtflag);
-
-    x = _mm256_blendv_ps(a, b, gtflag);
-    y = _mm256_blendv_ps(a, b, _mm256_not_ps(gtflag));
-
-    return index;
-}
-
 #pragma endregion greater than (x > y)
 
 #pragma region less than (x < y)
@@ -326,66 +146,6 @@ __forceinline __m256 _mm256_cmplt_maxnan_ps(__m256 x, __m256 y) {
     __m256 ret = _mm256_andnot_ps(xisnan, lt);
 
     return ret;
-}
-
-// compare and swap x < y ? y : x (ignore nan)
-__forceinline void _mm256_cmpltswap_ps(__m256 a, __m256 b, __m256& x, __m256& y) {
-    __m256 ltflag = _mm256_cmplt_ignnan_ps(a, b);
-
-    x = _mm256_blendv_ps(a, b, ltflag);
-    y = _mm256_blendv_ps(a, b, _mm256_not_ps(ltflag));
-}
-
-// compare and swap x < y ? y : x (ignore nan)
-__forceinline uint _mm256_cmpltswap_indexed_ps(__m256 a, __m256 b, __m256& x, __m256& y) {
-    __m256 ltflag = _mm256_cmplt_ignnan_ps(a, b);
-
-    uint index = _mm256_movemask_ps(ltflag);
-
-    x = _mm256_blendv_ps(a, b, ltflag);
-    y = _mm256_blendv_ps(a, b, _mm256_not_ps(ltflag));
-
-    return index;
-}
-
-// compare and swap x < y ? y : x ... pinf > nval > minf > nan
-__forceinline void _mm256_cmpltswap_minnan_ps(__m256 a, __m256 b, __m256& x, __m256& y) {
-    __m256 ltflag = _mm256_cmplt_minnan_ps(a, b);
-
-    x = _mm256_blendv_ps(a, b, ltflag);
-    y = _mm256_blendv_ps(a, b, _mm256_not_ps(ltflag));
-}
-
-// compare and swap x < y ? y : x ... pinf > nval > minf > nan
-__forceinline uint _mm256_cmpltswap_minnan_indexed_ps(__m256 a, __m256 b, __m256& x, __m256& y) {
-    __m256 ltflag = _mm256_cmplt_minnan_ps(a, b);
-
-    uint index = _mm256_movemask_ps(ltflag);
-
-    x = _mm256_blendv_ps(a, b, ltflag);
-    y = _mm256_blendv_ps(a, b, _mm256_not_ps(ltflag));
-
-    return index;
-}
-
-// compare and swap x < y ? y : x ... nan > pinf > nval > minf
-__forceinline void _mm256_cmpltswap_maxnan_ps(__m256 a, __m256 b, __m256& x, __m256& y) {
-    __m256 ltflag = _mm256_cmplt_maxnan_ps(a, b);
-
-    x = _mm256_blendv_ps(a, b, ltflag);
-    y = _mm256_blendv_ps(a, b, _mm256_not_ps(ltflag));
-}
-
-// compare and swap x < y ? y : x ... nan > pinf > nval > minf
-__forceinline uint _mm256_cmpltswap_maxnan_indexed_ps(__m256 a, __m256 b, __m256& x, __m256& y) {
-    __m256 ltflag = _mm256_cmplt_maxnan_ps(a, b);
-
-    uint index = _mm256_movemask_ps(ltflag);
-
-    x = _mm256_blendv_ps(a, b, ltflag);
-    y = _mm256_blendv_ps(a, b, _mm256_not_ps(ltflag));
-
-    return index;
 }
 
 #pragma endregion less than (x < y)

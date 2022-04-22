@@ -1,247 +1,140 @@
 #include <immintrin.h>
 #include <vector>
 #include <algorithm>
+#include <random>
 #include "../simdsort.h"
-#include "../Inline/inline_sort_s.hpp"
+#include "../Sort/sort.h"
 
-int mm_sort_test_s() {
-    std::vector<float> v1{ 3, 4, 1, 2 };
-    std::vector<float> v2{ 1, 3, NAN, 2 };
-
-    do {
-        __m128 x = _mm_loadu_ps(v1.data());
-        __m128 y = _mm_sortasc_ps(x);
-
-        float t[4];
-        _mm_storeu_ps(t, y);
-
-        printf("%f %f %f %f\n", t[0], t[1], t[2], t[3]);
-
-        if (t[0] != 1 || t[1] != 2 || t[2] != 3 || t[3] != 4) {
-            throw std::exception("err");
-        }
-
-        if ((_mm_movemask_ps(_mm_cmpeq_ignnan_ps(x, y)) != 15) != _mm_needssortasc_ps(x)) {
-            throw std::exception("err");
-        }
-
-    } while (std::next_permutation(v1.begin(), v1.end()));
-
-    do {
-        __m128 x = _mm_loadu_ps(v1.data());
-        __m128 y = _mm_sortdsc_ps(x);
-
-        float t[4];
-        _mm_storeu_ps(t, y);
-
-        printf("%f %f %f %f\n", t[0], t[1], t[2], t[3]);
-
-        if (t[0] != 4 || t[1] != 3 || t[2] != 2 || t[3] != 1) {
-            throw std::exception("err");
-        }
-
-        if ((_mm_movemask_ps(_mm_cmpeq_ignnan_ps(x, y)) != 15) != _mm_needssortdsc_ps(x)) {
-            throw std::exception("err");
-        }
-
-    } while (std::next_permutation(v1.begin(), v1.end()));
-
-    do {
-        __m128 x = _mm_loadu_ps(v2.data());
-        __m128 y = _mm_sortasc_minnan_ps(x);
-
-        float t[4];
-        _mm_storeu_ps(t, y);
-
-        printf("%f %f %f %f\n", t[0], t[1], t[2], t[3]);
-
-        if (t[0] == t[0] || t[1] != 1 || t[2] != 2 || t[3] != 3) {
-            throw std::exception("err");
-        }
-
-        if ((_mm_movemask_ps(_mm_cmpeq_ignnan_ps(x, y)) != 15) != _mm_needssortasc_minnan_ps(x)) {
-            throw std::exception("err");
-        }
-
-    } while (std::next_permutation(v2.begin(), v2.end()));
-
-    do {
-        __m128 x = _mm_loadu_ps(v2.data());
-        __m128 y = _mm_sortdsc_minnan_ps(x);
-
-        float t[4];
-        _mm_storeu_ps(t, y);
-
-        printf("%f %f %f %f\n", t[0], t[1], t[2], t[3]);
-
-        if (t[0] != 3 || t[1] != 2 || t[2] != 1 || t[3] == t[3]) {
-            throw std::exception("err");
-        }
-
-        if ((_mm_movemask_ps(_mm_cmpeq_ignnan_ps(x, y)) != 15) != _mm_needssortdsc_minnan_ps(x)) {
-            throw std::exception("err");
-        }
-
-    } while (std::next_permutation(v2.begin(), v2.end()));
-
-    do {
-        __m128 x = _mm_loadu_ps(v2.data());
-        __m128 y = _mm_sortasc_maxnan_ps(x);
-
-        float t[4];
-        _mm_storeu_ps(t, y);
-
-        printf("%f %f %f %f\n", t[0], t[1], t[2], t[3]);
-
-        if (t[0] != 1 || t[1] != 2 || t[2] != 3 || t[3] == t[3]) {
-            throw std::exception("err");
-        }
-
-        if ((_mm_movemask_ps(_mm_cmpeq_ignnan_ps(x, y)) != 15) != _mm_needssortasc_maxnan_ps(x)) {
-            throw std::exception("err");
-        }
-
-    } while (std::next_permutation(v2.begin(), v2.end()));
-
-    do {
-        __m128 x = _mm_loadu_ps(v2.data());
-        __m128 y = _mm_sortdsc_maxnan_ps(x);
-
-        float t[4];
-        _mm_storeu_ps(t, y);
-
-        printf("%f %f %f %f\n", t[0], t[1], t[2], t[3]);
-
-        if (t[0] == t[0] || t[1] != 3 || t[2] != 2 || t[3] != 1) {
-            throw std::exception("err");
-        }
-
-        if ((_mm_movemask_ps(_mm_cmpeq_ignnan_ps(x, y)) != 15) != _mm_needssortdsc_maxnan_ps(x)) {
-            throw std::exception("err");
-        }
-
-    } while (std::next_permutation(v2.begin(), v2.end()));
-
-    return 0;
+int sort_s(const uint n, const uint s, outfloats v_ptr) {
+    if (s <= 1) {
+        return SUCCESS;
+    }
+    else if(s <= 2){
+        return sortasc_ignnan_s2_s(n, s, v_ptr);
+    }
+    else if (s <= 3) {
+        return sortasc_ignnan_s3_s(n, s, v_ptr);
+    }
+    else if (s <= 4) {
+        return sortasc_ignnan_s4_s(n, s, v_ptr);
+    }
+    else if (s <= 5) {
+        return sortasc_ignnan_s5_s(n, s, v_ptr);
+    }
+    else if (s <= 6) {
+        return sortasc_ignnan_s6_s(n, s, v_ptr);
+    }
+    else if (s <= 7) {
+        return sortasc_ignnan_s7_s(n, s, v_ptr);
+    }
+    else if (s <= 8) {
+        return sortasc_ignnan_s8_s(n, s, v_ptr);
+    }
+    else if (s <= 11) {
+        return sortasc_ignnan_s9to11_s(n, s, v_ptr);
+    }
+    else if (s <= 12) {
+        return sortasc_ignnan_s12_s(n, s, v_ptr);
+    }
+    else if (s <= 15) {
+        return sortasc_ignnan_s13to15_s(n, s, v_ptr);
+    }
+    else if (s <= 32) {
+        return sortasc_ignnan_s16to32_s(n, s, v_ptr);
+    }
+    else {
+        return sortasc_ignnan_slong_s(n, s, v_ptr);
+    }
 }
 
-int mm256_sort_test_s() {
-    std::vector<float> v1{ 3, 4, 1, 2, 7, 8, 5, 6 };
-    std::vector<float> v2{ 3, 4, 1, 2, 7, NAN, 5, 6 };
+int mm_sort_test_s() {
+    std::mt19937 mt(1234);
 
-    do {
-        __m256 x = _mm256_loadu_ps(v1.data());
-        __m256 y = _mm256_sortasc_ps(x);
+    for (uint s = 2; s <= 64; s++) {
+        for (uint n = 1; n <= 64; n++) {
+            for (uint test = 0; test < 20; test++) {
 
-        float t[8];
-        _mm256_storeu_ps(t, y);
+                float* v = (float*)_aligned_malloc(s * n * sizeof(float), AVX2_ALIGNMENT);
+                if (v == nullptr) {
+                    return FAILURE_BADALLOC;
+                }
 
-        printf("%f %f %f %f %f %f %f %f\n", t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7]);
+                for (uint i = 0; i < s * n; i++) {
+                    uint r = mt();
+                    v[i] = r / (float)(~0u);
+                }
 
-        if (t[0] != 1 || t[1] != 2 || t[2] != 3 || t[3] != 4 || t[4] != 5 || t[5] != 6 || t[6] != 7 || t[7] != 8) {
-            throw std::exception("err");
+                std::vector<float> t(s * n);
+                for (uint i = 0; i < s * n; i++) {
+                    t[i] = v[i];
+                }
+
+                for (uint j = 0; j < n; j++) {
+                    std::sort(t.begin() + j * s, t.begin() + (j + 1) * s);
+                }
+
+                sort_s(n, s, v);
+
+                for (uint i = 0; i < s * n; i++) {
+                    if (t[i] != v[i]) {
+                        printf("random ng n=%d s=%d\n", n, s);
+                        throw std::exception("err");
+                    }
+                }
+
+                _aligned_free(v);
+
+                printf("random ok n=%d s=%d\n", n, s);
+
+            }
+        }
+    }
+
+    for (uint s = 2; s <= 12; s++) {
+        std::vector<float> v(s);
+        for (uint i = 0; i < s; i++) {
+            v[i] = (float)((i + 1) % s + 1);
         }
 
-        if ((_mm256_movemask_ps(_mm256_cmpeq_ignnan_ps(x, y)) != 255) != _mm256_needssortasc_ps(x)) {
-            throw std::exception("err");
-        }
+        uint c = 0;
 
-    } while (std::next_permutation(v1.begin(), v1.end()));
+        do {
+            float* t = (float*)_aligned_malloc((s + 4) * sizeof(float), AVX2_ALIGNMENT);
+            if (t == nullptr) {
+                return FAILURE_BADALLOC;
+            }
 
-    do {
-        __m256 x = _mm256_loadu_ps(v1.data());
-        __m256 y = _mm256_sortdsc_ps(x);
+            memcpy_s(t, s * sizeof(float), v.data(), s * sizeof(float));
 
-        float t[8];
-        _mm256_storeu_ps(t, y);
+            for (uint i = s; i < s + 4; i++) {
+                t[i] = ((i + c) * 31) % s;
+            }
 
-        printf("%f %f %f %f %f %f %f %f\n", t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7]);
+            sort_s(1, s, t);
 
-        if (t[0] != 8 || t[1] != 7 || t[2] != 6 || t[3] != 5 || t[4] != 4 || t[5] != 3 || t[6] != 2 || t[7] != 1) {
-            throw std::exception("err");
-        }
+            for (uint i = 1; i < s; i++) {
+                if (t[i - 1u] >= t[i]) {
+                    throw std::exception("err");
+                }
+            }
+            for (uint i = s; i < s + 4; i++) {
+                if (t[i] != ((i + c) * 31) % s) {
+                    throw std::exception("err");
+                }
+            }
 
-        if ((_mm256_movemask_ps(_mm256_cmpeq_ignnan_ps(x, y)) != 255) != _mm256_needssortdsc_ps(x)) {
-            throw std::exception("err");
-        }
+            c++;
 
-    } while (std::next_permutation(v1.begin(), v1.end()));
+            if ((c % 10000) == 0 && c > 0) {
+                printf(".");
+            }
 
-    do {
-        __m256 x = _mm256_loadu_ps(v2.data());
-        __m256 y = _mm256_sortasc_minnan_ps(x);
+            _aligned_free(t);
 
-        float t[8];
-        _mm256_storeu_ps(t, y);
+        } while (std::next_permutation(v.begin(), v.end()));
 
-        printf("%f %f %f %f %f %f %f %f\n", t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7]);
-
-        if (t[0] == t[0] || t[1] != 1 || t[2] != 2 || t[3] != 3 || t[4] != 4 || t[5] != 5 || t[6] != 6 || t[7] != 7) {
-            throw std::exception("err");
-        }
-
-        if ((_mm256_movemask_ps(_mm256_cmpeq_ignnan_ps(x, y)) != 255) != _mm256_needssortasc_minnan_ps(x)) {
-            throw std::exception("err");
-        }
-
-    } while (std::next_permutation(v2.begin(), v2.end()));
-
-    do {
-        __m256 x = _mm256_loadu_ps(v2.data());
-        __m256 y = _mm256_sortdsc_minnan_ps(x);
-
-        float t[8];
-        _mm256_storeu_ps(t, y);
-
-        printf("%f %f %f %f %f %f %f %f\n", t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7]);
-
-        if (t[0] != 7 || t[1] != 6 || t[2] != 5 || t[3] != 4 || t[4] != 3 || t[5] != 2 || t[6] != 1 || t[7] == t[7]) {
-            throw std::exception("err");
-        }
-
-        if ((_mm256_movemask_ps(_mm256_cmpeq_ignnan_ps(x, y)) != 255) != _mm256_needssortdsc_minnan_ps(x)) {
-            throw std::exception("err");
-        }
-
-    } while (std::next_permutation(v2.begin(), v2.end()));
-
-    do {
-        __m256 x = _mm256_loadu_ps(v2.data());
-        __m256 y = _mm256_sortasc_maxnan_ps(x);
-
-        float t[8];
-        _mm256_storeu_ps(t, y);
-
-        printf("%f %f %f %f %f %f %f %f\n", t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7]);
-
-        if (t[0] != 1 || t[1] != 2 || t[2] != 3 || t[3] != 4 || t[4] != 5 || t[5] != 6 || t[6] != 7 || t[7] == t[7]) {
-            throw std::exception("err");
-        }
-
-        if ((_mm256_movemask_ps(_mm256_cmpeq_ignnan_ps(x, y)) != 255) != _mm256_needssortasc_maxnan_ps(x)) {
-            throw std::exception("err");
-        }
-
-    } while (std::next_permutation(v2.begin(), v2.end()));
-
-    do {
-        __m256 x = _mm256_loadu_ps(v2.data());
-        __m256 y = _mm256_sortdsc_maxnan_ps(x);
-
-        float t[8];
-        _mm256_storeu_ps(t, y);
-
-        printf("%f %f %f %f %f %f %f %f\n", t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7]);
-
-        if (t[0] == t[0] || t[1] != 7 || t[2] != 6 || t[3] != 5 || t[4] != 4 || t[5] != 3 || t[6] != 2 || t[7] != 1) {
-            throw std::exception("err");
-        }
-
-        if ((_mm256_movemask_ps(_mm256_cmpeq_ignnan_ps(x, y)) != 255) != _mm256_needssortdsc_maxnan_ps(x)) {
-            throw std::exception("err");
-        }
-
-    } while (std::next_permutation(v2.begin(), v2.end()));
+        printf("\npermute ok s=%d\n", s);
+    }
 
     return 0;
 }

@@ -42,28 +42,7 @@
     <ClCompile Include="Tests\mm_cmp_test.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
-    <ClCompile Include="Sort\combsort_n32_s.cpp">
-      <Filter>Source\Sort</Filter>
-    </ClCompile>
-    <ClCompile Include="Sort\combsort_n24_s.cpp">
-      <Filter>Source\Sort</Filter>
-    </ClCompile>
-    <ClCompile Include="Sort\combsort_n16_s.cpp">
-      <Filter>Source\Sort</Filter>
-    </ClCompile>
-    <ClCompile Include="Sort\combsort_n8_s.cpp">
-      <Filter>Source\Sort</Filter>
-    </ClCompile>
-    <ClCompile Include="Sort\bubblesortasc_n8_s.cpp">
-      <Filter>Source\Sort</Filter>
-    </ClCompile>
-    <ClCompile Include="Tests\bubblesort_test.cpp">
-      <Filter>Source\Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="Sort\scansortasc_n8_s.cpp">
-      <Filter>Source\Sort</Filter>
-    </ClCompile>
-    <ClCompile Include="Tests\scansort_test.cpp">
+    <ClCompile Include="Tests\sort_test.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
     <ClCompile Include="Sort\sortasc_ignnan_s.cpp">
@@ -98,11 +77,11 @@
     <ClInclude Include="Inline\inline_loadstore_xn_d.hpp">
       <Filter>Source\Inline</Filter>
     </ClInclude>
-    <ClInclude Include="Inline\inline_sort_s.hpp">
-      <Filter>Source\Inline</Filter>
-    </ClInclude>
     <ClInclude Include="Inline\inline_misc.hpp">
       <Filter>Source\Inline</Filter>
+    </ClInclude>
+    <ClInclude Include="Sort\sort.h">
+      <Filter>Source\Sort</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -86,17 +86,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Sort\bubblesortasc_n8_s.cpp" />
-    <ClCompile Include="Sort\combsort_n16_s.cpp" />
-    <ClCompile Include="Sort\combsort_n24_s.cpp" />
-    <ClCompile Include="Sort\combsort_n32_s.cpp" />
-    <ClCompile Include="Sort\combsort_n8_s.cpp" />
-    <ClCompile Include="Sort\scansortasc_n8_s.cpp" />
     <ClCompile Include="Sort\sortasc_ignnan_s.cpp" />
-    <ClCompile Include="Tests\bubblesort_test.cpp" />
     <ClCompile Include="Tests\mm_cmp_test.cpp" />
     <ClCompile Include="Tests\mm_sort_test.cpp" />
-    <ClCompile Include="Tests\scansort_test.cpp" />
+    <ClCompile Include="Tests\sort_test.cpp" />
     <ClCompile Include="Util\util_mm_mask.cpp" />
     <ClCompile Include="Util\util_nan.cpp" />
     <ClCompile Include="_main.cpp" />
@@ -109,8 +102,8 @@
     <ClInclude Include="Inline\inline_misc.hpp" />
     <ClInclude Include="Inline\inline_ope_d.hpp" />
     <ClInclude Include="Inline\inline_ope_s.hpp" />
-    <ClInclude Include="Inline\inline_sort_s.hpp" />
     <ClInclude Include="simdsort.h" />
+    <ClInclude Include="Sort\sort.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>

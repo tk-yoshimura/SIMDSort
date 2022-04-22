@@ -3,11 +3,12 @@
 #include <exception>
 #include "../constants.h"
 #include "../simdsort.h"
+#include "../Sort/sort.h"
 
-int bubblesort_n8_test_s() {
-    for (uint n = AVX2_FLOAT_STRIDE * 2; n <= 64; n++) {
+int sort_n8_test_s() {
+    for (uint n = AVX2_FLOAT_STRIDE; n <= 64; n++) {
         std::vector<float> v(n + 4);
-        
+
         for (uint i = 0; i < n; i++) {
             v[i] = rand() / (float)RAND_MAX;
         }
@@ -16,10 +17,10 @@ int bubblesort_n8_test_s() {
             v[i] = NAN;
         }
 
-        bubblesortasc_n8_s(n, v.data());
+        sortasc_ignnan_slong_s(1, n, v.data());
 
-        for (uint i = 0; i < n - AVX2_FLOAT_STRIDE; i++) {
-            if (v[i] > v[i + AVX2_FLOAT_STRIDE]) {
+        for (uint i = 0; i < n - 1; i++) {
+            if (v[i] > v[i + 1]) {
                 throw std::exception("sort failure");
             }
         }
