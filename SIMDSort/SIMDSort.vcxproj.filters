@@ -48,6 +48,9 @@
     <ClCompile Include="Sort\sortasc_ignnan_s.cpp">
       <Filter>Source\Sort</Filter>
     </ClCompile>
+    <ClCompile Include="Tests\sort_speed_test.cpp">
+      <Filter>Source\Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="simdsort.h">

@@ -476,9 +476,9 @@ int combsort_p32_s(const uint n, const uint h, outfloats v_ptr) {
 
 #pragma endregion combsort
 
-#pragma region bubblesort
+#pragma region backtracksort
 
-int bubblesort_p8_s(const uint n, outfloats v_ptr) {
+int backtracksort_p8_s(const uint n, outfloats v_ptr) {
     if (n < AVX2_FLOAT_STRIDE * 2) {
         return SUCCESS;
     }
@@ -543,7 +543,7 @@ int bubblesort_p8_s(const uint n, outfloats v_ptr) {
     return SUCCESS;
 }
 
-#pragma endregion bubblesort
+#pragma endregion backtracksort
 
 #pragma region scansort
 
@@ -783,7 +783,7 @@ __forceinline int longsort_s(const uint n, outfloats v_ptr) {
         combsort_p8_s(n, h, v_ptr);
     }
 
-    bubblesort_p8_s(n, v_ptr);
+    backtracksort_p8_s(n, v_ptr);
     scansort_p8_s(n, v_ptr);
 
     return SUCCESS;
@@ -1199,7 +1199,7 @@ int sortasc_ignnan_s16to32_s(const uint n, const uint s, outfloats v_ptr) {
 #endif //_DEBUG
 
     for (uint i = 0; i < n; i++) {
-        bubblesort_p8_s(s, v_ptr);
+        backtracksort_p8_s(s, v_ptr);
         scansort_p8_s(s, v_ptr);
         v_ptr += s;
     }

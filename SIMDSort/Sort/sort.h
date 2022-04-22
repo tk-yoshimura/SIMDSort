@@ -3,6 +3,8 @@
 #include "../types.h"
 #include "../constants.h"
 
+#pragma region ascending sort ignore nan
+
 extern int sortasc_ignnan_s2_s(const uint n, const uint s, outfloats v_ptr);
 extern int sortasc_ignnan_s3_s(const uint n, const uint s, outfloats v_ptr);
 extern int sortasc_ignnan_s4_s(const uint n, const uint s, outfloats v_ptr);
@@ -15,3 +17,5 @@ extern int sortasc_ignnan_s12_s(const uint n, const uint s, outfloats v_ptr);
 extern int sortasc_ignnan_s13to15_s(const uint n, const uint s, outfloats v_ptr);
 extern int sortasc_ignnan_s16to32_s(const uint n, const uint s, outfloats v_ptr);
 extern int sortasc_ignnan_slong_s(const uint n, const uint s, outfloats v_ptr);
+
+#pragma endregion ascending sort ignore nan
