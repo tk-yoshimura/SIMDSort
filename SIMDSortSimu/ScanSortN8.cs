@@ -46,7 +46,7 @@ namespace SIMDSortSimu {
                         }
 
                         (_, uint index) = MM256.CmpEq(x, y);
-                        
+
                         uint back = MM256.AVX2_FLOAT_STRIDE - index - 1;
 
                         i = (i > back) ? i - back : 0;

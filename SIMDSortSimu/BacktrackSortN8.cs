@@ -13,7 +13,7 @@
 
             int swaps = 0;
 
-            if (e <= 0) { 
+            if (e <= 0) {
                 b = MM256.Load(vs, i + MM256.AVX2_FLOAT_STRIDE);
                 (_, _, MM256 x, MM256 y) = MM256.CmpSwapGt(a, b);
 

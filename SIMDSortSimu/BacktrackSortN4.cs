@@ -13,7 +13,7 @@
 
             int swaps = 0;
 
-            if (e <= 0) { 
+            if (e <= 0) {
                 b = MM128.Load(vs, i + MM128.AVX1_FLOAT_STRIDE);
                 (_, _, MM128 x, MM128 y) = MM128.CmpSwapGt(a, b);
 
