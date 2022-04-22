@@ -8,7 +8,7 @@ AVX sorting experiment
 x4-5 faster than std::sort  
 ![random](https://github.com/tk-yoshimura/SIMDSort/blob/main/figures/random_speed.svg)  
 
-### Imbalanced Random Values (p(x)=3x^2, x &in; [0, 1))
+### Imbalanced Random Values (1%: v &in; [0, 1), 99%: v &in; [0, 0.01))
 
 
 ## Licence
