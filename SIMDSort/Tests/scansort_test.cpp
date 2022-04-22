@@ -5,7 +5,7 @@
 #include "../simdsort.h"
 
 int scansort_n8_test_s() {
-    for (uint n = AVX2_FLOAT_STRIDE * 2; n <= 64; n++) {
+    for (uint n = AVX2_FLOAT_STRIDE; n <= 64; n++) {
         std::vector<float> v(n + 4);
 
         for (uint i = 0; i < n; i++) {

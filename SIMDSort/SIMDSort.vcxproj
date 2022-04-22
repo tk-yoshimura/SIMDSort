@@ -92,6 +92,7 @@
     <ClCompile Include="Sort\combsort_n32_s.cpp" />
     <ClCompile Include="Sort\combsort_n8_s.cpp" />
     <ClCompile Include="Sort\scansortasc_n8_s.cpp" />
+    <ClCompile Include="Sort\sortasc_ignnan_s.cpp" />
     <ClCompile Include="Tests\bubblesort_test.cpp" />
     <ClCompile Include="Tests\mm_cmp_test.cpp" />
     <ClCompile Include="Tests\mm_sort_test.cpp" />

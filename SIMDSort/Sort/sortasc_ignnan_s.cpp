@@ -1,21 +1,22 @@
-﻿#include <stdio.h>
-#include <intrin.h>
-#include "simdsort.h"
-#include "Inline/inline_misc.hpp"
+#include "../simdsort.h"
+#include "../Inline/inline_misc.hpp"
+#include "../Inline/inline_cmp_s.hpp"
 
-// compare x > y (ignore nan)
+#pragma region needs swap
+
+// needs swap
 __forceinline __m128 _mm_needswap_ps(__m128 x, __m128 y) {
-    __m128 gt = _mm_cmp_ps(x, y, _CMP_GT_OQ);
-
-    return gt;
+    return _mm_cmpgt_ignnan_ps(x, y);
 }
 
-// compare x > y (ignore nan)
+// needs swap
 __forceinline __m256 _mm256_needswap_ps(__m256 x, __m256 y) {
-    __m256 gt = _mm256_cmp_ps(x, y, _CMP_GT_OQ);
-
-    return gt;
+    return _mm256_cmpgt_ignnan_ps(x, y);
 }
+
+#pragma endregion needs swap
+
+#pragma region horizontal sort
 
 // sort batches4 x elems2 
 __forceinline __m256 _mm256_sort4x2_ps(__m256 x) {
@@ -176,7 +177,7 @@ __forceinline __m256 _mm256_sort1x7_ps(__m256 x) {
     return x;
 }
 
-// sort
+// sort elems4
 __forceinline __m128 _mm_sort_ps(__m128 x) {
     const __m128 xormask = _mm_castsi128_ps(_mm_setr_epi32(~0u, 0, 0, ~0u));
 
@@ -197,7 +198,7 @@ __forceinline __m128 _mm_sort_ps(__m128 x) {
     return x;
 }
 
-// sort
+// sort elems8
 __forceinline __m256 _mm256_sort_ps(__m256 x) {
     const __m256 xormask = _mm256_castsi256_ps(_mm256_setr_epi32(~0u, 0, 0, 0, 0, 0, 0, ~0u));
     const __m256i perm = _mm256_setr_epi32(7, 2, 1, 4, 3, 6, 5, 0);
@@ -236,15 +237,4 @@ __forceinline __m256 _mm256_sort_ps(__m256 x) {
     return x;
 }
 
-int main() {
-    __m256 x1 = _mm256_setr_ps(1, 2, 3, 4, 6, 5, 7, 8);
-    __m256 x2 = _mm256_setr_ps(2, 3, 1, 6, 5, 4, 0, 7);
-    __m256 x3 = _mm256_setr_ps(3, 1, 2, 5, 4, 6, 7, 8);
-
-    __m256 y1 = _mm256_sort1x6_ps(x1);
-    __m256 y2 = _mm256_sort1x6_ps(x2);
-    __m256 y3 = _mm256_sort1x6_ps(x3);
-
-    printf("end");
-    return getchar();
-}
+#pragma endregion horizontal sort
