@@ -5,7 +5,7 @@ AVX sorting experiment
 ## Processing Speed
 
 ### Uniform Random Values
-x3-4 faster than std::sort  
+x4-5 faster than std::sort  
 ![random](https://github.com/tk-yoshimura/SIMDSort/blob/main/figures/random_speed.svg)  
 
 ## Licence
