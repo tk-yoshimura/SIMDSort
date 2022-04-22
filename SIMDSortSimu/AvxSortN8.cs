@@ -2,19 +2,27 @@
     public static class AvxSortN8 {
         public static (int swaps, int sorts) Sort(float[] vs) {
             uint n = (uint)vs.Length;
+            uint h;
 
             int swaps = 0, sorts = 0;
 
-            for (uint h = n * 10 / 13; h > 8; h = h * 10 / 13) {
-                if (h < 16) {
-                    swaps += CombSortH9to15.Iter(vs, h);
-                }
-                else {
-                    swaps += CombSortN8.Iter(vs, h);
-                }
+            for (h = (uint)(n * 10L / 13L); h > 36; h = (uint)(h * 10L / 13L)) {
+                swaps += CombSortH33plus.Iter(vs, h);
             }
-
+            swaps += CombSortH32.Iter(vs);
+            for (h = h * 10 / 13; h > 27; h = h * 10 / 13) {
+                swaps += CombSortH25to31.Iter(vs, h);
+            }
+            swaps += CombSortH24.Iter(vs);
+            for (h = h * 10 / 13; h > 18; h = h * 10 / 13) {
+                swaps += CombSortH17to23.Iter(vs, h);
+            }
+            swaps += CombSortH16.Iter(vs);
+            for (h = h * 10 / 13; h > 9; h = h * 10 / 13) {
+                swaps += CombSortH9to15.Iter(vs, h);                
+            }
             swaps += CombSortH8.Iter(vs);
+
             swaps += BacktrackSortN8.Iter(vs);
             sorts += ScanSortN8.Iter(vs);
 

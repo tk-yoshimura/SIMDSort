@@ -30,7 +30,7 @@ namespace SIMDSortSimuTest {
         public void InverseSortTest() {
             Console.WriteLine("n,swaps,sorts");
 
-            for (uint n = 8; n <= 1024; n++) {
+            for (uint n = 48; n <= 1024; n++) {
 
                 float[] vs = (new float[n]).Select((_, idx) => (float)idx).Reverse().ToArray();
                 float[] us = (float[])vs.Clone();
