@@ -88,9 +88,8 @@
   <ItemGroup>
     <ClCompile Include="Sort\sortasc_ignnan_s.cpp" />
     <ClCompile Include="Tests\mm_cmp_test.cpp" />
-    <ClCompile Include="Tests\mm_sort_test.cpp" />
-    <ClCompile Include="Tests\sort_speed_test.cpp" />
     <ClCompile Include="Tests\sort_test.cpp" />
+    <ClCompile Include="Tests\sort_speed_test.cpp" />
     <ClCompile Include="Util\util_mm_mask.cpp" />
     <ClCompile Include="Util\util_nan.cpp" />
     <ClCompile Include="_main.cpp" />

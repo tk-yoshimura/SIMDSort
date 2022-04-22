@@ -6,7 +6,7 @@
 #include "../simdsort.h"
 #include "../Sort/sort.h"
 
-int sort_speed_test() {
+int sort_speed_test_s() {
     std::ofstream ofs;
     ofs.open("bin/sort_speed.txt");
 

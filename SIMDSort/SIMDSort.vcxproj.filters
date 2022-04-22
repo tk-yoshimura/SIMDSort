@@ -36,13 +36,10 @@
     <ClCompile Include="Util\util_mm_mask.cpp">
       <Filter>Source\Util</Filter>
     </ClCompile>
-    <ClCompile Include="Tests\mm_sort_test.cpp">
+    <ClCompile Include="Tests\sort_test.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
     <ClCompile Include="Tests\mm_cmp_test.cpp">
-      <Filter>Source\Tests</Filter>
-    </ClCompile>
-    <ClCompile Include="Tests\sort_test.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
     <ClCompile Include="Sort\sortasc_ignnan_s.cpp">

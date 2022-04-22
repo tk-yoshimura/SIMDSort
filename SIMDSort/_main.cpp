@@ -13,9 +13,10 @@ int main() {
     //
     //sort_n8_test_s();
     //
-    //mm_sort_test_s();
+    
+    sort_test_s();
 
-    sort_speed_test();
+    //sort_speed_test_s();
 
     printf("end");
     return getchar();
