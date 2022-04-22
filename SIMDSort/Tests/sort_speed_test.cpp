@@ -8,7 +8,7 @@
 
 int sort_speed_test_s() {
     std::ofstream ofs;
-    ofs.open("bin/sort_speed.txt");
+    ofs.open("bin/sort_random_speed.txt");
 
     ofs << "n,std,avx" << std::endl;
 

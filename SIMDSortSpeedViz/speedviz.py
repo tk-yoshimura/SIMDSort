@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 tests = 32
 
-data = pd.read_csv("../SIMDSort/bin/sort_speed.txt", delimiter=',')
+data = pd.read_csv("../SIMDSort/bin/sort_random_speed.txt", delimiter=',')
 
 n, stdsort, avxsort = data['n'].to_numpy(), data['std'].to_numpy(), data['avx'].to_numpy()
 
@@ -21,6 +21,10 @@ avxsortmean = np.mean(avxsort, axis = 1)
 avxsortsig1 = np.std( avxsort, axis = 1)
 avxsortmax  = np.max( avxsort, axis = 1)
 avxsortmin  = np.min( avxsort, axis = 1)
+
+fastor = stdsortmean / avxsortmax
+
+fastor_sort = n[np.argsort(fastor)]
 
 fig = plt.figure(figsize=(12, 6))
 

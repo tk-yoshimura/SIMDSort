@@ -976,22 +976,33 @@ __forceinline int shortsort_n13to15_s(const uint n, outfloats v_ptr) {
 __forceinline int longsort_s(const uint n, outfloats v_ptr) {
     uint h;
 
-    for (h = (uint)(n * 10L / 13L); h > 36; h = (uint)(h * 10L / 13L)) {
+    for (h = (uint)(n * 10L / 13L); h > 33; h = (uint)(h * 10L / 13L)) {
         combsort_h33plus_s(n, h, v_ptr);
     }
-    combsort_h32_s(n, v_ptr);
-    for (h = h * 10 / 13; h > 27; h = h * 10 / 13) {
+    if (h >= 32) {
+        combsort_h32_s(n, v_ptr);
+        h = h * 10 / 13;
+    }
+    for (; h > 25; h = h * 10 / 13) {
         combsort_h25to31_s(n, h, v_ptr);
     }
-    combsort_h24_s(n, v_ptr);
-    for (h = h * 10 / 13; h > 18; h = h * 10 / 13) {
+    if (h >= 24) {
+        combsort_h24_s(n, v_ptr);
+        h = h * 10 / 13;
+    }
+    for (; h > 17; h = h * 10 / 13) {
         combsort_h17to23_s(n, h, v_ptr);
     }
-    combsort_h16_s(n, v_ptr);
-    for (h = h * 10 / 13; h > 9; h = h * 10 / 13) {
+    if (h >= 16) {
+        combsort_h16_s(n, v_ptr);
+        h = h * 10 / 13;
+    }
+    for (; h > 9; h = h * 10 / 13) {
         combsort_h9to15_s(n, h, v_ptr);
     }
-    combsort_h8_s(n, v_ptr);
+    if (h >= 8) {
+        combsort_h8_s(n, v_ptr);
+    }
 
     backtracksort_p8_s(n, v_ptr);
     scansort_p8_s(n, v_ptr);
