@@ -12,20 +12,24 @@
 
             int swaps = 0;
 
-            MM256 a = MM256.Load(vs, 0), b;
+            MM256 a, b;
 
-            uint i = 0;
-            for (; i < e; i += MM256.AVX2_FLOAT_STRIDE) {
-                b = MM256.Load(vs, i + MM256.AVX2_FLOAT_STRIDE);
+            if (e > 0) {
+                a = MM256.Load(vs, 0);
 
-                (_, _, MM256 x, MM256 y) = MM256.CmpSwapGt(a, b);
+                uint i = 0;
+                for (; i < e; i += MM256.AVX2_FLOAT_STRIDE) {
+                    b = MM256.Load(vs, i + MM256.AVX2_FLOAT_STRIDE);
 
-                MM256.Store(vs, i, x);
-                a = y;
+                    (_, _, MM256 x, MM256 y) = MM256.CmpSwapGt(a, b);
 
-                swaps++;
+                    MM256.Store(vs, i, x);
+                    a = y;
+
+                    swaps++;
+                }
+                MM256.Store(vs, i, a);
             }
-            MM256.Store(vs, i, a);
 
             {
                 a = MM256.Load(vs, e);
