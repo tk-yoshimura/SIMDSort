@@ -1,5 +1,5 @@
 ﻿namespace SIMDSortSimu {
-    public static class BubbleSortN4 {
+    public static class BacktrackSortN4 {
 
         public static int Iter(float[] vs) {
             uint n = (uint)vs.Length;

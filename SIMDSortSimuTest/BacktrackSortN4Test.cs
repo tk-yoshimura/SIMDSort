@@ -5,20 +5,20 @@ using System.Linq;
 
 namespace SIMDSortSimuTest {
     [TestClass]
-    public class BubbleSortN8Test {
+    public class BacktrackSortN4Test {
         [TestMethod]
         public void RandomSortTest() {
             Random random = new();
 
-            for (uint n = 16; n <= 64; n++) {
+            for (uint n = 8; n <= 32; n++) {
                 for (uint i = 0; i < 8; i++) {
 
                     float[] vs = (new float[n]).Select((_, idx) => (float)random.NextDouble()).ToArray();
 
-                    BubbleSortN8.Iter(vs);
+                    BacktrackSortN4.Iter(vs);
 
-                    for (uint j = 0; j < n - 8; j++) {
-                        Assert.IsTrue(vs[j] <= vs[j + 8]);
+                    for (uint j = 0; j < n - 4; j++) {
+                        Assert.IsTrue(vs[j] <= vs[j + 4]);
                     }
                 }
             }
@@ -26,15 +26,15 @@ namespace SIMDSortSimuTest {
 
         [TestMethod]
         public void InverseSortTest() {
-            for (uint n = 16; n <= 64; n++) {
+            for (uint n = 8; n <= 32; n++) {
                 for (uint i = 0; i < 8; i++) {
 
                     float[] vs = (new float[n]).Select((_, idx) => (float)idx).Reverse().ToArray();
 
-                    BubbleSortN8.Iter(vs);
+                    BacktrackSortN4.Iter(vs);
 
-                    for (uint j = 0; j < n - 8; j++) {
-                        Assert.IsTrue(vs[j] <= vs[j + 8]);
+                    for (uint j = 0; j < n - 4; j++) {
+                        Assert.IsTrue(vs[j] <= vs[j + 4]);
                     }
                 }
             }
