@@ -2,6 +2,9 @@
 
 AVX sorting experiment
 
+## Algorithm
+![algo](https://github.com/tk-yoshimura/SIMDSort/blob/main/figures/algo.svg)  
+
 ## Processing Speed
 
 ### Uniform Random Values
@@ -20,7 +23,7 @@ x4-5 faster than std::sort
 disadvantage to quicksort as the number increase  
 ![ndist](https://github.com/tk-yoshimura/SIMDSort/blob/main/figures/sort_reverse_speed.svg)  
 
-### All Condition
+### All Conditions
 stable speed regardless of conditions
 ![avxall](https://github.com/tk-yoshimura/SIMDSort/blob/main/figures/sort_avxall_speed.svg)  
 
