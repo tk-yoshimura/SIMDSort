@@ -6,11 +6,6 @@
 #pragma region needs swap
 
 // needs swap
-__forceinline __m128 _mm_needsswap_ps(__m128 x, __m128 y) {
-    return _mm_cmpgt_ignnan_ps(x, y);
-}
-
-// needs swap
 __forceinline __m256 _mm256_needsswap_ps(__m256 x, __m256 y) {
     return _mm256_cmpgt_ignnan_ps(x, y);
 }
@@ -18,15 +13,6 @@ __forceinline __m256 _mm256_needsswap_ps(__m256 x, __m256 y) {
 #pragma endregion needs swap
 
 #pragma region needs sort
-
-// needs sort
-__forceinline bool _mm_needssort_ps(__m128 x) {
-    __m128 y = _mm_permute_ps(x, _MM_PERM_DDCB);
-
-    bool needssort = _mm_movemask_ps(_mm_needsswap_ps(x, y)) > 0;
-
-    return needssort;
-}
 
 // needs sort
 __forceinline bool _mm256_needssort_ps(__m256 x) {
@@ -202,27 +188,6 @@ __forceinline __m256 _mm256_sort1x7_ps(__m256 x) {
     return x;
 }
 
-// sort elems4
-__forceinline __m128 _mm_sort_ps(__m128 x) {
-    const __m128 xormask = _mm_castsi128_ps(_mm_setr_epi32(~0u, 0, 0, ~0u));
-
-    __m128 y, c;
-
-    y = _mm_permute_ps(x, _MM_PERM_ABCD);
-    c = _mm_xor_ps(xormask, _mm_permute_ps(_mm_needsswap_ps(x, y), _MM_PERM_DBBD));
-    x = _mm_blendv_ps(x, y, c);
-
-    y = _mm_permute_ps(x, _MM_PERM_CDAB);
-    c = _mm_permute_ps(_mm_needsswap_ps(x, y), _MM_PERM_CCAA);
-    x = _mm_blendv_ps(x, y, c);
-
-    y = _mm_permute_ps(x, _MM_PERM_ABCD);
-    c = _mm_xor_ps(xormask, _mm_permute_ps(_mm_needsswap_ps(x, y), _MM_PERM_DBBD));
-    x = _mm_blendv_ps(x, y, c);
-
-    return x;
-}
-
 // sort elems8
 __forceinline __m256 _mm256_sort_ps(__m256 x) {
     const __m256 xormask = _mm256_castsi256_ps(_mm256_setr_epi32(~0u, 0, 0, 0, 0, 0, 0, ~0u));
@@ -265,26 +230,6 @@ __forceinline __m256 _mm256_sort_ps(__m256 x) {
 #pragma endregion horizontal sort
 
 #pragma region cmp and swap
-
-// compare and swap
-__forceinline void _mm_cmpswap_ps(__m128 a, __m128 b, __m128& x, __m128& y) {
-    __m128 swaps = _mm_needsswap_ps(a, b);
-
-    x = _mm_blendv_ps(a, b, swaps);
-    y = _mm_blendv_ps(a, b, _mm_not_ps(swaps));
-}
-
-// compare and swap
-__forceinline uint _mm_cmpswap_indexed_ps(__m128 a, __m128 b, __m128& x, __m128& y) {
-    __m128 swaps = _mm_needsswap_ps(a, b);
-
-    uint index = _mm_movemask_ps(swaps);
-
-    x = _mm_blendv_ps(a, b, swaps);
-    y = _mm_blendv_ps(a, b, _mm_not_ps(swaps));
-
-    return index;
-}
 
 // compare and swap
 __forceinline void _mm256_cmpswap_ps(__m256 a, __m256 b, __m256& x, __m256& y) {
@@ -924,7 +869,7 @@ int scansort_p8_s(const uint n, outfloats v_ptr) {
 
 __forceinline int shortsort_n9to11_s(const uint n, outfloats v_ptr) {
 #ifdef _DEBUG
-    if (n <= AVX2_FLOAT_STRIDE || n >= AVX1_FLOAT_STRIDE * 3) {
+    if (n <= AVX2_FLOAT_STRIDE || n >= AVX2_FLOAT_STRIDE * 3 / 2) {
         return FAILURE_BADPARAM;
     }
 #endif //_DEBUG
@@ -952,77 +897,68 @@ __forceinline int shortsort_n9to11_s(const uint n, outfloats v_ptr) {
 
 __forceinline int shortsort_n12_s(const uint n, outfloats v_ptr) {
 #ifdef _DEBUG
-    if (n != AVX1_FLOAT_STRIDE * 3) {
+    if (n != AVX2_FLOAT_STRIDE * 3 / 2) {
         return FAILURE_BADPARAM;
     }
 #endif //_DEBUG
 
-    __m128 x0, x1, x2, x3, x4, y0, y1, y2, y3, y4;
-    __m128 noswap = _mm_setzero_ps();
+    __m256 x0, x1, y0, y1;
+    __m256 noswap = _mm256_setzero_ps();
 
     do {
-        x0 = _mm_loadu_ps(v_ptr);
-        x1 = _mm_loadu_ps(v_ptr + AVX1_FLOAT_STRIDE);
-        x2 = _mm_loadu_ps(v_ptr + AVX1_FLOAT_STRIDE * 2);
-        y0 = _mm_sort_ps(x0);
-        y1 = _mm_sort_ps(x1);
-        y2 = _mm_sort_ps(x2);
-        _mm_storeu_ps(v_ptr, y0);
-        _mm_storeu_ps(v_ptr + AVX1_FLOAT_STRIDE, y1);
-        _mm_storeu_ps(v_ptr + AVX1_FLOAT_STRIDE * 2, y2);
+        x0 = _mm256_loadu_ps(v_ptr);
+        y0 = _mm256_sort_ps(x0);
+        _mm256_storeu_ps(v_ptr, y0);
 
-        x3 = _mm_loadu_ps(v_ptr + AVX1_FLOAT_STRIDE / 2);
-        x4 = _mm_loadu_ps(v_ptr + AVX1_FLOAT_STRIDE * 3 / 2);
-        y3 = _mm_sort_ps(x3);
-        y4 = _mm_sort_ps(x4);
-        _mm_storeu_ps(v_ptr + AVX1_FLOAT_STRIDE / 2, y3);
-        _mm_storeu_ps(v_ptr + AVX1_FLOAT_STRIDE * 3 / 2, y4);
+        x1 = _mm256_loadu_ps(v_ptr + n - AVX2_FLOAT_STRIDE);
+        y1 = _mm256_sort_ps(x1);
+        _mm256_storeu_ps(v_ptr + n - AVX2_FLOAT_STRIDE, y1);
 
-        noswap = _mm_and_ps(
-            _mm_and_ps(_mm_and_ps(_mm_cmpeq_ignnan_ps(x0, y0), _mm_cmpeq_ignnan_ps(x1, y1)), _mm_cmpeq_ignnan_ps(x2, y2)),
-            _mm_and_ps(_mm_cmpeq_ignnan_ps(x3, y3), _mm_cmpeq_ignnan_ps(x4, y4))
+        noswap = _mm256_and_ps(
+            _mm256_cmpeq_ignnan_ps(x0, y0),
+            _mm256_cmpeq_ignnan_ps(x1, y1)
         );
-    } while (_mm_movemask_ps(noswap) != 0xFu);
+    } while (_mm256_movemask_ps(noswap) != 0xFFu);
 
     return SUCCESS;
 }
 
 __forceinline int shortsort_n13to15_s(const uint n, outfloats v_ptr) {
 #ifdef _DEBUG
-    if (n <= AVX1_FLOAT_STRIDE * 3 || n >= AVX1_FLOAT_STRIDE * 4) {
+    if (n <= AVX2_FLOAT_STRIDE * 3 / 2 || n >= AVX2_FLOAT_STRIDE * 2) {
         return FAILURE_BADPARAM;
     }
 #endif //_DEBUG
 
-    __m128 x0, x1, x2, x3, x4, x5, y0, y1, y2, y3, y4, y5;
-    __m128 noswap = _mm_setzero_ps();
+    __m256 x0, x1, x2, y0, y1, y2;
+    __m256 noswap = _mm256_setzero_ps();
+
+    x0 = _mm256_loadu_ps(v_ptr);
+    y0 = _mm256_sort_ps(x0);
+    _mm256_storeu_ps(v_ptr, y0);
+
+    x1 = _mm256_loadu_ps(v_ptr + n - AVX2_FLOAT_STRIDE);
+    y1 = _mm256_sort_ps(x1);
+    _mm256_storeu_ps(v_ptr + n - AVX2_FLOAT_STRIDE, y1);
+
+    x2 = _mm256_loadu_ps(v_ptr + (n - AVX2_FLOAT_STRIDE) / 2);
+    y2 = _mm256_sort_ps(x2);
+    _mm256_storeu_ps(v_ptr + (n - AVX2_FLOAT_STRIDE) / 2, y2);
 
     do {
-        x0 = _mm_loadu_ps(v_ptr);
-        x1 = _mm_loadu_ps(v_ptr + AVX1_FLOAT_STRIDE);
-        x2 = _mm_loadu_ps(v_ptr + AVX1_FLOAT_STRIDE * 2);
-        y0 = _mm_sort_ps(x0);
-        y1 = _mm_sort_ps(x1);
-        y2 = _mm_sort_ps(x2);
-        _mm_storeu_ps(v_ptr, y0);
-        _mm_storeu_ps(v_ptr + AVX1_FLOAT_STRIDE, y1);
-        _mm_storeu_ps(v_ptr + AVX1_FLOAT_STRIDE * 2, y2);
+        x0 = _mm256_loadu_ps(v_ptr);
+        y0 = _mm256_sort_ps(x0);
+        _mm256_storeu_ps(v_ptr, y0);
 
-        x3 = _mm_loadu_ps(v_ptr + n - AVX1_FLOAT_STRIDE * 3);
-        x4 = _mm_loadu_ps(v_ptr + n - AVX1_FLOAT_STRIDE * 2);
-        x5 = _mm_loadu_ps(v_ptr + n - AVX1_FLOAT_STRIDE);
-        y3 = _mm_sort_ps(x3);
-        y4 = _mm_sort_ps(x4);
-        y5 = _mm_sort_ps(x5);
-        _mm_storeu_ps(v_ptr + n - AVX1_FLOAT_STRIDE * 3, y3);
-        _mm_storeu_ps(v_ptr + n - AVX1_FLOAT_STRIDE * 2, y4);
-        _mm_storeu_ps(v_ptr + n - AVX1_FLOAT_STRIDE, y5);
+        x1 = _mm256_loadu_ps(v_ptr + n - AVX2_FLOAT_STRIDE);
+        y1 = _mm256_sort_ps(x1);
+        _mm256_storeu_ps(v_ptr + n - AVX2_FLOAT_STRIDE, y1);
 
-        noswap = _mm_and_ps(
-            _mm_and_ps(_mm_and_ps(_mm_cmpeq_ignnan_ps(x0, y0), _mm_cmpeq_ignnan_ps(x1, y1)), _mm_cmpeq_ignnan_ps(x2, y2)),
-            _mm_and_ps(_mm_and_ps(_mm_cmpeq_ignnan_ps(x3, y3), _mm_cmpeq_ignnan_ps(x4, y4)), _mm_cmpeq_ignnan_ps(x5, y5))
+        noswap = _mm256_and_ps(
+            _mm256_cmpeq_ignnan_ps(x0, y0),
+            _mm256_cmpeq_ignnan_ps(x1, y1)
         );
-    } while (_mm_movemask_ps(noswap) != 0xFu);
+    } while (_mm256_movemask_ps(noswap) != 0xFFu);
 
     return SUCCESS;
 }
@@ -1035,7 +971,6 @@ __forceinline int shortsort_n16to32_s(const uint n, outfloats v_ptr) {
 #endif //_DEBUG
 
     backtracksort_p8_s(n, v_ptr);
-    batchsort_p8_s(n, v_ptr);
     scansort_p8_s(n, v_ptr);
 
     return SUCCESS;
@@ -1246,11 +1181,13 @@ int sortasc_ignnan_s4_s(const uint n, const uint s, outfloats v_ptr) {
         r -= AVX2_FLOAT_STRIDE / 4;
     }
     if (r > 0) {
-        __m128 x = _mm_load_ps(v_ptr);
+        const __m256i mask = _mm256_setmask_ps(4);
 
-        __m128 y = _mm_sort_ps(x);
+        _mm256_maskload_x1_ps(v_ptr, x0, mask);
 
-        _mm_stream_ps(v_ptr, y);
+        y0 = _mm256_sort2x4_ps(x0);
+
+        _mm256_maskstore_x1_ps(v_ptr, y0, mask);
     }
 
     return SUCCESS;
@@ -1442,7 +1379,7 @@ int sortasc_ignnan_s8_s(const uint n, const uint s, outfloats v_ptr) {
 
 int sortasc_ignnan_s9to11_s(const uint n, const uint s, outfloats v_ptr) {
 #ifdef _DEBUG
-    if (s <= AVX1_FLOAT_STRIDE * 2 || s >= AVX1_FLOAT_STRIDE * 3) {
+    if (s <= AVX2_FLOAT_STRIDE || s >= AVX2_FLOAT_STRIDE * 3 / 2) {
         return FAILURE_BADPARAM;
     }
 #endif //_DEBUG
@@ -1457,7 +1394,7 @@ int sortasc_ignnan_s9to11_s(const uint n, const uint s, outfloats v_ptr) {
 
 int sortasc_ignnan_s12_s(const uint n, const uint s, outfloats v_ptr) {
 #ifdef _DEBUG
-    if (s != AVX1_FLOAT_STRIDE * 3) {
+    if (s != AVX2_FLOAT_STRIDE * 3 / 2) {
         return FAILURE_BADPARAM;
     }
 #endif //_DEBUG
@@ -1472,7 +1409,7 @@ int sortasc_ignnan_s12_s(const uint n, const uint s, outfloats v_ptr) {
 
 int sortasc_ignnan_s13to15_s(const uint n, const uint s, outfloats v_ptr) {
 #ifdef _DEBUG
-    if (s <= AVX1_FLOAT_STRIDE * 3 || s >= AVX1_FLOAT_STRIDE * 4) {
+    if (s <= AVX2_FLOAT_STRIDE * 3 / 2 || s >= AVX2_FLOAT_STRIDE * 2) {
         return FAILURE_BADPARAM;
     }
 #endif //_DEBUG
