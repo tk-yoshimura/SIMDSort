@@ -689,11 +689,11 @@ int backtracksort_p8_s(const uint n, outfloats v_ptr) {
         return SUCCESS;
     }
 
-    uint i = 0, e = n - 2 * AVX2_FLOAT_STRIDE;
-    __m256 a = _mm256_loadu_ps(v_ptr), b, x, y;
+    uint i = 0, e = n - AVX2_FLOAT_STRIDE * 2;
+    __m256 a = _mm256_loadu_ps(v_ptr), b = _mm256_loadu_ps(v_ptr + AVX2_FLOAT_STRIDE);
+    __m256 x, y;
 
     if (e <= 0) {
-        b = _mm256_loadu_ps(v_ptr + AVX2_FLOAT_STRIDE);
         _mm256_cmpswap_ps(a, b, x, y);
 
         _mm256_storeu_ps(v_ptr, x);
@@ -703,30 +703,31 @@ int backtracksort_p8_s(const uint n, outfloats v_ptr) {
     }
 
     while (true) {
-        b = _mm256_loadu_ps(v_ptr + i + AVX2_FLOAT_STRIDE);
+        int indexes = _mm256_cmpswap_indexed_ps(a, b, x, y);
 
-        uint indexes = _mm256_cmpswap_indexed_ps(a, b, x, y);
-
-        if (indexes > 0u) {
-            uint index = bsf(indexes);
-
+        if (indexes > 0) {
             _mm256_storeu_ps(v_ptr + i, x);
             _mm256_storeu_ps(v_ptr + i + AVX2_FLOAT_STRIDE, y);
 
-            if (i == 0) {
+            if (i >= AVX2_FLOAT_STRIDE) {
+                i -= AVX2_FLOAT_STRIDE;
+                a = _mm256_loadu_ps(v_ptr + i);
+                b = x;
+                continue;
+            }
+            else if (i > 0) {
+                i = 0;
+                a = _mm256_loadu_ps(v_ptr);
+                b = _mm256_loadu_ps(v_ptr + AVX2_FLOAT_STRIDE);
+                continue;
+            }
+            else {
                 i = AVX2_FLOAT_STRIDE;
                 if (i <= e) {
                     a = y;
+                    b = _mm256_loadu_ps(v_ptr + AVX2_FLOAT_STRIDE * 2);
                     continue;
                 }
-                else {
-                    i = e;
-                }
-            }
-            else {
-                uint back = AVX2_FLOAT_STRIDE - index;
-
-                i = i >= back ? i - back : 0;
             }
         }
         else if (i < e) {
@@ -734,16 +735,17 @@ int backtracksort_p8_s(const uint n, outfloats v_ptr) {
 
             if (i <= e) {
                 a = b;
+                b = _mm256_loadu_ps(v_ptr + i + AVX2_FLOAT_STRIDE);
                 continue;
             }
-
-            i = e;
         }
         else {
             break;
         }
 
+        i = e;
         a = _mm256_loadu_ps(v_ptr + i);
+        b = _mm256_loadu_ps(v_ptr + i + AVX2_FLOAT_STRIDE);
     }
 
     return SUCCESS;

@@ -3,6 +3,7 @@
 #include "simdsort.h"
 
 int main() {
+    sort_test_s();
     sort_ndist_speed_test_s();
     sort_random_speed_test_s();
     sort_reverse_speed_test_s();
