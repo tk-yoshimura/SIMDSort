@@ -13,20 +13,7 @@ namespace SIMDSortSimu {
             int swaps = 0;
 
             uint e = n - MM128.AVX1_FLOAT_STRIDE;
-            for (uint i = 0; i < e; i += MM128.AVX1_FLOAT_STRIDE) {
-                MM128 x = MM128.Load(vs, i);
-                MM128 y = MM128.Sort(x);
-                MM128.Store(vs, i, y);
 
-                swaps++;
-            }
-            for (uint i = MM128.AVX1_FLOAT_STRIDE / 2; i < e; i += MM128.AVX1_FLOAT_STRIDE) {
-                MM128 x = MM128.Load(vs, i);
-                MM128 y = MM128.Sort(x);
-                MM128.Store(vs, i, y);
-
-                swaps++;
-            }
             {
                 uint i = 0;
                 while (true) {

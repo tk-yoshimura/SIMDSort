@@ -10,6 +10,7 @@
             }
 
             swaps += BacktrackSortN4.Iter(vs);
+            sorts += BatchSortN4.Iter(vs);
             sorts += ScanSortN4.Iter(vs);
 
             return (swaps, sorts);

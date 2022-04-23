@@ -35,6 +35,7 @@
             }
 
             swaps += BacktrackSortN8.Iter(vs);
+            sorts += BatchSortN8.Iter(vs);
             sorts += ScanSortN8.Iter(vs);
 
             return (swaps, sorts);
