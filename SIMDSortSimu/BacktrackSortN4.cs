@@ -9,16 +9,15 @@
             }
 
             uint i = 0, e = n - 2 * MM128.AVX1_FLOAT_STRIDE;
-            MM128 a = MM128.Load(vs, 0), b;
+            MM128 a = MM128.Load(vs, 0), b = MM128.Load(vs, MM128.AVX1_FLOAT_STRIDE);
 
             int swaps = 0;
 
             if (e <= 0) {
-                b = MM128.Load(vs, i + MM128.AVX1_FLOAT_STRIDE);
                 (_, _, MM128 x, MM128 y) = MM128.CmpSwapGt(a, b);
 
-                MM128.Store(vs, i, x);
-                MM128.Store(vs, i + MM128.AVX1_FLOAT_STRIDE, y);
+                MM128.Store(vs, 0, x);
+                MM128.Store(vs, MM128.AVX1_FLOAT_STRIDE, y);
 
                 swaps++;
 
@@ -26,30 +25,33 @@
             }
 
             while (true) {
-                b = MM128.Load(vs, i + MM128.AVX1_FLOAT_STRIDE);
-
-                (_, uint index, MM128 x, MM128 y) = MM128.CmpSwapGt(a, b);
+                (bool swaped, _, MM128 x, MM128 y) = MM128.CmpSwapGt(a, b);
 
                 swaps++;
 
-                if (index < MM128.AVX1_FLOAT_STRIDE) {
+                if (swaped) {
                     MM128.Store(vs, i, x);
                     MM128.Store(vs, i + MM128.AVX1_FLOAT_STRIDE, y);
 
-                    if (i == 0) {
+                    if (i >= MM128.AVX1_FLOAT_STRIDE) {
+                        i -= MM128.AVX1_FLOAT_STRIDE;
+                        a = MM128.Load(vs, i);
+                        b = x;
+                        continue;
+                    }
+                    else if (i > 0) {
+                        i = 0;
+                        a = MM128.Load(vs, 0);
+                        b = MM128.Load(vs, MM128.AVX1_FLOAT_STRIDE);
+                        continue;
+                    }
+                    else {
                         i = MM128.AVX1_FLOAT_STRIDE;
                         if (i <= e) {
                             a = y;
+                            b = MM128.Load(vs, MM128.AVX1_FLOAT_STRIDE * 2);
                             continue;
                         }
-                        else {
-                            i = e;
-                        }
-                    }
-                    else {
-                        uint back = MM128.AVX1_FLOAT_STRIDE - index;
-
-                        i = i >= back ? i - back : 0;
                     }
                 }
                 else if (i < e) {
@@ -57,17 +59,17 @@
 
                     if (i <= e) {
                         a = b;
+                        b = MM128.Load(vs, i + MM128.AVX1_FLOAT_STRIDE);
                         continue;
-                    }
-                    else {
-                        i = e;
                     }
                 }
                 else {
                     break;
                 }
 
+                i = e;
                 a = MM128.Load(vs, i);
+                b = MM128.Load(vs, i + MM128.AVX1_FLOAT_STRIDE);
             }
 
             return swaps;
