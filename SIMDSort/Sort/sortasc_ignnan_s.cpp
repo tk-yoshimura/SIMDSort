@@ -838,7 +838,7 @@ int scansort_p8_s(const uint n, outfloats v_ptr) {
 
             uint index = bsf(indexes);
 
-            uint back = AVX2_FLOAT_STRIDE - index - 1;
+            uint back = AVX2_FLOAT_STRIDE - 1 - index;
 
             i = (i > back) ? i - back : 0;
         }
