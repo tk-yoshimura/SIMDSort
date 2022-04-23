@@ -643,7 +643,7 @@ int combsort_h33plus_s(const uint n, const uint h, outfloats v_ptr) {
     }
 #endif //_DEBUG
 
-    if (n < AVX2_FLOAT_STRIDE * 4 || n - AVX2_FLOAT_STRIDE * 4 < h) {
+    if (n < h + AVX2_FLOAT_STRIDE * 4) {
         return SUCCESS;
     }
 
