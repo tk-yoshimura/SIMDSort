@@ -12,4 +12,7 @@ extern int mm256_cmplt_test_s();
 extern int mm256_cmpeq_test_s();
 
 extern int sort_test_s();
-extern int sort_speed_test_s();
+extern int sort_random_speed_test_s();
+extern int sort_inbalance_speed_test_s();
+extern int sort_reverse_speed_test_s();
+extern int sort_ndist_speed_test_s();
