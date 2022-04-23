@@ -815,6 +815,8 @@ int scansort_p8_s(const uint n, outfloats v_ptr) {
 
     scansortiter_p8_s(0, n, v_ptr);
     scansortiter_p8_s(AVX2_FLOAT_STRIDE / 2, n, v_ptr);
+    scansortiter_p8_s(0, n, v_ptr);
+    scansortiter_p8_s(AVX2_FLOAT_STRIDE / 2, n, v_ptr);
 
     uint e = n - AVX2_FLOAT_STRIDE;
 
