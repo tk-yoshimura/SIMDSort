@@ -46,13 +46,23 @@ for filepath in filepaths:
     plt.grid()
 
     plt.plot(n, stdsortmean, label='stdsort quick', color='red')
+    plt.scatter(n, stdsortmean, color='red', marker='.')
     plt.fill_between(n, stdsortmean - stdsortsig1, stdsortmean + stdsortsig1, color='red', alpha = 0.4)
     plt.fill_between(n, stdsortmin, stdsortmax, color='red', alpha = 0.2)
 
     plt.plot(n, avxsortmean, label='avxsort comb -> backtrack -> scan', color='blue')
+    plt.scatter(n, avxsortmean, color='blue', marker='.')
     plt.fill_between(n, avxsortmean - avxsortsig1, avxsortmean + avxsortsig1, color='blue', alpha = 0.4)
     plt.fill_between(n, avxsortmin, avxsortmax, color='blue', alpha = 0.2)
 
+    for i, c in enumerate(n):
+        if avxsortmean[i] <= 20:
+            continue
+
+        fasterx = stdsortmean[i] / avxsortmean[i]
+        plt.text(c, avxsortmean[i] * 0.75, 'x%.2lf' % fasterx, 
+                 horizontalalignment='center', verticalalignment='top')
+    
     plt.legend(loc='lower right')
 
     plt.savefig('../figures/sort_{}_speed.svg'.format(cond))
