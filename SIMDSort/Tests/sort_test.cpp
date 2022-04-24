@@ -64,7 +64,7 @@ int sort_test_s() {
 
     for (uint s = 2; s <= 128; s++) {
         for (uint n = 1; n <= 64; n++) {
-            for (uint test = 0; test < 20; test++) {
+            for (uint test = 0; test < 64; test++) {
 
                 float* v = (float*)_aligned_malloc(s * n * sizeof(float), AVX2_ALIGNMENT);
                 if (v == nullptr) {

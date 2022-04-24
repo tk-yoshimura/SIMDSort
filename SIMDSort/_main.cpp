@@ -19,7 +19,6 @@ int main() {
     //    printf("\n");
     //}
 
-
     printf("end");
     return getchar();
 }

@@ -891,6 +891,62 @@ __forceinline int shortsort_n9_s(const uint n, outfloats v_ptr) {
     return SUCCESS;
 }
 
+__forceinline int shortsort_n4x9_s(const uint n, outfloats v_ptr) {
+#ifdef _DEBUG
+    if (n != 9) {
+        return FAILURE_BADPARAM;
+    }
+#endif //_DEBUG
+
+    float* v0_ptr = v_ptr;
+    float* v1_ptr = v_ptr + 9;
+    float* v2_ptr = v_ptr + 18;
+    float* v3_ptr = v_ptr + 27;
+
+    __m256 x0, x1, x2, x3, y0, y1, y2, y3;
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 1);
+    x1 = _mm256_loadu_ps(v1_ptr + 1);
+    x2 = _mm256_loadu_ps(v2_ptr + 1);
+    x3 = _mm256_loadu_ps(v3_ptr + 1);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 1, y0);
+    _mm256_storeu_ps(v1_ptr + 1, y1);
+    _mm256_storeu_ps(v2_ptr + 1, y2);
+    _mm256_storeu_ps(v3_ptr + 1, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort4x2_ps(x0);
+    y1 = _mm256_sort4x2_ps(x1);
+    y2 = _mm256_sort4x2_ps(x2);
+    y3 = _mm256_sort4x2_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
+
+    return SUCCESS;
+}
+
 __forceinline int shortsort_n10_s(const uint n, outfloats v_ptr) {
 #ifdef _DEBUG
     if (n != 10) {
@@ -911,6 +967,62 @@ __forceinline int shortsort_n10_s(const uint n, outfloats v_ptr) {
     x = _mm256_loadu_ps(v_ptr);
     y = _mm256_sort2x4_ps(x);
     _mm256_storeu_ps(v_ptr, y);
+
+    return SUCCESS;
+}
+
+__forceinline int shortsort_n4x10_s(const uint n, outfloats v_ptr) {
+#ifdef _DEBUG
+    if (n != 10) {
+        return FAILURE_BADPARAM;
+    }
+#endif //_DEBUG
+
+    float* v0_ptr = v_ptr;
+    float* v1_ptr = v_ptr + 10;
+    float* v2_ptr = v_ptr + 20;
+    float* v3_ptr = v_ptr + 30;
+
+    __m256 x0, x1, x2, x3, y0, y1, y2, y3;
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 2);
+    x1 = _mm256_loadu_ps(v1_ptr + 2);
+    x2 = _mm256_loadu_ps(v2_ptr + 2);
+    x3 = _mm256_loadu_ps(v3_ptr + 2);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 2, y0);
+    _mm256_storeu_ps(v1_ptr + 2, y1);
+    _mm256_storeu_ps(v2_ptr + 2, y2);
+    _mm256_storeu_ps(v3_ptr + 2, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort2x4_ps(x0);
+    y1 = _mm256_sort2x4_ps(x1);
+    y2 = _mm256_sort2x4_ps(x2);
+    y3 = _mm256_sort2x4_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
 
     return SUCCESS;
 }
@@ -939,6 +1051,62 @@ __forceinline int shortsort_n11_s(const uint n, outfloats v_ptr) {
     return SUCCESS;
 }
 
+__forceinline int shortsort_n4x11_s(const uint n, outfloats v_ptr) {
+#ifdef _DEBUG
+    if (n != 11) {
+        return FAILURE_BADPARAM;
+    }
+#endif //_DEBUG
+
+    float* v0_ptr = v_ptr;
+    float* v1_ptr = v_ptr + 11;
+    float* v2_ptr = v_ptr + 22;
+    float* v3_ptr = v_ptr + 33;
+
+    __m256 x0, x1, x2, x3, y0, y1, y2, y3;
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 3);
+    x1 = _mm256_loadu_ps(v1_ptr + 3);
+    x2 = _mm256_loadu_ps(v2_ptr + 3);
+    x3 = _mm256_loadu_ps(v3_ptr + 3);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 3, y0);
+    _mm256_storeu_ps(v1_ptr + 3, y1);
+    _mm256_storeu_ps(v2_ptr + 3, y2);
+    _mm256_storeu_ps(v3_ptr + 3, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort1x6_ps(x0);
+    y1 = _mm256_sort1x6_ps(x1);
+    y2 = _mm256_sort1x6_ps(x2);
+    y3 = _mm256_sort1x6_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
+
+    return SUCCESS;
+}
+
 __forceinline int shortsort_n12_s(const uint n, outfloats v_ptr) {
 #ifdef _DEBUG
     if (n != 12) {
@@ -959,6 +1127,62 @@ __forceinline int shortsort_n12_s(const uint n, outfloats v_ptr) {
     x = _mm256_loadu_ps(v_ptr);
     y = _mm256_sort_ps(x);
     _mm256_storeu_ps(v_ptr, y);
+
+    return SUCCESS;
+}
+
+__forceinline int shortsort_n4x12_s(const uint n, outfloats v_ptr) {
+#ifdef _DEBUG
+    if (n != 12) {
+        return FAILURE_BADPARAM;
+    }
+#endif //_DEBUG
+
+    float* v0_ptr = v_ptr;
+    float* v1_ptr = v_ptr + 12;
+    float* v2_ptr = v_ptr + 24;
+    float* v3_ptr = v_ptr + 36;
+
+    __m256 x0, x1, x2, x3, y0, y1, y2, y3;
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 4);
+    x1 = _mm256_loadu_ps(v1_ptr + 4);
+    x2 = _mm256_loadu_ps(v2_ptr + 4);
+    x3 = _mm256_loadu_ps(v3_ptr + 4);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 4, y0);
+    _mm256_storeu_ps(v1_ptr + 4, y1);
+    _mm256_storeu_ps(v2_ptr + 4, y2);
+    _mm256_storeu_ps(v3_ptr + 4, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
 
     return SUCCESS;
 }
@@ -991,6 +1215,88 @@ __forceinline int shortsort_n13_s(const uint n, outfloats v_ptr) {
     x = _mm256_loadu_ps(v_ptr + 5);
     y = _mm256_sort_ps(x);
     _mm256_storeu_ps(v_ptr + 5, y);
+
+    return SUCCESS;
+}
+
+__forceinline int shortsort_n4x13_s(const uint n, outfloats v_ptr) {
+#ifdef _DEBUG
+    if (n != 13) {
+        return FAILURE_BADPARAM;
+    }
+#endif //_DEBUG
+
+    float* v0_ptr = v_ptr;
+    float* v1_ptr = v_ptr + 13;
+    float* v2_ptr = v_ptr + 26;
+    float* v3_ptr = v_ptr + 39;
+
+    __m256 x0, x1, x2, x3, y0, y1, y2, y3;
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 5);
+    x1 = _mm256_loadu_ps(v1_ptr + 5);
+    x2 = _mm256_loadu_ps(v2_ptr + 5);
+    x3 = _mm256_loadu_ps(v3_ptr + 5);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 5, y0);
+    _mm256_storeu_ps(v1_ptr + 5, y1);
+    _mm256_storeu_ps(v2_ptr + 5, y2);
+    _mm256_storeu_ps(v3_ptr + 5, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 2);
+    x1 = _mm256_loadu_ps(v1_ptr + 2);
+    x2 = _mm256_loadu_ps(v2_ptr + 2);
+    x3 = _mm256_loadu_ps(v3_ptr + 2);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 2, y0);
+    _mm256_storeu_ps(v1_ptr + 2, y1);
+    _mm256_storeu_ps(v2_ptr + 2, y2);
+    _mm256_storeu_ps(v3_ptr + 2, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 5);
+    x1 = _mm256_loadu_ps(v1_ptr + 5);
+    x2 = _mm256_loadu_ps(v2_ptr + 5);
+    x3 = _mm256_loadu_ps(v3_ptr + 5);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 5, y0);
+    _mm256_storeu_ps(v1_ptr + 5, y1);
+    _mm256_storeu_ps(v2_ptr + 5, y2);
+    _mm256_storeu_ps(v3_ptr + 5, y3);
 
     return SUCCESS;
 }
@@ -1031,6 +1337,101 @@ __forceinline int shortsort_n14_s(const uint n, outfloats v_ptr) {
     return SUCCESS;
 }
 
+__forceinline int shortsort_n4x14_s(const uint n, outfloats v_ptr) {
+#ifdef _DEBUG
+    if (n != 14) {
+        return FAILURE_BADPARAM;
+    }
+#endif //_DEBUG
+
+    float* v0_ptr = v_ptr;
+    float* v1_ptr = v_ptr + 14;
+    float* v2_ptr = v_ptr + 28;
+    float* v3_ptr = v_ptr + 42;
+
+    __m256 x0, x1, x2, x3, y0, y1, y2, y3;
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 6);
+    x1 = _mm256_loadu_ps(v1_ptr + 6);
+    x2 = _mm256_loadu_ps(v2_ptr + 6);
+    x3 = _mm256_loadu_ps(v3_ptr + 6);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 6, y0);
+    _mm256_storeu_ps(v1_ptr + 6, y1);
+    _mm256_storeu_ps(v2_ptr + 6, y2);
+    _mm256_storeu_ps(v3_ptr + 6, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 3);
+    x1 = _mm256_loadu_ps(v1_ptr + 3);
+    x2 = _mm256_loadu_ps(v2_ptr + 3);
+    x3 = _mm256_loadu_ps(v3_ptr + 3);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 3, y0);
+    _mm256_storeu_ps(v1_ptr + 3, y1);
+    _mm256_storeu_ps(v2_ptr + 3, y2);
+    _mm256_storeu_ps(v3_ptr + 3, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 6);
+    x1 = _mm256_loadu_ps(v1_ptr + 6);
+    x2 = _mm256_loadu_ps(v2_ptr + 6);
+    x3 = _mm256_loadu_ps(v3_ptr + 6);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 6, y0);
+    _mm256_storeu_ps(v1_ptr + 6, y1);
+    _mm256_storeu_ps(v2_ptr + 6, y2);
+    _mm256_storeu_ps(v3_ptr + 6, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 3);
+    x1 = _mm256_loadu_ps(v1_ptr + 3);
+    x2 = _mm256_loadu_ps(v2_ptr + 3);
+    x3 = _mm256_loadu_ps(v3_ptr + 3);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 3, y0);
+    _mm256_storeu_ps(v1_ptr + 3, y1);
+    _mm256_storeu_ps(v2_ptr + 3, y2);
+    _mm256_storeu_ps(v3_ptr + 3, y3);
+
+    return SUCCESS;
+}
+
 __forceinline int shortsort_n15_s(const uint n, outfloats v_ptr) {
 #ifdef _DEBUG
     if (n != 15) {
@@ -1063,6 +1464,101 @@ __forceinline int shortsort_n15_s(const uint n, outfloats v_ptr) {
     x = _mm256_loadu_ps(v_ptr + 4);
     y = _mm256_sort_ps(x);
     _mm256_storeu_ps(v_ptr + 4, y);
+
+    return SUCCESS;
+}
+
+__forceinline int shortsort_n4x15_s(const uint n, outfloats v_ptr) {
+#ifdef _DEBUG
+    if (n != 15) {
+        return FAILURE_BADPARAM;
+    }
+#endif //_DEBUG
+
+    float* v0_ptr = v_ptr;
+    float* v1_ptr = v_ptr + 15;
+    float* v2_ptr = v_ptr + 30;
+    float* v3_ptr = v_ptr + 45;
+
+    __m256 x0, x1, x2, x3, y0, y1, y2, y3;
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 7);
+    x1 = _mm256_loadu_ps(v1_ptr + 7);
+    x2 = _mm256_loadu_ps(v2_ptr + 7);
+    x3 = _mm256_loadu_ps(v3_ptr + 7);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 7, y0);
+    _mm256_storeu_ps(v1_ptr + 7, y1);
+    _mm256_storeu_ps(v2_ptr + 7, y2);
+    _mm256_storeu_ps(v3_ptr + 7, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 3);
+    x1 = _mm256_loadu_ps(v1_ptr + 3);
+    x2 = _mm256_loadu_ps(v2_ptr + 3);
+    x3 = _mm256_loadu_ps(v3_ptr + 3);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 3, y0);
+    _mm256_storeu_ps(v1_ptr + 3, y1);
+    _mm256_storeu_ps(v2_ptr + 3, y2);
+    _mm256_storeu_ps(v3_ptr + 3, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 7);
+    x1 = _mm256_loadu_ps(v1_ptr + 7);
+    x2 = _mm256_loadu_ps(v2_ptr + 7);
+    x3 = _mm256_loadu_ps(v3_ptr + 7);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 7, y0);
+    _mm256_storeu_ps(v1_ptr + 7, y1);
+    _mm256_storeu_ps(v2_ptr + 7, y2);
+    _mm256_storeu_ps(v3_ptr + 7, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + 4);
+    x1 = _mm256_loadu_ps(v1_ptr + 4);
+    x2 = _mm256_loadu_ps(v2_ptr + 4);
+    x3 = _mm256_loadu_ps(v3_ptr + 4);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + 4, y0);
+    _mm256_storeu_ps(v1_ptr + 4, y1);
+    _mm256_storeu_ps(v2_ptr + 4, y2);
+    _mm256_storeu_ps(v3_ptr + 4, y3);
 
     return SUCCESS;
 }
@@ -1488,7 +1984,11 @@ int sortasc_ignnan_s9_s(const uint n, const uint s, outfloats v_ptr) {
     }
 #endif //_DEBUG
 
-    for (uint i = 0; i < n; i++) {
+    for (uint i = 0; i < (n & (~3u)); i += 4u) {
+        shortsort_n4x9_s(s, v_ptr);
+        v_ptr += s * 4;
+    }
+    for (uint i = (n & (~3u)); i < n; i++) {
         shortsort_n9_s(s, v_ptr);
         v_ptr += s;
     }
@@ -1503,7 +2003,11 @@ int sortasc_ignnan_s10_s(const uint n, const uint s, outfloats v_ptr) {
     }
 #endif //_DEBUG
 
-    for (uint i = 0; i < n; i++) {
+    for (uint i = 0; i < (n & (~3u)); i += 4u) {
+        shortsort_n4x10_s(s, v_ptr);
+        v_ptr += s * 4;
+    }
+    for (uint i = (n & (~3u)); i < n; i++) {
         shortsort_n10_s(s, v_ptr);
         v_ptr += s;
     }
@@ -1518,7 +2022,11 @@ int sortasc_ignnan_s11_s(const uint n, const uint s, outfloats v_ptr) {
     }
 #endif //_DEBUG
 
-    for (uint i = 0; i < n; i++) {
+    for (uint i = 0; i < (n & (~3u)); i += 4u) {
+        shortsort_n4x11_s(s, v_ptr);
+        v_ptr += s * 4;
+    }
+    for (uint i = (n & (~3u)); i < n; i++) {
         shortsort_n11_s(s, v_ptr);
         v_ptr += s;
     }
@@ -1533,7 +2041,11 @@ int sortasc_ignnan_s12_s(const uint n, const uint s, outfloats v_ptr) {
     }
 #endif //_DEBUG
 
-    for (uint i = 0; i < n; i++) {
+    for (uint i = 0; i < (n & (~3u)); i += 4u) {
+        shortsort_n4x12_s(s, v_ptr);
+        v_ptr += s * 4;
+    }
+    for (uint i = (n & (~3u)); i < n; i++) {
         shortsort_n12_s(s, v_ptr);
         v_ptr += s;
     }
@@ -1548,7 +2060,11 @@ int sortasc_ignnan_s13_s(const uint n, const uint s, outfloats v_ptr) {
     }
 #endif //_DEBUG
 
-    for (uint i = 0; i < n; i++) {
+    for (uint i = 0; i < (n & (~3u)); i += 4u) {
+        shortsort_n4x13_s(s, v_ptr);
+        v_ptr += s * 4;
+    }
+    for (uint i = (n & (~3u)); i < n; i++) {
         shortsort_n13_s(s, v_ptr);
         v_ptr += s;
     }
@@ -1563,7 +2079,11 @@ int sortasc_ignnan_s14_s(const uint n, const uint s, outfloats v_ptr) {
     }
 #endif //_DEBUG
 
-    for (uint i = 0; i < n; i++) {
+    for (uint i = 0; i < (n & (~3u)); i += 4u) {
+        shortsort_n4x14_s(s, v_ptr);
+        v_ptr += s * 4;
+    }
+    for (uint i = (n & (~3u)); i < n; i++) {
         shortsort_n14_s(s, v_ptr);
         v_ptr += s;
     }
@@ -1578,7 +2098,11 @@ int sortasc_ignnan_s15_s(const uint n, const uint s, outfloats v_ptr) {
     }
 #endif //_DEBUG
 
-    for (uint i = 0; i < n; i++) {
+    for (uint i = 0; i < (n & (~3u)); i += 4u) {
+        shortsort_n4x15_s(s, v_ptr);
+        v_ptr += s * 4;
+    }
+    for (uint i = (n & (~3u)); i < n; i++) {
         shortsort_n15_s(s, v_ptr);
         v_ptr += s;
     }
