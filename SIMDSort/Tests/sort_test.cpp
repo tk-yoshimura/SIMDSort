@@ -5,7 +5,7 @@
 #include "../simdsort.h"
 #include "../Sort/sort.h"
 
-int sort_s(const uint n, const uint s, outfloats v_ptr) {
+int sort_s(const uint n, const uint s, float* v_ptr) {
     if (s <= 1) {
         return SUCCESS;
     }

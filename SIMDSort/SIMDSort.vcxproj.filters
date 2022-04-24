@@ -77,9 +77,6 @@
     <ClInclude Include="Inline\inline_loadstore_xn_d.hpp">
       <Filter>Source\Inline</Filter>
     </ClInclude>
-    <ClInclude Include="Inline\inline_misc.hpp">
-      <Filter>Source\Inline</Filter>
-    </ClInclude>
     <ClInclude Include="Sort\sort.h">
       <Filter>Source\Sort</Filter>
     </ClInclude>
