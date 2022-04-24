@@ -1959,7 +1959,7 @@ int sortasc_ignnan_s7_s(const uint n, const uint s, float* v_ptr) {
 
 int sortasc_ignnan_s8_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
-    if (s != 8) {
+    if (s != 8 || ((size_t)v_ptr % AVX2_ALIGNMENT) != 0) {
         return FAILURE_BADPARAM;
     }
 #endif //_DEBUG

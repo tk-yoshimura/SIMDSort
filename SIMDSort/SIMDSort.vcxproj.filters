@@ -36,20 +36,29 @@
     <ClCompile Include="Util\util_mm_mask.cpp">
       <Filter>Source\Util</Filter>
     </ClCompile>
-    <ClCompile Include="Tests\sort_test.cpp">
+    <ClCompile Include="Tests\sort_test_s.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
-    <ClCompile Include="Tests\mm_cmp_test.cpp">
+    <ClCompile Include="Tests\mm_cmp_test_s.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
     <ClCompile Include="Sort\sortasc_ignnan_s.cpp">
       <Filter>Source\Sort</Filter>
     </ClCompile>
-    <ClCompile Include="Tests\sort_speed_test.cpp">
+    <ClCompile Include="Tests\sort_speed_test_s.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
     <ClCompile Include="Sort\sortdsc_ignnan_s.cpp">
       <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\sortasc_ignnan_d.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\sort_test_d.cpp">
+      <Filter>Source\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\sort_speed_test_d.cpp">
+      <Filter>Source\Tests</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -82,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="Sort\sort.h">
       <Filter>Source\Sort</Filter>
+    </ClInclude>
+    <ClInclude Include="Inline\inline_cmp_d.hpp">
+      <Filter>Source\Inline</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

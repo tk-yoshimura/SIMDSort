@@ -6,9 +6,9 @@
 #include "../simdsort.h"
 #include "../Sort/sort.h"
 
-int sort_random_speed_test_s() {
+int sort_random_speed_test_d() {
     std::ofstream ofs;
-    ofs.open("bin/sort_random_speed.txt");
+    ofs.open("bin/sortd_random_speed.txt");
 
     ofs << "n,std,avx" << std::endl;
 
@@ -19,13 +19,13 @@ int sort_random_speed_test_s() {
         std::vector<long long> stdsorttimes, avxsorttimes;
 
         for (uint tests = 0; tests < 32; tests++) {
-            std::vector<float> x(n);
+            std::vector<double> x(n);
 
             for (uint i = 0; i < n; i++) {
-                x[i] = mt() / (float)(~0u);
+                x[i] = mt() / (double)(~0u);
             }
 
-            std::vector<float> y = x;
+            std::vector<double> y = x;
 
             auto stdsortclock = std::chrono::system_clock::now();
 
@@ -35,7 +35,7 @@ int sort_random_speed_test_s() {
             
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_ignnan_slong_s(1, n, y.data());
+            sortasc_ignnan_slong_d(1, n, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 
@@ -64,9 +64,9 @@ int sort_random_speed_test_s() {
     return SUCCESS;
 }
 
-int sort_inbalance_speed_test_s() {
+int sort_inbalance_speed_test_d() {
     std::ofstream ofs;
-    ofs.open("bin/sort_inbalance_speed.txt");
+    ofs.open("bin/sortd_inbalance_speed.txt");
 
     ofs << "n,std,avx" << std::endl;
 
@@ -77,16 +77,16 @@ int sort_inbalance_speed_test_s() {
         std::vector<long long> stdsorttimes, avxsorttimes;
 
         for (uint tests = 0; tests < 32; tests++) {
-            std::vector<float> x(n);
+            std::vector<double> x(n);
 
             for (uint i = 0; i < n; i++) {
-                float u1 = mt() / (float)(~0u);
-                float u2 = mt() / (float)(~0u);
+                double u1 = mt() / (double)(~0u);
+                double u2 = mt() / (double)(~0u);
 
                 x[i] = u1 < 0.01f ? u2 : (u2 * 0.01f);
             }
 
-            std::vector<float> y = x;
+            std::vector<double> y = x;
 
             auto stdsortclock = std::chrono::system_clock::now();
 
@@ -96,7 +96,7 @@ int sort_inbalance_speed_test_s() {
 
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_ignnan_slong_s(1, n, y.data());
+            sortasc_ignnan_slong_d(1, n, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 
@@ -125,9 +125,9 @@ int sort_inbalance_speed_test_s() {
     return SUCCESS;
 }
 
-int sort_reverse_speed_test_s() {
+int sort_reverse_speed_test_d() {
     std::ofstream ofs;
-    ofs.open("bin/sort_reverse_speed.txt");
+    ofs.open("bin/sortd_reverse_speed.txt");
 
     ofs << "n,std,avx" << std::endl;
 
@@ -136,15 +136,15 @@ int sort_reverse_speed_test_s() {
         std::vector<long long> stdsorttimes, avxsorttimes;
 
         for (uint tests = 0; tests < 32; tests++) {
-            std::vector<float> x(n);
+            std::vector<double> x(n);
 
             for (uint i = 0; i < n; i++) {
-                float u = 1 - i / (float)(n - 1);
+                double u = 1 - i / (double)(n - 1);
 
                 x[i] = u;
             }
 
-            std::vector<float> y = x;
+            std::vector<double> y = x;
 
             auto stdsortclock = std::chrono::system_clock::now();
 
@@ -154,7 +154,7 @@ int sort_reverse_speed_test_s() {
 
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_ignnan_slong_s(1, n, y.data());
+            sortasc_ignnan_slong_d(1, n, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 
@@ -183,14 +183,14 @@ int sort_reverse_speed_test_s() {
     return SUCCESS;
 }
 
-int sort_ndist_speed_test_s() {
+int sort_ndist_speed_test_d() {
     std::ofstream ofs;
-    ofs.open("bin/sort_ndist_speed.txt");
+    ofs.open("bin/sortd_ndist_speed.txt");
 
     ofs << "n,std,avx" << std::endl;
 
     std::random_device seed_gen;
-    std::normal_distribution<float> ndist(0, 1);
+    std::normal_distribution<double> ndist(0, 1);
     std::default_random_engine engine(seed_gen());
 
     for (uint n = 32; n <= 0x8000000u; n *= 2) {
@@ -198,15 +198,15 @@ int sort_ndist_speed_test_s() {
         std::vector<long long> stdsorttimes, avxsorttimes;
 
         for (uint tests = 0; tests < 32; tests++) {
-            std::vector<float> x(n);
+            std::vector<double> x(n);
 
             for (uint i = 0; i < n; i++) {
-                float u = ndist(engine);
+                double u = ndist(engine);
 
                 x[i] = u;
             }
 
-            std::vector<float> y = x;
+            std::vector<double> y = x;
 
             auto stdsortclock = std::chrono::system_clock::now();
 
@@ -216,7 +216,7 @@ int sort_ndist_speed_test_s() {
 
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_ignnan_slong_s(1, n, y.data());
+            sortasc_ignnan_slong_d(1, n, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 

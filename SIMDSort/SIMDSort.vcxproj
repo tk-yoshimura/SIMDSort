@@ -86,17 +86,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Sort\sortasc_ignnan_d.cpp" />
     <ClCompile Include="Sort\sortasc_ignnan_s.cpp" />
     <ClCompile Include="Sort\sortdsc_ignnan_s.cpp" />
-    <ClCompile Include="Tests\mm_cmp_test.cpp" />
-    <ClCompile Include="Tests\sort_test.cpp" />
-    <ClCompile Include="Tests\sort_speed_test.cpp" />
+    <ClCompile Include="Tests\mm_cmp_test_s.cpp" />
+    <ClCompile Include="Tests\sort_speed_test_d.cpp" />
+    <ClCompile Include="Tests\sort_test_d.cpp" />
+    <ClCompile Include="Tests\sort_test_s.cpp" />
+    <ClCompile Include="Tests\sort_speed_test_s.cpp" />
     <ClCompile Include="Util\util_mm_mask.cpp" />
     <ClCompile Include="Util\util_nan.cpp" />
     <ClCompile Include="_main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="constants.h" />
+    <ClInclude Include="Inline\inline_cmp_d.hpp" />
     <ClInclude Include="Inline\inline_cmp_s.hpp" />
     <ClInclude Include="Inline\inline_loadstore_xn_d.hpp" />
     <ClInclude Include="Inline\inline_loadstore_xn_s.hpp" />
