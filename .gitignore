@@ -54,5 +54,6 @@ nugetpack.bat
 Resource.aps
 /**/*.nuspec
 /**/*.nupkg
+enc_temp_folder/
 
 # Safelist
