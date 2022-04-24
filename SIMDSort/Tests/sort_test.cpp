@@ -9,7 +9,7 @@ int sort_s(const uint n, const uint s, outfloats v_ptr) {
     if (s <= 1) {
         return SUCCESS;
     }
-    else if(s <= 2){
+    else if (s <= 2) {
         return sortasc_ignnan_s2_s(n, s, v_ptr);
     }
     else if (s <= 3) {
@@ -30,14 +30,26 @@ int sort_s(const uint n, const uint s, outfloats v_ptr) {
     else if (s <= 8) {
         return sortasc_ignnan_s8_s(n, s, v_ptr);
     }
+    else if (s <= 9) {
+        return sortasc_ignnan_s9_s(n, s, v_ptr);
+    }
+    else if (s <= 10) {
+        return sortasc_ignnan_s10_s(n, s, v_ptr);
+    }
     else if (s <= 11) {
-        return sortasc_ignnan_s9to11_s(n, s, v_ptr);
+        return sortasc_ignnan_s11_s(n, s, v_ptr);
     }
     else if (s <= 12) {
         return sortasc_ignnan_s12_s(n, s, v_ptr);
     }
+    else if (s <= 13) {
+        return sortasc_ignnan_s13_s(n, s, v_ptr);
+    }
+    else if (s <= 14) {
+        return sortasc_ignnan_s14_s(n, s, v_ptr);
+    }
     else if (s <= 15) {
-        return sortasc_ignnan_s13to15_s(n, s, v_ptr);
+        return sortasc_ignnan_s15_s(n, s, v_ptr);
     }
     else if (s <= 32) {
         return sortasc_ignnan_s16to32_s(n, s, v_ptr);
@@ -90,7 +102,7 @@ int sort_test_s() {
         }
     }
 
-    for (uint s = 2; s <= 12; s++) {
+    for (uint s = 2; s <= 15; s++) {
         std::vector<float> v(s);
         for (uint i = 0; i < s; i++) {
             v[i] = (float)((i + 1) % s + 1);
@@ -125,7 +137,7 @@ int sort_test_s() {
 
             c++;
 
-            if ((c % 10000) == 0 && c > 0) {
+            if ((c % 1000000) == 0 && c > 0) {
                 printf(".");
             }
 

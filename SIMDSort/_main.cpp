@@ -3,11 +3,11 @@
 #include "simdsort.h"
 
 int main() {
-    //sort_test_s();
-    sort_ndist_speed_test_s();
-    sort_random_speed_test_s();
-    sort_reverse_speed_test_s();
-    sort_inbalance_speed_test_s();
+    sort_test_s();
+    //sort_ndist_speed_test_s();
+    //sort_random_speed_test_s();
+    //sort_reverse_speed_test_s();
+    //sort_inbalance_speed_test_s();
 
     //for (uint n = 32; n <= 0x8000000u; n *= 2) {
     //    printf("%d : ", n);
