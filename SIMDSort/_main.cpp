@@ -20,7 +20,7 @@ int main() {
     //    printf("\n");
     //}
 
-    sortasc_test_d();
+    //sortasc_test_d();
     sort_ndist_speed_test_d();
     sort_random_speed_test_d();
     sort_reverse_speed_test_d();
