@@ -2,10 +2,13 @@
 
 AVX sorting experiment
 
+## Requirement
+AVX2 suppoted CPU. (Intel:Haswell(2013)-, AMD:Excavator(2015)-)
+
 ## Algorithm
 ![algo](https://github.com/tk-yoshimura/SIMDSort/blob/main/figures/algo.svg)  
 
-## Processing Speed
+## Processing Speed (float)
 
 ### Uniform Random Values
 x4-7 faster than std::sort  
