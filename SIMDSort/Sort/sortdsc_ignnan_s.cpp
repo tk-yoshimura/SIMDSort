@@ -6,7 +6,7 @@
 
 // needs swap (sort order definition)
 __forceinline static __m256 _mm256_needsswap_ps(__m256 x, __m256 y) {
-    return _mm256_cmpgt_ignnan_ps(x, y);
+    return _mm256_cmplt_ignnan_ps(x, y);
 }
 
 #pragma endregion needs swap
@@ -1648,7 +1648,7 @@ __forceinline static int longsort_s(const uint n, float* v_ptr) {
 
 #pragma region sort
 
-int sortasc_ignnan_s2_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s2_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s != 2 || ((size_t)v_ptr % AVX2_ALIGNMENT) != 0) {
         return FAILURE_BADPARAM;
@@ -1706,7 +1706,7 @@ int sortasc_ignnan_s2_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s3_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s3_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s != 3) {
         return FAILURE_BADPARAM;
@@ -1761,7 +1761,7 @@ int sortasc_ignnan_s3_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s4_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s4_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s != 4 || ((size_t)v_ptr % AVX2_ALIGNMENT) != 0) {
         return FAILURE_BADPARAM;
@@ -1819,7 +1819,7 @@ int sortasc_ignnan_s4_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s5_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s5_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s != 5) {
         return FAILURE_BADPARAM;
@@ -1865,7 +1865,7 @@ int sortasc_ignnan_s5_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s6_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s6_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s != 6) {
         return FAILURE_BADPARAM;
@@ -1911,7 +1911,7 @@ int sortasc_ignnan_s6_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s7_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s7_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s != 7) {
         return FAILURE_BADPARAM;
@@ -1957,7 +1957,7 @@ int sortasc_ignnan_s7_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s8_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s8_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s != 8) {
         return FAILURE_BADPARAM;
@@ -2003,7 +2003,7 @@ int sortasc_ignnan_s8_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s9_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s9_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s != 9) {
         return FAILURE_BADPARAM;
@@ -2022,7 +2022,7 @@ int sortasc_ignnan_s9_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s10_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s10_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s != 10) {
         return FAILURE_BADPARAM;
@@ -2041,7 +2041,7 @@ int sortasc_ignnan_s10_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s11_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s11_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s != 11) {
         return FAILURE_BADPARAM;
@@ -2060,7 +2060,7 @@ int sortasc_ignnan_s11_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s12_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s12_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s != 12) {
         return FAILURE_BADPARAM;
@@ -2079,7 +2079,7 @@ int sortasc_ignnan_s12_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s13_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s13_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s != 13) {
         return FAILURE_BADPARAM;
@@ -2098,7 +2098,7 @@ int sortasc_ignnan_s13_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s14_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s14_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s != 14) {
         return FAILURE_BADPARAM;
@@ -2117,7 +2117,7 @@ int sortasc_ignnan_s14_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s15_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s15_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s != 15) {
         return FAILURE_BADPARAM;
@@ -2136,7 +2136,7 @@ int sortasc_ignnan_s15_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s16to32_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_s16to32_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s < AVX2_FLOAT_STRIDE * 2 || s > AVX2_FLOAT_STRIDE * 4) {
         return FAILURE_BADPARAM;
@@ -2151,7 +2151,7 @@ int sortasc_ignnan_s16to32_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_slong_s(const uint n, const uint s, float* v_ptr) {
+int sortdsc_ignnan_slong_s(const uint n, const uint s, float* v_ptr) {
 #ifdef _DEBUG
     if (s < AVX2_FLOAT_STRIDE) {
         return FAILURE_BADPARAM;

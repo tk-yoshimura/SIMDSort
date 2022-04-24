@@ -87,6 +87,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Sort\sortasc_ignnan_s.cpp" />
+    <ClCompile Include="Sort\sortdsc_ignnan_s.cpp" />
     <ClCompile Include="Tests\mm_cmp_test.cpp" />
     <ClCompile Include="Tests\sort_test.cpp" />
     <ClCompile Include="Tests\sort_speed_test.cpp" />
