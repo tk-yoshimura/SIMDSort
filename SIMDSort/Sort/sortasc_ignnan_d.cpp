@@ -81,20 +81,20 @@ __forceinline static __m256d _mm256_sort_pd(__m256d x) {
 
 // compare and swap
 __forceinline static void _mm256_cmpswap_pd(__m256d a, __m256d b, __m256d& x, __m256d& y) {
-    __m256d swapd = _mm256_needsswap_pd(a, b);
+    __m256d swaps = _mm256_needsswap_pd(a, b);
 
-    x = _mm256_blendv_pd(a, b, swapd);
-    y = _mm256_blendv_pd(a, b, _mm256_not_pd(swapd));
+    x = _mm256_blendv_pd(a, b, swaps);
+    y = _mm256_blendv_pd(a, b, _mm256_not_pd(swaps));
 }
 
 // compare and swap
 __forceinline static uint _mm256_cmpswap_indexed_pd(__m256d a, __m256d b, __m256d& x, __m256d& y) {
-    __m256d swapd = _mm256_needsswap_pd(a, b);
+    __m256d swaps = _mm256_needsswap_pd(a, b);
 
-    uint index = _mm256_movemask_pd(swapd);
+    uint index = _mm256_movemask_pd(swaps);
 
-    x = _mm256_blendv_pd(a, b, swapd);
-    y = _mm256_blendv_pd(a, b, _mm256_not_pd(swapd));
+    x = _mm256_blendv_pd(a, b, swaps);
+    y = _mm256_blendv_pd(a, b, _mm256_not_pd(swaps));
 
     return index;
 }

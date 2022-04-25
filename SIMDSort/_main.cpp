@@ -84,6 +84,55 @@ __forceinline __m256dx2 _m256x2_sort_pd(__m256dx2 x) {
     return x;
 }
 
+__forceinline __m256dx2 _m256x2_sort_pd_r2(__m256dx2 x) {
+    const __m256d xormask = _mm256_castsi256_pd(_mm256_setr_epi32(~0u, ~0u, 0, 0, 0, 0, ~0u, ~0u));
+
+    __m256d y0, y1, c0, c1, swaps;
+
+    swaps = _mm256_needsswap_pd(x.imm0, x.imm1);
+    y0 = _mm256_blendv_pd(x.imm0, x.imm1, swaps);
+    y1 = _mm256_blendv_pd(x.imm0, x.imm1, _mm256_not_pd(swaps));
+    x = __m256dx2(y0, _mm256_permute4x64_pd(y1, _MM_PERM_ADCB));
+
+    swaps = _mm256_needsswap_pd(x.imm0, x.imm1);
+    y0 = _mm256_blendv_pd(x.imm0, x.imm1, swaps);
+    y1 = _mm256_blendv_pd(x.imm0, x.imm1, _mm256_not_pd(swaps));
+    x = __m256dx2(y0, _mm256_permute4x64_pd(y1, _MM_PERM_ADCB));
+
+    swaps = _mm256_needsswap_pd(x.imm0, x.imm1);
+    y0 = _mm256_blendv_pd(x.imm0, x.imm1, swaps);
+    y1 = _mm256_blendv_pd(x.imm0, x.imm1, _mm256_not_pd(swaps));
+    x = __m256dx2(y0, _mm256_permute4x64_pd(y1, _MM_PERM_ADCB));
+
+    swaps = _mm256_needsswap_pd(x.imm0, x.imm1);
+    y0 = _mm256_blendv_pd(x.imm0, x.imm1, swaps);
+    y1 = _mm256_blendv_pd(x.imm0, x.imm1, _mm256_not_pd(swaps));
+    x = __m256dx2(y0, y1);
+
+    y0 = _mm256_permute4x64_pd(x.imm0, _MM_PERM_ABCD);
+    c0 = _mm256_xor_pd(xormask, _mm256_permute4x64_pd(_mm256_needsswap_pd(x.imm0, y0), _MM_PERM_DBBD));
+    x.imm0 = _mm256_blendv_pd(x.imm0, y0, c0);
+    y1 = _mm256_permute4x64_pd(x.imm1, _MM_PERM_ABCD);
+    c1 = _mm256_xor_pd(xormask, _mm256_permute4x64_pd(_mm256_needsswap_pd(x.imm1, y1), _MM_PERM_DBBD));
+    x.imm1 = _mm256_blendv_pd(x.imm1, y1, c1);
+
+    y0 = _mm256_permute4x64_pd(x.imm0, _MM_PERM_CDAB);
+    c0 = _mm256_permute4x64_pd(_mm256_needsswap_pd(x.imm0, y0), _MM_PERM_CCAA);
+    x.imm0 = _mm256_blendv_pd(x.imm0, y0, c0);
+    y1 = _mm256_permute4x64_pd(x.imm1, _MM_PERM_CDAB);
+    c1 = _mm256_permute4x64_pd(_mm256_needsswap_pd(x.imm1, y1), _MM_PERM_CCAA);
+    x.imm1 = _mm256_blendv_pd(x.imm1, y1, c1);
+
+    y0 = _mm256_permute4x64_pd(x.imm0, _MM_PERM_ABCD);
+    c0 = _mm256_xor_pd(xormask, _mm256_permute4x64_pd(_mm256_needsswap_pd(x.imm0, y0), _MM_PERM_DBBD));
+    x.imm0 = _mm256_blendv_pd(x.imm0, y0, c0);
+    y1 = _mm256_permute4x64_pd(x.imm1, _MM_PERM_ABCD);
+    c1 = _mm256_xor_pd(xormask, _mm256_permute4x64_pd(_mm256_needsswap_pd(x.imm1, y1), _MM_PERM_DBBD));
+    x.imm1 = _mm256_blendv_pd(x.imm1, y1, c1);
+
+    return x;
+}
+
 int main() {
     //sortasc_test_s();
     //sortdsc_test_s();
@@ -130,7 +179,7 @@ int main() {
         }
 
         __m256dx2 x = __m256dx2(_mm256_loadu_pd(t), _mm256_loadu_pd(t + AVX2_DOUBLE_STRIDE));
-        __m256dx2 y = _m256x2_sort_pd(x);
+        __m256dx2 y = _m256x2_sort_pd_r2(x);
         _mm256_storeu_pd(t, y.imm0);
         _mm256_storeu_pd(t + AVX2_DOUBLE_STRIDE, y.imm1);
 
