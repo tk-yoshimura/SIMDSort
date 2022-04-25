@@ -118,13 +118,12 @@ int sortasc_test_s() {
 
     for (uint s = 2; s <= 128; s++) {
         for (uint n = 1; n <= 64; n++) {
+            float* v = (float*)_aligned_malloc(s * n * sizeof(float), AVX2_ALIGNMENT);
+            if (v == nullptr) {
+                return FAILURE_BADALLOC;
+            }
+
             for (uint test = 0; test < 64; test++) {
-
-                float* v = (float*)_aligned_malloc(s * n * sizeof(float), AVX2_ALIGNMENT);
-                if (v == nullptr) {
-                    return FAILURE_BADALLOC;
-                }
-
                 for (uint i = 0; i < s * n; i++) {
                     uint r = mt();
                     v[i] = r / (float)(~0u);
@@ -148,11 +147,11 @@ int sortasc_test_s() {
                     }
                 }
 
-                _aligned_free(v);
 
                 printf("random ok n=%d s=%d\n", n, s);
-
             }
+
+            _aligned_free(v);
         }
     }
 
@@ -164,13 +163,12 @@ int sortdsc_test_s() {
 
     for (uint s = 2; s <= 128; s++) {
         for (uint n = 1; n <= 64; n++) {
+            float* v = (float*)_aligned_malloc(s * n * sizeof(float), AVX2_ALIGNMENT);
+            if (v == nullptr) {
+                return FAILURE_BADALLOC;
+            }
+
             for (uint test = 0; test < 64; test++) {
-
-                float* v = (float*)_aligned_malloc(s * n * sizeof(float), AVX2_ALIGNMENT);
-                if (v == nullptr) {
-                    return FAILURE_BADALLOC;
-                }
-
                 for (uint i = 0; i < s * n; i++) {
                     uint r = mt();
                     v[i] = r / (float)(~0u);
@@ -195,11 +193,11 @@ int sortdsc_test_s() {
                     }
                 }
 
-                _aligned_free(v);
 
                 printf("random ok n=%d s=%d\n", n, s);
-
             }
+
+            _aligned_free(v);
         }
     }
 
@@ -215,12 +213,12 @@ int sortasc_perm_test_s() {
 
         uint c = 0;
 
-        do {
-            float* t = (float*)_aligned_malloc((s + 4) * sizeof(float), AVX2_ALIGNMENT);
-            if (t == nullptr) {
-                return FAILURE_BADALLOC;
-            }
+        float* t = (float*)_aligned_malloc((s + 4) * sizeof(float), AVX2_ALIGNMENT);
+        if (t == nullptr) {
+            return FAILURE_BADALLOC;
+        }
 
+        do {
             memcpy_s(t, s * sizeof(float), v.data(), s * sizeof(float));
 
             for (uint i = s; i < s + 4; i++) {
@@ -246,10 +244,11 @@ int sortasc_perm_test_s() {
                 printf(".");
             }
 
-            _aligned_free(t);
 
         } while (std::next_permutation(v.begin(), v.end()));
 
+        _aligned_free(t);
+        
         printf("\npermute ok s=%d\n", s);
     }
 

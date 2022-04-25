@@ -1,6 +1,9 @@
 ﻿#include <stdio.h>
 #include <intrin.h>
+#include <vector>
+#include <algorithm>
 #include "simdsort.h"
+#include "constants.h"
 #include "Inline/inline_cmp_d.hpp"
 
 // needs swap (sort order definition)
@@ -105,12 +108,52 @@ int main() {
     //sort_reverse_speed_test_d();
     //sort_inbalance_speed_test_d();
 
-    __m256d x0 = _mm256_setr_pd(8, 7, 6, 5);
-    __m256d x1 = _mm256_setr_pd(4, 3, 2, 1);
-    __m256dx2 x(x0, x1);
+    const uint s = 8;
 
-    __m256dx2 y = _m256x2_sort_pd(x);
+    std::vector<double> v(s);
+    for (uint i = 0; i < s; i++) {
+        v[i] = (double)((i + 1) % s + 1);
+    }
 
+    uint c = 0;
+
+    double* t = (double*)_aligned_malloc((s + 4) * sizeof(double), AVX2_ALIGNMENT);
+    if (t == nullptr) {
+        return FAILURE_BADALLOC;
+    }
+
+    do {
+        memcpy_s(t, s * sizeof(double), v.data(), s * sizeof(double));
+
+        for (uint i = s; i < s + 4; i++) {
+            t[i] = ((i + c) * 31) % s;
+        }
+
+        __m256dx2 x = __m256dx2(_mm256_loadu_pd(t), _mm256_loadu_pd(t + AVX2_DOUBLE_STRIDE));
+        __m256dx2 y = _m256x2_sort_pd(x);
+        _mm256_storeu_pd(t, y.imm0);
+        _mm256_storeu_pd(t + AVX2_DOUBLE_STRIDE, y.imm1);
+
+        for (uint i = 1; i < s; i++) {
+            if (t[i - 1u] >= t[i]) {
+                throw std::exception("err");
+            }
+        }
+        for (uint i = s; i < s + 4; i++) {
+            if (t[i] != ((i + c) * 31) % s) {
+                throw std::exception("err");
+            }
+        }
+
+        c++;
+
+        if ((c % 100) == 0 && c > 0) {
+            printf(".");
+        }
+
+    } while (std::next_permutation(v.begin(), v.end()));
+
+    _aligned_free(t);
 
     printf("end");
     return getchar();

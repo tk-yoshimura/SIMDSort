@@ -40,13 +40,12 @@ int sortasc_test_d() {
 
     for (uint s = 2; s <= 128; s++) {
         for (uint n = 1; n <= 64; n++) {
+            double* v = (double*)_aligned_malloc(s * n * sizeof(double), AVX2_ALIGNMENT);
+            if (v == nullptr) {
+                return FAILURE_BADALLOC;
+            }
+
             for (uint test = 0; test < 64; test++) {
-
-                double* v = (double*)_aligned_malloc(s * n * sizeof(double), AVX2_ALIGNMENT);
-                if (v == nullptr) {
-                    return FAILURE_BADALLOC;
-                }
-
                 for (uint i = 0; i < s * n; i++) {
                     uint r = mt();
                     v[i] = r / (double)(~0u);
@@ -70,11 +69,11 @@ int sortasc_test_d() {
                     }
                 }
 
-                _aligned_free(v);
 
                 printf("random ok n=%d s=%d\n", n, s);
-
             }
+
+            _aligned_free(v);
         }
     }
 
@@ -90,11 +89,12 @@ int sortasc_perm_test_d() {
 
         uint c = 0;
 
+        double* t = (double*)_aligned_malloc((s + 4) * sizeof(double), AVX2_ALIGNMENT);
+        if (t == nullptr) {
+            return FAILURE_BADALLOC;
+        }
+
         do {
-            double* t = (double*)_aligned_malloc((s + 4) * sizeof(double), AVX2_ALIGNMENT);
-            if (t == nullptr) {
-                return FAILURE_BADALLOC;
-            }
 
             memcpy_s(t, s * sizeof(double), v.data(), s * sizeof(double));
 
@@ -121,9 +121,9 @@ int sortasc_perm_test_d() {
                 printf(".");
             }
 
-            _aligned_free(t);
-
         } while (std::next_permutation(v.begin(), v.end()));
+        
+        _aligned_free(t);
 
         printf("\npermute ok s=%d\n", s);
     }
