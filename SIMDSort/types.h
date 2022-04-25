@@ -39,6 +39,8 @@ struct __m256x2 {
 struct __m256dx2 {
     __m256d imm0, imm1;
 
+    __m256dx2() {};
+
     constexpr __m256dx2(__m256d imm0, __m256d imm1)
         : imm0(imm0), imm1(imm1) { }
 };

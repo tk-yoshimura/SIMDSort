@@ -643,8 +643,10 @@ __forceinline static int backtracksort_p8_s(const uint n, float* v_ptr) {
     }
 
     uint i = 0, e = n - AVX2_FLOAT_STRIDE * 2;
-    __m256 a = _mm256_loadu_ps(v_ptr), b = _mm256_loadu_ps(v_ptr + AVX2_FLOAT_STRIDE);
-    __m256 x, y;
+
+    __m256 a, b, x, y;
+    a = _mm256_loadu_ps(v_ptr);
+    b = _mm256_loadu_ps(v_ptr + AVX2_FLOAT_STRIDE);
 
     if (e <= 0) {
         _mm256_cmpswap_ps(a, b, x, y);
@@ -840,12 +842,14 @@ __forceinline static int scansort_p8_s(const uint n, float* v_ptr) {
 
     uint e = n - AVX2_FLOAT_STRIDE;
 
+    __m256 x, y;
+
     uint i = 0;
     while (true) {
-        __m256 x = _mm256_loadu_ps(v_ptr + i);
+        x = _mm256_loadu_ps(v_ptr + i);
 
         if (_mm256_needssort_ps(x)) {
-            __m256 y = _mm256_sort_ps(x);
+            y = _mm256_sort_ps(x);
             _mm256_storeu_ps(v_ptr + i, y);
 
             if (i > 0) {

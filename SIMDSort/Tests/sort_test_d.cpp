@@ -38,7 +38,7 @@ int sortasc_d(const uint n, const uint s, double* v_ptr) {
 int sortasc_test_d() {
     std::mt19937 mt(1234);
 
-    for (uint s = 2; s <= 128; s++) {
+    for (uint s = 16; s <= 128; s++) {
         for (uint n = 1; n <= 64; n++) {
             double* v = (double*)_aligned_malloc(s * n * sizeof(double), AVX2_ALIGNMENT);
             if (v == nullptr) {
@@ -64,6 +64,9 @@ int sortasc_test_d() {
 
                 for (uint i = 0; i < s * n; i++) {
                     if (t[i] != v[i]) {
+                        std::vector<double> u(s * n);
+                        memcpy_s(u.data(), s * n * sizeof(double), v, s * n * sizeof(double));
+
                         printf("random ng n=%d s=%d\n", n, s);
                         throw std::exception("err");
                     }

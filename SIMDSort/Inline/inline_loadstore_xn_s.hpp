@@ -68,6 +68,54 @@ __forceinline void _mm256_load_x5_ps(infloats ptr, __m256& x0, __m256& x1, __m25
     x4 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 4);
 }
 
+__forceinline void _mm256_load_x6_ps(infloats ptr, __m256& x0, __m256& x1, __m256& x2, __m256& x3, __m256& x4, __m256& x5) {
+#ifdef _DEBUG
+    if (((size_t)ptr % AVX2_ALIGNMENT) != 0) {
+        throw std::exception();
+    }
+#endif // _DEBUG
+
+    x0 = _mm256_load_ps(ptr);
+    x1 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE);
+    x2 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 2);
+    x3 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 3);
+    x4 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 4);
+    x5 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 5);
+}
+
+__forceinline void _mm256_load_x7_ps(infloats ptr, __m256& x0, __m256& x1, __m256& x2, __m256& x3, __m256& x4, __m256& x5, __m256& x6) {
+#ifdef _DEBUG
+    if (((size_t)ptr % AVX2_ALIGNMENT) != 0) {
+        throw std::exception();
+    }
+#endif // _DEBUG
+
+    x0 = _mm256_load_ps(ptr);
+    x1 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE);
+    x2 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 2);
+    x3 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 3);
+    x4 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 4);
+    x5 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 5);
+    x6 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 6);
+}
+
+__forceinline void _mm256_load_x8_ps(infloats ptr, __m256& x0, __m256& x1, __m256& x2, __m256& x3, __m256& x4, __m256& x5, __m256& x6, __m256& x7) {
+#ifdef _DEBUG
+    if (((size_t)ptr % AVX2_ALIGNMENT) != 0) {
+        throw std::exception();
+    }
+#endif // _DEBUG
+
+    x0 = _mm256_load_ps(ptr);
+    x1 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE);
+    x2 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 2);
+    x3 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 3);
+    x4 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 4);
+    x5 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 5);
+    x6 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 6);
+    x7 = _mm256_load_ps(ptr + AVX2_FLOAT_STRIDE * 7);
+}
+
 __forceinline void _mm256_loadu_x1_ps(infloats ptr, __m256& x0) {
     x0 = _mm256_loadu_ps(ptr);
 }
@@ -98,6 +146,36 @@ __forceinline void _mm256_loadu_x5_ps(infloats ptr, __m256& x0, __m256& x1, __m2
     x4 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 4);
 }
 
+__forceinline void _mm256_loadu_x6_ps(infloats ptr, __m256& x0, __m256& x1, __m256& x2, __m256& x3, __m256& x4, __m256& x5) {
+    x0 = _mm256_loadu_ps(ptr);
+    x1 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE);
+    x2 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 2);
+    x3 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 3);
+    x4 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 4);
+    x5 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 5);
+}
+
+__forceinline void _mm256_loadu_x7_ps(infloats ptr, __m256& x0, __m256& x1, __m256& x2, __m256& x3, __m256& x4, __m256& x5, __m256& x6) {
+    x0 = _mm256_loadu_ps(ptr);
+    x1 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE);
+    x2 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 2);
+    x3 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 3);
+    x4 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 4);
+    x5 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 5);
+    x6 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 6);
+}
+
+__forceinline void _mm256_loadu_x8_ps(infloats ptr, __m256& x0, __m256& x1, __m256& x2, __m256& x3, __m256& x4, __m256& x5, __m256& x6, __m256& x7) {
+    x0 = _mm256_loadu_ps(ptr);
+    x1 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE);
+    x2 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 2);
+    x3 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 3);
+    x4 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 4);
+    x5 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 5);
+    x6 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 6);
+    x7 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 7);
+}
+
 __forceinline void _mm256_maskload_x1_ps(infloats ptr, __m256& x0, const __m256i mask) {
     x0 = _mm256_maskload_ps(ptr, mask);
 }
@@ -126,6 +204,36 @@ __forceinline void _mm256_maskload_x5_ps(infloats ptr, __m256& x0, __m256& x1, _
     x2 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 2);
     x3 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 3);
     x4 = _mm256_maskload_ps(ptr + AVX2_FLOAT_STRIDE * 4, mask);
+}
+
+__forceinline void _mm256_maskload_x6_ps(infloats ptr, __m256& x0, __m256& x1, __m256& x2, __m256& x3, __m256& x4, __m256& x5, const __m256i mask) {
+    x0 = _mm256_loadu_ps(ptr);
+    x1 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE);
+    x2 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 2);
+    x3 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 3);
+    x4 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 4);
+    x5 = _mm256_maskload_ps(ptr + AVX2_FLOAT_STRIDE * 5, mask);
+}
+
+__forceinline void _mm256_maskload_x7_ps(infloats ptr, __m256& x0, __m256& x1, __m256& x2, __m256& x3, __m256& x4, __m256& x5, __m256& x6, const __m256i mask) {
+    x0 = _mm256_loadu_ps(ptr);
+    x1 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE);
+    x2 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 2);
+    x3 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 3);
+    x4 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 4);
+    x5 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 5);
+    x6 = _mm256_maskload_ps(ptr + AVX2_FLOAT_STRIDE * 6, mask);
+}
+
+__forceinline void _mm256_maskload_x8_ps(infloats ptr, __m256& x0, __m256& x1, __m256& x2, __m256& x3, __m256& x4, __m256& x5, __m256& x6, __m256& x7, const __m256i mask) {
+    x0 = _mm256_loadu_ps(ptr);
+    x1 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE);
+    x2 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 2);
+    x3 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 3);
+    x4 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 4);
+    x5 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 5);
+    x6 = _mm256_loadu_ps(ptr + AVX2_FLOAT_STRIDE * 6);
+    x7 = _mm256_maskload_ps(ptr + AVX2_FLOAT_STRIDE * 7, mask);
 }
 
 __forceinline void _mm256_store_x1_ps(outfloats ptr, __m256 x0) {
@@ -188,6 +296,54 @@ __forceinline void _mm256_store_x5_ps(outfloats ptr, __m256 x0, __m256 x1, __m25
     _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
 }
 
+__forceinline void _mm256_store_x6_ps(outfloats ptr, __m256 x0, __m256 x1, __m256 x2, __m256 x3, __m256 x4, __m256 x5) {
+#ifdef _DEBUG
+    if (((size_t)ptr % AVX2_ALIGNMENT) != 0) {
+        throw std::exception();
+    }
+#endif // _DEBUG
+
+    _mm256_store_ps(ptr, x0);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE, x1);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 2, x2);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 3, x3);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 5, x5);
+}
+
+__forceinline void _mm256_store_x7_ps(outfloats ptr, __m256 x0, __m256 x1, __m256 x2, __m256 x3, __m256 x4, __m256 x5, __m256 x6) {
+#ifdef _DEBUG
+    if (((size_t)ptr % AVX2_ALIGNMENT) != 0) {
+        throw std::exception();
+    }
+#endif // _DEBUG
+
+    _mm256_store_ps(ptr, x0);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE, x1);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 2, x2);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 3, x3);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 5, x5);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 6, x6);
+}
+
+__forceinline void _mm256_store_x8_ps(outfloats ptr, __m256 x0, __m256 x1, __m256 x2, __m256 x3, __m256 x4, __m256 x5, __m256 x6, __m256 x7) {
+#ifdef _DEBUG
+    if (((size_t)ptr % AVX2_ALIGNMENT) != 0) {
+        throw std::exception();
+    }
+#endif // _DEBUG
+
+    _mm256_store_ps(ptr, x0);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE, x1);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 2, x2);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 3, x3);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 5, x5);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 6, x6);
+    _mm256_store_ps(ptr + AVX2_FLOAT_STRIDE * 7, x7);
+}
+
 __forceinline void _mm256_storeu_x1_ps(outfloats ptr, __m256 x0) {
     _mm256_storeu_ps(ptr, x0);
 }
@@ -218,6 +374,36 @@ __forceinline void _mm256_storeu_x5_ps(outfloats ptr, __m256 x0, __m256 x1, __m2
     _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
 }
 
+__forceinline void _mm256_storeu_x6_ps(outfloats ptr, __m256 x0, __m256 x1, __m256 x2, __m256 x3, __m256 x4, __m256 x5) {
+    _mm256_storeu_ps(ptr, x0);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE, x1);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 2, x2);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 3, x3);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 5, x5);
+}
+
+__forceinline void _mm256_storeu_x7_ps(outfloats ptr, __m256 x0, __m256 x1, __m256 x2, __m256 x3, __m256 x4, __m256 x5, __m256 x6) {
+    _mm256_storeu_ps(ptr, x0);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE, x1);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 2, x2);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 3, x3);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 5, x5);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 6, x6);
+}
+
+__forceinline void _mm256_storeu_x8_ps(outfloats ptr, __m256 x0, __m256 x1, __m256 x2, __m256 x3, __m256 x4, __m256 x5, __m256 x6, __m256 x7) {
+    _mm256_storeu_ps(ptr, x0);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE, x1);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 2, x2);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 3, x3);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 5, x5);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 6, x6);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 7, x7);
+}
+
 __forceinline void _mm256_maskstore_x1_ps(outfloats ptr, __m256 x0, const __m256i mask) {
     _mm256_maskstore_ps(ptr, mask, x0);
 }
@@ -246,6 +432,36 @@ __forceinline void _mm256_maskstore_x5_ps(outfloats ptr, __m256 x0, __m256 x1, _
     _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 2, x2);
     _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 3, x3);
     _mm256_maskstore_ps(ptr + AVX2_FLOAT_STRIDE * 4, mask, x4);
+}
+
+__forceinline void _mm256_maskstore_x6_ps(outfloats ptr, __m256 x0, __m256 x1, __m256 x2, __m256 x3, __m256 x4, __m256 x5, const __m256i mask) {
+    _mm256_storeu_ps(ptr, x0);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE, x1);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 2, x2);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 3, x3);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
+    _mm256_maskstore_ps(ptr + AVX2_FLOAT_STRIDE * 5, mask, x5);
+}
+
+__forceinline void _mm256_maskstore_x7_ps(outfloats ptr, __m256 x0, __m256 x1, __m256 x2, __m256 x3, __m256 x4, __m256 x5, __m256 x6, const __m256i mask) {
+    _mm256_storeu_ps(ptr, x0);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE, x1);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 2, x2);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 3, x3);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 5, x5);
+    _mm256_maskstore_ps(ptr + AVX2_FLOAT_STRIDE * 6, mask, x6);
+}
+
+__forceinline void _mm256_maskstore_x8_ps(outfloats ptr, __m256 x0, __m256 x1, __m256 x2, __m256 x3, __m256 x4, __m256 x5, __m256 x6, __m256 x7, const __m256i mask) {
+    _mm256_storeu_ps(ptr, x0);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE, x1);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 2, x2);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 3, x3);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 5, x5);
+    _mm256_storeu_ps(ptr + AVX2_FLOAT_STRIDE * 6, x6);
+    _mm256_maskstore_ps(ptr + AVX2_FLOAT_STRIDE * 7, mask, x7);
 }
 
 __forceinline void _mm256_stream_x1_ps(outfloats ptr, __m256 x0) {
@@ -306,4 +522,52 @@ __forceinline void _mm256_stream_x5_ps(outfloats ptr, __m256 x0, __m256 x1, __m2
     _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 2, x2);
     _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 3, x3);
     _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
+}
+
+__forceinline void _mm256_stream_x6_ps(outfloats ptr, __m256 x0, __m256 x1, __m256 x2, __m256 x3, __m256 x4, __m256 x5) {
+#ifdef _DEBUG
+    if (((size_t)ptr % AVX2_ALIGNMENT) != 0) {
+        throw std::exception();
+    }
+#endif // _DEBUG
+
+    _mm256_stream_ps(ptr, x0);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE, x1);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 2, x2);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 3, x3);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 5, x5);
+}
+
+__forceinline void _mm256_stream_x7_ps(outfloats ptr, __m256 x0, __m256 x1, __m256 x2, __m256 x3, __m256 x4, __m256 x5, __m256 x6) {
+#ifdef _DEBUG
+    if (((size_t)ptr % AVX2_ALIGNMENT) != 0) {
+        throw std::exception();
+    }
+#endif // _DEBUG
+
+    _mm256_stream_ps(ptr, x0);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE, x1);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 2, x2);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 3, x3);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 5, x5);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 6, x6);
+}
+
+__forceinline void _mm256_stream_x8_ps(outfloats ptr, __m256 x0, __m256 x1, __m256 x2, __m256 x3, __m256 x4, __m256 x5, __m256 x6, __m256 x7) {
+#ifdef _DEBUG
+    if (((size_t)ptr % AVX2_ALIGNMENT) != 0) {
+        throw std::exception();
+    }
+#endif // _DEBUG
+
+    _mm256_stream_ps(ptr, x0);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE, x1);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 2, x2);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 3, x3);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 4, x4);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 5, x5);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 6, x6);
+    _mm256_stream_ps(ptr + AVX2_FLOAT_STRIDE * 7, x7);
 }

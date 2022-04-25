@@ -60,6 +60,9 @@
     <ClCompile Include="Tests\sort_speed_test_d.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
+    <ClCompile Include="Tests\check_dup.cpp">
+      <Filter>Source\Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="simdsort.h">
