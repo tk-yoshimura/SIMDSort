@@ -28,7 +28,7 @@
                 h = h * 10 / 13;
             }
             for (; h > 9; h = h * 10 / 13) {
-                swaps += CombSortH9to15.Iter(vs, h);                
+                swaps += CombSortH9to15.Iter(vs, h);
             }
             if (h >= 8) {
                 swaps += CombSortH8.Iter(vs);

@@ -51,6 +51,14 @@ namespace SIMDSortSimu {
             return false;
         }
 
+        public static MM128 Perm(MM128 x) {
+            MM128 y = new();
+            Array.Copy(x.vs, 1, y.vs, 0, AVX1_FLOAT_STRIDE - 1);
+            y.vs[^1] = x.vs[0];
+
+            return y;
+        }
+
         public static (bool swaped, uint index, MM128 a, MM128 b) CmpSwapGt(MM128 x, MM128 y) {
             bool swaped = false;
             uint index = AVX1_FLOAT_STRIDE;
@@ -83,6 +91,10 @@ namespace SIMDSortSimu {
             }
 
             return (true, AVX1_FLOAT_STRIDE);
+        }
+
+        public override string ToString() {
+            return string.Join(", ", vs);
         }
     }
 }
