@@ -37,5 +37,20 @@ namespace SIMDSortSimuTest {
                 CollectionAssert.AreEqual(us, vs, $"n = {n}");
             }
         }
+
+        [TestMethod]
+        public void TriWaveTest() {
+            for (uint n = 64; n <= 1024; n++) {
+
+                float[] vs = (new float[n]).Select((_, idx) => (float)(idx % 8 + idx / 8)).ToArray();
+                float[] us = (float[])vs.Clone();
+
+                ParaCombSortN4x8.Iter(vs);
+                Array.Sort(us);
+                Array.Sort(vs);
+
+                CollectionAssert.AreEqual(us, vs, $"n = {n}");
+            }
+        }
     }
 }

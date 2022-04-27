@@ -12,7 +12,7 @@
 
             MM256 x, y;
 
-            for (int iter = 0; iter < 2; iter++) {
+            for (int iter = 0; iter < 4; iter++) {
                 for (uint i = 0; i < e; i += MM256.AVX2_FLOAT_STRIDE) {
                     x = MM256.Load(vs, i);
                     y = MM256.Sort(x);
