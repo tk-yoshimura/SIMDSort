@@ -14,7 +14,7 @@ int sort_random_speed_test_s() {
 
     std::mt19937 mt(1234);
 
-    for (uint n = 32; n <= 0x8000000u; n *= 2) {
+    for (uint n = 64; n <= 0x8000000u; n *= 2) {
 
         std::vector<long long> stdsorttimes, avxsorttimes;
 
@@ -35,7 +35,7 @@ int sort_random_speed_test_s() {
             
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_ignnan_slong_s(1, n, y.data());
+            sortasc_ignnan_s64plus_s(1, n, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 
@@ -72,7 +72,7 @@ int sort_inbalance_speed_test_s() {
 
     std::mt19937 mt(1234);
 
-    for (uint n = 32; n <= 0x8000000u; n *= 2) {
+    for (uint n = 64; n <= 0x8000000u; n *= 2) {
 
         std::vector<long long> stdsorttimes, avxsorttimes;
 
@@ -96,7 +96,7 @@ int sort_inbalance_speed_test_s() {
 
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_ignnan_slong_s(1, n, y.data());
+            sortasc_ignnan_s64plus_s(1, n, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 
@@ -131,7 +131,7 @@ int sort_reverse_speed_test_s() {
 
     ofs << "n,std,avx" << std::endl;
 
-    for (uint n = 32; n <= 0x8000000u; n *= 2) {
+    for (uint n = 64; n <= 0x8000000u; n *= 2) {
 
         std::vector<long long> stdsorttimes, avxsorttimes;
 
@@ -154,7 +154,7 @@ int sort_reverse_speed_test_s() {
 
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_ignnan_slong_s(1, n, y.data());
+            sortasc_ignnan_s64plus_s(1, n, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 
@@ -193,7 +193,7 @@ int sort_ndist_speed_test_s() {
     std::normal_distribution<float> ndist(0, 1);
     std::default_random_engine engine(seed_gen());
 
-    for (uint n = 32; n <= 0x8000000u; n *= 2) {
+    for (uint n = 64; n <= 0x8000000u; n *= 2) {
 
         std::vector<long long> stdsorttimes, avxsorttimes;
 
@@ -216,7 +216,7 @@ int sort_ndist_speed_test_s() {
 
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_ignnan_slong_s(1, n, y.data());
+            sortasc_ignnan_s64plus_s(1, n, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 
