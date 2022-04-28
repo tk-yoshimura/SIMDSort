@@ -11,15 +11,15 @@ AVX2 suppoted CPU. (Intel:Haswell(2013)-, AMD:Excavator(2015)-)
 ## Processing Speed (float)
 
 ### Uniform Random Values
-x4-7 faster than std::sort  
+x4-8 faster than std::sort  
 ![random](https://github.com/tk-yoshimura/SIMDSort/blob/main/figures/sort_random_speed_s.svg)  
 
 ### Imbalanced Random Values (1%: v &in; [0, 1), 99%: v &in; [0, 0.01))
-x4-7 faster than std::sort  
+x4-8 faster than std::sort  
 ![imbalanced random](https://github.com/tk-yoshimura/SIMDSort/blob/main/figures/sort_inbalance_speed_s.svg)  
 
 ### NormalDist Random Values
-x4-7 faster than std::sort  
+x4-8 faster than std::sort  
 ![ndist](https://github.com/tk-yoshimura/SIMDSort/blob/main/figures/sort_ndist_speed_s.svg)  
 
 ### Reverse Values
