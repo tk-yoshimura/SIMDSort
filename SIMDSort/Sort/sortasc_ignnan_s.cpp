@@ -885,7 +885,7 @@ __forceinline static int scansort_p8_s(const uint n, float* v_ptr) {
                 uint i2 = _mm256_movemask_ps(_mm256_needsswap_ps(x2, y2));
                 uint i3 = _mm256_movemask_ps(_mm256_needsswap_ps(x3, y3));
 
-                indexes = (i0) | (i1 << 8) | (i2 << 16) | (i3 << 24);
+                indexes = (i0) | (i1 << (AVX2_FLOAT_STRIDE)) | (i2 << (AVX2_FLOAT_STRIDE * 2)) | (i3 << (AVX2_FLOAT_STRIDE * 3));
 
                 if (indexes == 0u) {
                     i += AVX2_FLOAT_STRIDE * 4;
@@ -899,7 +899,7 @@ __forceinline static int scansort_p8_s(const uint n, float* v_ptr) {
                 uint i0 = _mm256_movemask_ps(_mm256_needsswap_ps(x0, y0));
                 uint i1 = _mm256_movemask_ps(_mm256_needsswap_ps(x1, y1));
 
-                indexes = (i0) | (i1 << 8);
+                indexes = (i0) | (i1 << (AVX2_FLOAT_STRIDE));
 
                 if (indexes == 0u) {
                     i += AVX2_FLOAT_STRIDE * 2;

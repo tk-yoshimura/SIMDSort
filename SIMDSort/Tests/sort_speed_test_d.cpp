@@ -35,7 +35,7 @@ int sort_random_speed_test_d() {
             
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_ignnan_slong_d(1, n, y.data());
+            sortasc_ignnan_s32plus_d(1, n, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 
@@ -96,7 +96,7 @@ int sort_inbalance_speed_test_d() {
 
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_ignnan_slong_d(1, n, y.data());
+            sortasc_ignnan_s32plus_d(1, n, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 
@@ -154,7 +154,7 @@ int sort_reverse_speed_test_d() {
 
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_ignnan_slong_d(1, n, y.data());
+            sortasc_ignnan_s32plus_d(1, n, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 
@@ -216,7 +216,7 @@ int sort_ndist_speed_test_d() {
 
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_ignnan_slong_d(1, n, y.data());
+            sortasc_ignnan_s32plus_d(1, n, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 

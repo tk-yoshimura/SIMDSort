@@ -27,11 +27,14 @@ int sortasc_d(const uint n, const uint s, double* v_ptr) {
     else if (s <= 7) {
         return sortasc_ignnan_s7_d(n, s, v_ptr);
     }
-    else if (s <= 16) {
-        return sortasc_ignnan_s8to16_d(n, s, v_ptr);
+    else if (s < 16) {
+        return sortasc_ignnan_s8to15_d(n, s, v_ptr);
+    }
+    else if (s < 32) {
+        return sortasc_ignnan_s16to31_d(n, s, v_ptr);
     }
     else {
-        return sortasc_ignnan_slong_d(n, s, v_ptr);
+        return sortasc_ignnan_s32plus_d(n, s, v_ptr);
     }
 }
 
@@ -39,13 +42,13 @@ int sortasc_test_d() {
     std::mt19937 mt(1234);
 
     for (uint s = 16; s <= 128; s++) {
-        for (uint n = 1; n <= 64; n++) {
+        for (uint n = 1; n <= 16; n++) {
             double* v = (double*)_aligned_malloc(s * n * sizeof(double), AVX2_ALIGNMENT);
             if (v == nullptr) {
                 return FAILURE_BADALLOC;
             }
 
-            for (uint test = 0; test < 64; test++) {
+            for (uint test = 0; test < 16; test++) {
                 for (uint i = 0; i < s * n; i++) {
                     uint r = mt();
                     v[i] = r / (double)(~0u);
