@@ -93,6 +93,18 @@ namespace SIMDSortSimu {
             return (index > 0, index);
         }
 
+        public static (bool needsswap, uint index) NeedSwap(MM256 x, MM256 y) {
+            uint index = 0;
+
+            for (uint i = 0; i < AVX2_FLOAT_STRIDE; i++) {
+                if (!(x.vs[i] <= y.vs[i]) && !float.IsNaN(x.vs[i])) {
+                    index |= (uint)(1 << (int)i);
+                }
+            }
+
+            return (index > 0, index);
+        }
+
         public override string ToString() {
             return string.Join(", ", vs);
         }

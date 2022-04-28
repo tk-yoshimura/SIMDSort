@@ -14,14 +14,14 @@
                 swaps += ParaCombSortN4x8.Iter(vs);
 
                 sorts += BatchSortN8.Iter(vs) / 4;
-                sorts += ScanSortN8.Iter(vs);
+                sorts += ScanSortN8R2.Iter(vs);
             }
             else {
                 swaps += ParaCombSortN2x8.Iter(vs);
                 swaps += BacktrackSortN8.Iter(vs);
 
                 sorts += BatchSortN8.Iter(vs) / 4;
-                sorts += ScanSortN8.Iter(vs);
+                sorts += ScanSortN8R2.Iter(vs);
             }
 
             return (swaps, sorts);
