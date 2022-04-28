@@ -190,14 +190,17 @@ __forceinline static __m256 _mm256_sort1x7_ps(__m256 x) {
 
 // sort elems8
 __forceinline static __m256 _mm256_sort_ps(__m256 x) {
-    const __m256 xormask = _mm256_castsi256_ps(_mm256_setr_epi32(~0u, 0, 0, 0, 0, 0, 0, ~0u));
-    const __m256i perm = _mm256_setr_epi32(7, 2, 1, 4, 3, 6, 5, 0);
-    const __m256i permcmp = _mm256_setr_epi32(7, 1, 1, 3, 3, 5, 5, 7);
+    const __m256i perm = _mm256_setr_epi32(7, 6, 5, 4, 3, 2, 1, 0);
+    const __m256i permcmp = _mm256_setr_epi32(0, 1, 2, 3, 3, 2, 1, 0);
 
     __m256 y, c;
 
-    y = _mm256_permutevar8x32_ps(x, perm);
-    c = _mm256_xor_ps(xormask, _mm256_permutevar8x32_ps(_mm256_needsswap_ps(x, y), permcmp));
+    y = _mm256_permute_ps(x, _MM_PERM_CDAB);
+    c = _mm256_permute_ps(_mm256_needsswap_ps(x, y), _MM_PERM_CCAA);
+    x = _mm256_blendv_ps(x, y, c);
+
+    y = _mm256_permute_ps(x, _MM_PERM_ABCD);
+    c = _mm256_permute_ps(_mm256_needsswap_ps(x, y), _MM_PERM_ABBA);
     x = _mm256_blendv_ps(x, y, c);
 
     y = _mm256_permute_ps(x, _MM_PERM_CDAB);
@@ -205,23 +208,15 @@ __forceinline static __m256 _mm256_sort_ps(__m256 x) {
     x = _mm256_blendv_ps(x, y, c);
 
     y = _mm256_permutevar8x32_ps(x, perm);
-    c = _mm256_xor_ps(xormask, _mm256_permutevar8x32_ps(_mm256_needsswap_ps(x, y), permcmp));
+    c = _mm256_permutevar8x32_ps(_mm256_needsswap_ps(x, y), permcmp);
+    x = _mm256_blendv_ps(x, y, c);
+
+    y = _mm256_permute_ps(x, _MM_PERM_BADC);
+    c = _mm256_permute_ps(_mm256_needsswap_ps(x, y), _MM_PERM_BABA);
     x = _mm256_blendv_ps(x, y, c);
 
     y = _mm256_permute_ps(x, _MM_PERM_CDAB);
     c = _mm256_permute_ps(_mm256_needsswap_ps(x, y), _MM_PERM_CCAA);
-    x = _mm256_blendv_ps(x, y, c);
-
-    y = _mm256_permutevar8x32_ps(x, perm);
-    c = _mm256_xor_ps(xormask, _mm256_permutevar8x32_ps(_mm256_needsswap_ps(x, y), permcmp));
-    x = _mm256_blendv_ps(x, y, c);
-
-    y = _mm256_permute_ps(x, _MM_PERM_CDAB);
-    c = _mm256_permute_ps(_mm256_needsswap_ps(x, y), _MM_PERM_CCAA);
-    x = _mm256_blendv_ps(x, y, c);
-
-    y = _mm256_permutevar8x32_ps(x, perm);
-    c = _mm256_xor_ps(xormask, _mm256_permutevar8x32_ps(_mm256_needsswap_ps(x, y), permcmp));
     x = _mm256_blendv_ps(x, y, c);
 
     return x;
