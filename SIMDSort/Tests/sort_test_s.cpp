@@ -108,11 +108,14 @@ int sortdsc_s(const uint n, const uint s, float* v_ptr) {
     else if (s <= 15) {
         return sortdsc_ignnan_s15_s(n, s, v_ptr);
     }
-    else if (s <= 32) {
-        return sortdsc_ignnan_s16to32_s(n, s, v_ptr);
+    else if (s < 32) {
+        return sortdsc_ignnan_s16to31_s(n, s, v_ptr);
+    }
+    else if (s < 64) {
+        return sortdsc_ignnan_s32to63_s(n, s, v_ptr);
     }
     else {
-        return sortdsc_ignnan_slong_s(n, s, v_ptr);
+        return sortdsc_ignnan_s64plus_s(n, s, v_ptr);
     }
 }
 

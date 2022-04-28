@@ -41,8 +41,9 @@ extern int sortdsc_ignnan_s12_s(const uint n, const uint s, float* v_ptr);
 extern int sortdsc_ignnan_s13_s(const uint n, const uint s, float* v_ptr);
 extern int sortdsc_ignnan_s14_s(const uint n, const uint s, float* v_ptr);
 extern int sortdsc_ignnan_s15_s(const uint n, const uint s, float* v_ptr);
-extern int sortdsc_ignnan_s16to32_s(const uint n, const uint s, float* v_ptr);
-extern int sortdsc_ignnan_slong_s(const uint n, const uint s, float* v_ptr);
+extern int sortdsc_ignnan_s16to31_s(const uint n, const uint s, float* v_ptr);
+extern int sortdsc_ignnan_s32to63_s(const uint n, const uint s, float* v_ptr);
+extern int sortdsc_ignnan_s64plus_s(const uint n, const uint s, float* v_ptr);
 
 #pragma endregion float descending sort ignore nan
 
