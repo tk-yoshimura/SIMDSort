@@ -81,7 +81,7 @@ namespace SIMDSortSimu {
             return (swaped, index, a, b);
         }
 
-        public static (bool ismatch, uint index) CmpEq(MM256 x, MM256 y) {
+        public static (bool ismatch, uint index) CmpNeq(MM256 x, MM256 y) {
             uint index = 0;
 
             for (uint i = 0; i < AVX2_FLOAT_STRIDE; i++) {

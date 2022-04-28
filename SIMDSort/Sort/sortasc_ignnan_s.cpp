@@ -1,5 +1,6 @@
 #include "sort.h"
 #include "../Inline/inline_cmp_s.hpp"
+#include "../Inline/inline_misc.hpp"
 #include "../Inline/inline_loadstore_xn_s.hpp"
 
 #pragma region needs swap
@@ -1021,35 +1022,105 @@ __forceinline static int scansort_p8_s(const uint n, float* v_ptr) {
 
     uint e = n - AVX2_FLOAT_STRIDE;
 
-    __m256 x, y;
+    uint indexes;
+    __m256 x0, x1, x2, x3, y0, y1, y2, y3;
 
-    uint i = 0;
-    while (true) {
-        x = _mm256_loadu_ps(v_ptr + i);
+    {
+        uint i = 0;
+        while (true) {
+            if (i + AVX2_FLOAT_STRIDE * 4 + 1 <= n) {
+                _mm256_loadu_x4_ps(v_ptr + i, x0, x1, x2, x3);
+                _mm256_loadu_x4_ps(v_ptr + i + 1, y0, y1, y2, y3);
 
-        if (_mm256_needssort_ps(x)) {
-            y = _mm256_sort_ps(x);
-            _mm256_storeu_ps(v_ptr + i, y);
+                uint i0 = _mm256_movemask_ps(_mm256_needsswap_ps(x0, y0));
+                uint i1 = _mm256_movemask_ps(_mm256_needsswap_ps(x1, y1));
+                uint i2 = _mm256_movemask_ps(_mm256_needsswap_ps(x2, y2));
+                uint i3 = _mm256_movemask_ps(_mm256_needsswap_ps(x3, y3));
 
-            if (i > 0) {
-                uint indexes = _mm256_movemask_ps(_mm256_cmpeq_ignnan_ps(x, y));
-                if ((indexes & 1) == 0) {
-                    const uint back = AVX2_FLOAT_STRIDE - 2;
+                indexes = (i0) | (i1 << 8) | (i2 << 16) | (i3 << 24);
 
-                    i = (i > back) ? i - back : 0;
+                if (indexes == 0u) {
+                    i += AVX2_FLOAT_STRIDE * 4;
                     continue;
                 }
             }
-        }
+            else if (i + AVX2_FLOAT_STRIDE * 2 + 1 <= n) {
+                _mm256_loadu_x2_ps(v_ptr + i, x0, x1);
+                _mm256_loadu_x2_ps(v_ptr + i + 1, y0, y1);
 
-        if (i < e) {
-            i += AVX2_FLOAT_STRIDE - 1;
-            if (i > e) {
-                i = e;
+                uint i0 = _mm256_movemask_ps(_mm256_needsswap_ps(x0, y0));
+                uint i1 = _mm256_movemask_ps(_mm256_needsswap_ps(x1, y1));
+
+                indexes = (i0) | (i1 << 8);
+
+                if (indexes == 0u) {
+                    i += AVX2_FLOAT_STRIDE * 2;
+                    continue;
+                }
             }
-        }
-        else {
-            break;
+            else if (i + AVX2_FLOAT_STRIDE + 1 <= n) {
+                _mm256_loadu_x1_ps(v_ptr + i, x0);
+                _mm256_loadu_x1_ps(v_ptr + i + 1, y0);
+
+                indexes = (uint)_mm256_movemask_ps(_mm256_needsswap_ps(x0, y0));
+
+                if (indexes == 0u) {
+                    i += AVX2_FLOAT_STRIDE;
+                    continue;
+                }
+            }
+            else {
+                i = e;
+
+                x0 = _mm256_loadu_ps(v_ptr + i);
+
+                if (!_mm256_needssort_ps(x0)) {
+                    break;
+                }
+
+                y0 = _mm256_sort_ps(x0);
+                _mm256_storeu_ps(v_ptr + i, y0);
+
+                indexes = 0xFFu - (uint)_mm256_movemask_ps(_mm256_cmpeq_ignnan_ps(x0, y0));
+
+                if ((indexes & 1u) == 0u || i == 0) {
+                    break;
+                }
+            }
+
+            uint index = bsf(indexes);
+
+            if (index >= AVX2_FLOAT_STRIDE - 2) {
+                uint forward = index - (AVX2_FLOAT_STRIDE - 2);
+                i += forward;
+            }
+            else {
+                uint backward = (AVX2_FLOAT_STRIDE - 2) - index;
+                i = (i > backward) ? i - backward : 0;
+            }
+
+            x0 = _mm256_loadu_ps(v_ptr + i);
+
+            while (true) {
+                y0 = _mm256_sort_ps(x0);
+                _mm256_storeu_ps(v_ptr + i, y0);
+
+                indexes = (uint)_mm256_movemask_ps(_mm256_cmpeq_ignnan_ps(x0, y0));
+                if ((indexes & 1u) == 0u && i > 0u) {
+                    uint backward = AVX2_FLOAT_STRIDE - 2;
+                    i = (i > backward) ? i - backward : 0;
+
+                    x0 = _mm256_loadu_ps(v_ptr + i);
+
+                    if (_mm256_needssort_ps(x0)) {
+                        continue;
+                    }
+                }
+
+                uint forward = AVX2_FLOAT_STRIDE - 1;
+                i += forward;
+                break;
+            }
         }
     }
 
@@ -1808,7 +1879,7 @@ __forceinline static int longsort_n32to63_s(const uint n, float* v_ptr) {
 // longsort elems 64+
 __forceinline static int longsort_n64plus_s(const uint n, float* v_ptr) {
 #ifdef _DEBUG
-    if (n < AVX2_FLOAT_STRIDE * 8) {
+    if (n < AVX2_FLOAT_STRIDE * 8 || n > MAX_SORT_STRIDE) {
         return FAILURE_BADPARAM;
     }
 #endif //_DEBUG
@@ -2339,7 +2410,7 @@ int sortasc_ignnan_s32to63_s(const uint n, const uint s, float* v_ptr) {
 }
 
 int sortasc_ignnan_s64plus_s(const uint n, const uint s, float* v_ptr) {
-    if (s < AVX2_FLOAT_STRIDE * 8) {
+    if (s < AVX2_FLOAT_STRIDE * 8 || n > MAX_SORT_STRIDE) {
         return FAILURE_BADPARAM;
     }
 

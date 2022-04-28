@@ -98,5 +98,8 @@
     <ClInclude Include="Inline\inline_cmp_d.hpp">
       <Filter>Source\Inline</Filter>
     </ClInclude>
+    <ClInclude Include="Inline\inline_misc.hpp">
+      <Filter>Source\Inline</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

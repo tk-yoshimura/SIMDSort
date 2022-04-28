@@ -120,13 +120,13 @@ int sortasc_test_s() {
     std::mt19937 mt(1234);
 
     for (uint s = 2; s <= 128; s++) {
-        for (uint n = 1; n <= 16; n++) {
+        for (uint n = 1; n <= 32; n++) {
             float* v = (float*)_aligned_malloc(s * n * sizeof(float), AVX2_ALIGNMENT);
             if (v == nullptr) {
                 return FAILURE_BADALLOC;
             }
 
-            for (uint test = 0; test < 16; test++) {
+            for (uint test = 0; test < 32; test++) {
                 for (uint i = 0; i < s * n; i++) {
                     uint r = mt();
                     v[i] = r / (float)(~0u);
@@ -225,7 +225,7 @@ int sortasc_perm_test_s() {
             memcpy_s(t, s * sizeof(float), v.data(), s * sizeof(float));
 
             for (uint i = s; i < s + 4; i++) {
-                t[i] = ((i + c) * 31) % s;
+                t[i] = (float)(((i + c) * 31) % s);
             }
 
             sortasc_s(1, s, t);

@@ -75,7 +75,7 @@ namespace SIMDSortSimu {
                         MM256.Store(vs, i, y0);
                         sorts++;
 
-                        indexes = MM256.CmpEq(x0, y0).index;
+                        indexes = MM256.CmpNeq(x0, y0).index;
 
                         if ((indexes & 1) == 0 || i == 0) {
                             break;
@@ -101,7 +101,7 @@ namespace SIMDSortSimu {
 
                         sorts++;
 
-                        indexes = MM256.CmpEq(x0, y0).index;
+                        indexes = MM256.CmpNeq(x0, y0).index;
                         if ((indexes & 1u) == 1u && i > 0) {
                             uint backward = MM256.AVX2_FLOAT_STRIDE - 2;
                             i = (i > backward) ? i - backward : 0;

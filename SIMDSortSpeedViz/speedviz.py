@@ -20,6 +20,10 @@ for filepath in filepaths:
     stdsort = np.reshape(stdsort, (ns, tests))
     avxsort = np.reshape(avxsort, (ns, tests))
 
+    # ignore outliner
+    stdsort = np.sort(stdsort, axis = 1)[:, tests//16:-tests//16]
+    avxsort = np.sort(avxsort, axis = 1)[:, tests//16:-tests//16]
+    
     stdsortmean = np.mean(stdsort, axis = 1)
     stdsortsig1 = np.std( stdsort, axis = 1)
     stdsortmax  = np.max( stdsort, axis = 1)
@@ -50,7 +54,7 @@ for filepath in filepaths:
     plt.fill_between(n, stdsortmean - stdsortsig1, stdsortmean + stdsortsig1, color='red', alpha = 0.4)
     plt.fill_between(n, stdsortmin, stdsortmax, color='red', alpha = 0.2)
 
-    plt.plot(n, avxsortmean, label='avxsort comb -> backtrack -> batch -> scan', color='blue')
+    plt.plot(n, avxsortmean, label='avxsort comb -> paracomb -> batch -> scan', color='blue')
     plt.scatter(n, avxsortmean, color='blue', marker='.')
     plt.fill_between(n, avxsortmean - avxsortsig1, avxsortmean + avxsortsig1, color='blue', alpha = 0.4)
     plt.fill_between(n, avxsortmin, avxsortmax, color='blue', alpha = 0.2)
