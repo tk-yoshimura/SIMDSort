@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 tests = 32
-ns = 23 
+ns = 22 
 
 filepaths = glob.glob("../SIMDSort/bin/sorts_*_speed.txt")
 

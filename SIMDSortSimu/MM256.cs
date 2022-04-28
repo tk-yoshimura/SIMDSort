@@ -61,7 +61,7 @@ namespace SIMDSortSimu {
 
         public static (bool swaped, uint index, MM256 a, MM256 b) CmpSwapGt(MM256 x, MM256 y) {
             bool swaped = false;
-            uint index = AVX2_FLOAT_STRIDE;
+            uint index = 0;
             MM256 a = new(), b = new();
 
             for (uint i = 0; i < AVX2_FLOAT_STRIDE; i++) {
@@ -69,9 +69,7 @@ namespace SIMDSortSimu {
                     a.vs[i] = y.vs[i];
                     b.vs[i] = x.vs[i];
 
-                    if (!swaped) {
-                        index = i;
-                    }
+                    index |= (uint)(1 << (int)i);
                     swaped = true;
                 }
                 else {
@@ -84,13 +82,15 @@ namespace SIMDSortSimu {
         }
 
         public static (bool ismatch, uint index) CmpEq(MM256 x, MM256 y) {
+            uint index = 0;
+
             for (uint i = 0; i < AVX2_FLOAT_STRIDE; i++) {
                 if (x.vs[i] != y.vs[i] && !float.IsNaN(x.vs[i])) {
-                    return (false, i);
+                    index |= (uint)(1 << (int)i);
                 }
             }
 
-            return (true, AVX2_FLOAT_STRIDE);
+            return (index > 0, index);
         }
 
         public override string ToString() {

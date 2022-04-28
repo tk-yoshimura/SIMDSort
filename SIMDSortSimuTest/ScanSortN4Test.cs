@@ -27,16 +27,14 @@ namespace SIMDSortSimuTest {
         [TestMethod]
         public void InverseSortTest() {
             for (uint n = 4; n <= 32; n++) {
-                for (uint i = 0; i < 8; i++) {
 
-                    float[] vs = (new float[n]).Select((_, idx) => (float)idx).Reverse().ToArray();
-                    float[] us = (float[])vs.Clone();
+                float[] vs = (new float[n]).Select((_, idx) => (float)idx).Reverse().ToArray();
+                float[] us = (float[])vs.Clone();
 
-                    ScanSortN4.Iter(vs);
-                    Array.Sort(us);
+                ScanSortN4.Iter(vs);
+                Array.Sort(us);
 
-                    CollectionAssert.AreEqual(us, vs, $"n = {n}");
-                }
+                CollectionAssert.AreEqual(us, vs, $"n = {n}");
             }
         }
     }

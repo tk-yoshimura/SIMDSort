@@ -26,7 +26,7 @@ namespace SIMDSortSimu {
 
                         if (i > 0) {
                             (_, uint index) = MM128.CmpEq(x, y);
-                            if (index == 0) {
+                            if ((index & 1) == 1) {
                                 uint back = MM128.AVX1_FLOAT_STRIDE - 2;
 
                                 i = (i > back) ? i - back : 0;
