@@ -67,20 +67,18 @@ __forceinline static __m256d _mm256_sort1x3_pd(__m256d x) {
 
 // sort elems4
 __forceinline static __m256d _mm256_sort_pd(__m256d x) {
-    const __m256d xormask = _mm256_castsi256_pd(_mm256_setr_epi32(~0u, ~0u, 0, 0, 0, 0, ~0u, ~0u));
-
     __m256d y, c;
-
-    y = _mm256_permute4x64_pd(x, _MM_PERM_ABCD);
-    c = _mm256_xor_pd(xormask, _mm256_permute4x64_pd(_mm256_needsswap_pd(x, y), _MM_PERM_DBBD));
-    x = _mm256_blendv_pd(x, y, c);
 
     y = _mm256_permute4x64_pd(x, _MM_PERM_CDAB);
     c = _mm256_permute4x64_pd(_mm256_needsswap_pd(x, y), _MM_PERM_CCAA);
     x = _mm256_blendv_pd(x, y, c);
 
+    y = _mm256_permute4x64_pd(x, _MM_PERM_BADC);
+    c = _mm256_permute4x64_pd(_mm256_needsswap_pd(x, y), _MM_PERM_BABA);
+    x = _mm256_blendv_pd(x, y, c);
+
     y = _mm256_permute4x64_pd(x, _MM_PERM_ABCD);
-    c = _mm256_xor_pd(xormask, _mm256_permute4x64_pd(_mm256_needsswap_pd(x, y), _MM_PERM_DBBD));
+    c = _mm256_permute4x64_pd(_mm256_needsswap_pd(x, y), _MM_PERM_ABBA);
     x = _mm256_blendv_pd(x, y, c);
 
     return x;
