@@ -604,9 +604,6 @@ static int paracombsort_p2x8_s(const uint n, float* v_ptr) {
     const uint e = n - AVX2_FLOAT_STRIDE * 4;
     const uint c = n % AVX2_FLOAT_STRIDE;
 
-    // max cycle permutate
-    const __m256i perm = _mm256_setr_epi32(7, 6, 0, 2, 1, 3, 4, 5);
-
     __m256 a0, a1, b0, b1;
     __m256 x0, x1, y0, y1;
 
@@ -620,7 +617,7 @@ static int paracombsort_p2x8_s(const uint n, float* v_ptr) {
         b1 = _mm256_loadu_ps(v_ptr + i + AVX2_FLOAT_STRIDE * 2);
         _mm256_cmpswap_ps(a1, b1, x1, y1);
 
-        b0 = _mm256_permutevar8x32_ps(x1, perm);
+        b0 = _mm256_castpd_ps(_mm256_permute4x64_pd(_mm256_castps_pd(x1), _MM_PERM_ABDC));
         a1 = y1;
         b1 = _mm256_loadu_ps(v_ptr + i + AVX2_FLOAT_STRIDE * 3);
         _mm256_cmpswap_ps(a0, b0, x0, y0);
@@ -629,7 +626,7 @@ static int paracombsort_p2x8_s(const uint n, float* v_ptr) {
         for (j = i; j + AVX2_FLOAT_STRIDE <= e; j += AVX2_FLOAT_STRIDE) {
             _mm256_storeu_ps(v_ptr + j, x0);
             a0 = y0;
-            b0 = _mm256_permutevar8x32_ps(x1, perm);
+            b0 = _mm256_castpd_ps(_mm256_permute4x64_pd(_mm256_castps_pd(x1), _MM_PERM_ABDC));
             a1 = y1;
             b1 = _mm256_loadu_ps(v_ptr + j + AVX2_FLOAT_STRIDE * 4);
             _mm256_cmpswap_ps(a0, b0, x0, y0);
@@ -638,7 +635,7 @@ static int paracombsort_p2x8_s(const uint n, float* v_ptr) {
 
         _mm256_storeu_ps(v_ptr + j, x0);
         a0 = y0;
-        b0 = _mm256_permutevar8x32_ps(x1, perm);
+        b0 = _mm256_castpd_ps(_mm256_permute4x64_pd(_mm256_castps_pd(x1), _MM_PERM_ABDC));
         _mm256_cmpswap_ps(a0, b0, x0, y0);
         j += AVX2_FLOAT_STRIDE;
 
