@@ -763,7 +763,7 @@ static int batchsort_p8_s(const uint n, float* v_ptr) {
     __m256 x0, x1, x2, x3;
     __m256 y0, y1, y2, y3;
 
-    float* ve_ptr = v_ptr + e;
+    float* const ve_ptr = v_ptr + e;
 
     {
         float* vc_ptr = v_ptr;

@@ -84,6 +84,21 @@ __forceinline static __m256d _mm256_sort_pd(__m256d x) {
     return x;
 }
 
+// sort elems4 (ho, lo sorted)
+__forceinline static __m256d _mm256_halfsort_pd(__m256d x) {
+    __m256d y, c;
+
+    y = _mm256_permute4x64_pd(x, _MM_PERM_BADC);
+    c = _mm256_permute4x64_pd(_mm256_needsswap_pd(x, y), _MM_PERM_BABA);
+    x = _mm256_blendv_pd(x, y, c);
+
+    y = _mm256_permute4x64_pd(x, _MM_PERM_ABCD);
+    c = _mm256_permute4x64_pd(_mm256_needsswap_pd(x, y), _MM_PERM_ABBA);
+    x = _mm256_blendv_pd(x, y, c);
+
+    return x;
+}
+
 // sort elems8
 __forceinline static __m256dx2 _mm256x2_sort_pd(__m256dx2 x) {
     const __m256d xormask = _mm256_castsi256_pd(_mm256_setr_epi32(~0u, ~0u, 0, 0, 0, 0, ~0u, ~0u));
@@ -651,107 +666,202 @@ static int batchsort_p4_d(const uint n, double* v_ptr) {
     __m256d x0, x1, x2, x3;
     __m256d y0, y1, y2, y3;
 
-    double* ve_ptr = v_ptr + e;
+    double* const ve_ptr = v_ptr + e;
+        
+    {
+        double* vc_ptr = v_ptr;
+        uint r = n;
 
-    for (int iter = 0; iter < 2; iter++) {
-        {
-            double* vc_ptr = v_ptr;
-            uint r = n;
+        while (r >= AVX2_DOUBLE_STRIDE * 4) {
+            _mm256_loadu_x4_pd(vc_ptr, x0, x1, x2, x3);
 
-            while (r >= AVX2_DOUBLE_STRIDE * 4) {
-                _mm256_loadu_x4_pd(vc_ptr, x0, x1, x2, x3);
+            y0 = _mm256_sort_pd(x0);
+            y1 = _mm256_sort_pd(x1);
+            y2 = _mm256_sort_pd(x2);
+            y3 = _mm256_sort_pd(x3);
 
-                y0 = _mm256_sort_pd(x0);
-                y1 = _mm256_sort_pd(x1);
-                y2 = _mm256_sort_pd(x2);
-                y3 = _mm256_sort_pd(x3);
+            _mm256_storeu_x4_pd(vc_ptr, y0, y1, y2, y3);
 
-                _mm256_storeu_x4_pd(vc_ptr, y0, y1, y2, y3);
-
-                vc_ptr += AVX2_DOUBLE_STRIDE * 4;
-                r -= AVX2_DOUBLE_STRIDE * 4;
-            }
-            if (r >= AVX2_DOUBLE_STRIDE * 3) {
-                _mm256_loadu_x3_pd(vc_ptr, x0, x1, x2);
-
-                y0 = _mm256_sort_pd(x0);
-                y1 = _mm256_sort_pd(x1);
-                y2 = _mm256_sort_pd(x2);
-
-                _mm256_storeu_x3_pd(vc_ptr, y0, y1, y2);
-            }
-            else if (r >= AVX2_DOUBLE_STRIDE * 2) {
-                _mm256_loadu_x2_pd(vc_ptr, x0, x1);
-
-                y0 = _mm256_sort_pd(x0);
-                y1 = _mm256_sort_pd(x1);
-
-                _mm256_storeu_x2_pd(vc_ptr, y0, y1);
-            }
-            else if (r >= AVX2_DOUBLE_STRIDE) {
-                _mm256_loadu_x1_pd(vc_ptr, x0);
-
-                y0 = _mm256_sort_pd(x0);
-
-                _mm256_storeu_x1_pd(vc_ptr, y0);
-            }
-            if (r > 0) {
-                _mm256_loadu_x1_pd(ve_ptr, x0);
-
-                y0 = _mm256_sort_pd(x0);
-
-                _mm256_storeu_x1_pd(ve_ptr, y0);
-            }
+            vc_ptr += AVX2_DOUBLE_STRIDE * 4;
+            r -= AVX2_DOUBLE_STRIDE * 4;
         }
+        if (r >= AVX2_DOUBLE_STRIDE * 3) {
+            _mm256_loadu_x3_pd(vc_ptr, x0, x1, x2);
 
-        {
-            double* vc_ptr = v_ptr + AVX2_DOUBLE_STRIDE / 2;
-            uint r = n - AVX2_DOUBLE_STRIDE / 2;
+            y0 = _mm256_sort_pd(x0);
+            y1 = _mm256_sort_pd(x1);
+            y2 = _mm256_sort_pd(x2);
 
-            while (r >= AVX2_DOUBLE_STRIDE * 4) {
-                _mm256_loadu_x4_pd(vc_ptr, x0, x1, x2, x3);
+            _mm256_storeu_x3_pd(vc_ptr, y0, y1, y2);
+        }
+        else if (r >= AVX2_DOUBLE_STRIDE * 2) {
+            _mm256_loadu_x2_pd(vc_ptr, x0, x1);
 
-                y0 = _mm256_sort_pd(x0);
-                y1 = _mm256_sort_pd(x1);
-                y2 = _mm256_sort_pd(x2);
-                y3 = _mm256_sort_pd(x3);
+            y0 = _mm256_sort_pd(x0);
+            y1 = _mm256_sort_pd(x1);
 
-                _mm256_storeu_x4_pd(vc_ptr, y0, y1, y2, y3);
+            _mm256_storeu_x2_pd(vc_ptr, y0, y1);
+        }
+        else if (r >= AVX2_DOUBLE_STRIDE) {
+            _mm256_loadu_x1_pd(vc_ptr, x0);
 
-                vc_ptr += AVX2_DOUBLE_STRIDE * 4;
-                r -= AVX2_DOUBLE_STRIDE * 4;
-            }
-            if (r >= AVX2_DOUBLE_STRIDE * 3) {
-                _mm256_loadu_x3_pd(vc_ptr, x0, x1, x2);
+            y0 = _mm256_sort_pd(x0);
 
-                y0 = _mm256_sort_pd(x0);
-                y1 = _mm256_sort_pd(x1);
-                y2 = _mm256_sort_pd(x2);
+            _mm256_storeu_x1_pd(vc_ptr, y0);
+        }
+        if (r > 0) {
+            _mm256_loadu_x1_pd(ve_ptr, x0);
 
-                _mm256_storeu_x3_pd(vc_ptr, y0, y1, y2);
-            }
-            else if (r >= AVX2_DOUBLE_STRIDE * 2) {
-                _mm256_loadu_x2_pd(vc_ptr, x0, x1);
+            y0 = _mm256_sort_pd(x0);
 
-                y0 = _mm256_sort_pd(x0);
-                y1 = _mm256_sort_pd(x1);
+            _mm256_storeu_x1_pd(ve_ptr, y0);
+        }
+    }
+    {
+        double* vc_ptr = v_ptr + AVX2_DOUBLE_STRIDE / 2;
+        uint r = n - AVX2_DOUBLE_STRIDE / 2;
 
-                _mm256_storeu_x2_pd(vc_ptr, y0, y1);
-            }
-            else if (r >= AVX2_DOUBLE_STRIDE) {
-                _mm256_loadu_x1_pd(vc_ptr, x0);
+        while (r >= AVX2_DOUBLE_STRIDE * 4) {
+            _mm256_loadu_x4_pd(vc_ptr, x0, x1, x2, x3);
 
-                y0 = _mm256_sort_pd(x0);
+            y0 = _mm256_halfsort_pd(x0);
+            y1 = _mm256_halfsort_pd(x1);
+            y2 = _mm256_halfsort_pd(x2);
+            y3 = _mm256_halfsort_pd(x3);
 
-                _mm256_storeu_x1_pd(vc_ptr, y0);
-            }
-            if (r > 0) {
-                _mm256_loadu_x1_pd(ve_ptr, x0);
+            _mm256_storeu_x4_pd(vc_ptr, y0, y1, y2, y3);
 
-                y0 = _mm256_sort_pd(x0);
+            vc_ptr += AVX2_DOUBLE_STRIDE * 4;
+            r -= AVX2_DOUBLE_STRIDE * 4;
+        }
+        if (r >= AVX2_DOUBLE_STRIDE * 3) {
+            _mm256_loadu_x3_pd(vc_ptr, x0, x1, x2);
 
-                _mm256_storeu_x1_pd(ve_ptr, y0);
-            }
+            y0 = _mm256_halfsort_pd(x0);
+            y1 = _mm256_halfsort_pd(x1);
+            y2 = _mm256_halfsort_pd(x2);
+
+            _mm256_storeu_x3_pd(vc_ptr, y0, y1, y2);
+        }
+        else if (r >= AVX2_DOUBLE_STRIDE * 2) {
+            _mm256_loadu_x2_pd(vc_ptr, x0, x1);
+
+            y0 = _mm256_halfsort_pd(x0);
+            y1 = _mm256_halfsort_pd(x1);
+
+            _mm256_storeu_x2_pd(vc_ptr, y0, y1);
+        }
+        else if (r >= AVX2_DOUBLE_STRIDE) {
+            _mm256_loadu_x1_pd(vc_ptr, x0);
+
+            y0 = _mm256_halfsort_pd(x0);
+
+            _mm256_storeu_x1_pd(vc_ptr, y0);
+        }
+        if (r > 0) {
+            _mm256_loadu_x1_pd(ve_ptr, x0);
+
+            y0 = _mm256_sort_pd(x0);
+
+            _mm256_storeu_x1_pd(ve_ptr, y0);
+        }
+    }
+    {
+        double* vc_ptr = v_ptr;
+        uint r = n;
+
+        while (r >= AVX2_DOUBLE_STRIDE * 4) {
+            _mm256_loadu_x4_pd(vc_ptr, x0, x1, x2, x3);
+
+            y0 = _mm256_halfsort_pd(x0);
+            y1 = _mm256_halfsort_pd(x1);
+            y2 = _mm256_halfsort_pd(x2);
+            y3 = _mm256_halfsort_pd(x3);
+
+            _mm256_storeu_x4_pd(vc_ptr, y0, y1, y2, y3);
+
+            vc_ptr += AVX2_DOUBLE_STRIDE * 4;
+            r -= AVX2_DOUBLE_STRIDE * 4;
+        }
+        if (r >= AVX2_DOUBLE_STRIDE * 3) {
+            _mm256_loadu_x3_pd(vc_ptr, x0, x1, x2);
+
+            y0 = _mm256_halfsort_pd(x0);
+            y1 = _mm256_halfsort_pd(x1);
+            y2 = _mm256_halfsort_pd(x2);
+
+            _mm256_storeu_x3_pd(vc_ptr, y0, y1, y2);
+        }
+        else if (r >= AVX2_DOUBLE_STRIDE * 2) {
+            _mm256_loadu_x2_pd(vc_ptr, x0, x1);
+
+            y0 = _mm256_halfsort_pd(x0);
+            y1 = _mm256_halfsort_pd(x1);
+
+            _mm256_storeu_x2_pd(vc_ptr, y0, y1);
+        }
+        else if (r >= AVX2_DOUBLE_STRIDE) {
+            _mm256_loadu_x1_pd(vc_ptr, x0);
+
+            y0 = _mm256_halfsort_pd(x0);
+
+            _mm256_storeu_x1_pd(vc_ptr, y0);
+        }
+        if (r > 0) {
+            _mm256_loadu_x1_pd(ve_ptr, x0);
+
+            y0 = _mm256_sort_pd(x0);
+
+            _mm256_storeu_x1_pd(ve_ptr, y0);
+        }
+    }
+    {
+        double* vc_ptr = v_ptr + AVX2_DOUBLE_STRIDE / 2;
+        uint r = n - AVX2_DOUBLE_STRIDE / 2;
+
+        while (r >= AVX2_DOUBLE_STRIDE * 4) {
+            _mm256_loadu_x4_pd(vc_ptr, x0, x1, x2, x3);
+
+            y0 = _mm256_halfsort_pd(x0);
+            y1 = _mm256_halfsort_pd(x1);
+            y2 = _mm256_halfsort_pd(x2);
+            y3 = _mm256_halfsort_pd(x3);
+
+            _mm256_storeu_x4_pd(vc_ptr, y0, y1, y2, y3);
+
+            vc_ptr += AVX2_DOUBLE_STRIDE * 4;
+            r -= AVX2_DOUBLE_STRIDE * 4;
+        }
+        if (r >= AVX2_DOUBLE_STRIDE * 3) {
+            _mm256_loadu_x3_pd(vc_ptr, x0, x1, x2);
+
+            y0 = _mm256_halfsort_pd(x0);
+            y1 = _mm256_halfsort_pd(x1);
+            y2 = _mm256_halfsort_pd(x2);
+
+            _mm256_storeu_x3_pd(vc_ptr, y0, y1, y2);
+        }
+        else if (r >= AVX2_DOUBLE_STRIDE * 2) {
+            _mm256_loadu_x2_pd(vc_ptr, x0, x1);
+
+            y0 = _mm256_halfsort_pd(x0);
+            y1 = _mm256_halfsort_pd(x1);
+
+            _mm256_storeu_x2_pd(vc_ptr, y0, y1);
+        }
+        else if (r >= AVX2_DOUBLE_STRIDE) {
+            _mm256_loadu_x1_pd(vc_ptr, x0);
+
+            y0 = _mm256_halfsort_pd(x0);
+
+            _mm256_storeu_x1_pd(vc_ptr, y0);
+        }
+        if (r > 0) {
+            _mm256_loadu_x1_pd(ve_ptr, x0);
+
+            y0 = _mm256_sort_pd(x0);
+
+            _mm256_storeu_x1_pd(ve_ptr, y0);
         }
     }
 
