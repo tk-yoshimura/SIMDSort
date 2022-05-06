@@ -27,8 +27,11 @@ int sortasc_d(const uint n, const uint s, double* v_ptr) {
     else if (s <= 7) {
         return sortasc_ignnan_s7_d(n, s, v_ptr);
     }
+    else if (s <= 8) {
+        return sortasc_ignnan_s8_d(n, s, v_ptr);
+    }
     else if (s < 16) {
-        return sortasc_ignnan_s8to15_d(n, s, v_ptr);
+        return sortasc_ignnan_s9to15_d(n, s, v_ptr);
     }
     else if (s < 32) {
         return sortasc_ignnan_s16to31_d(n, s, v_ptr);
@@ -87,7 +90,7 @@ int sortasc_test_d() {
 }
 
 int sortasc_perm_test_d() {
-    for (uint s = 2; s <= 7; s++) {
+    for (uint s = 2; s <= 12; s++) {
         std::vector<double> v(s);
         for (uint i = 0; i < s; i++) {
             v[i] = (double)((i + 1) % s + 1);

@@ -64,20 +64,18 @@ __forceinline static __m256 _mm256_sort2x3_ps(__m256 x) {
 
 // sort batches2 x elems4
 __forceinline static __m256 _mm256_sort2x4_ps(__m256 x) {
-    const __m256 xormask = _mm256_castsi256_ps(_mm256_setr_epi32(~0u, 0, 0, ~0u, ~0u, 0, 0, ~0u));
-
     __m256 y, c;
-
-    y = _mm256_permute_ps(x, _MM_PERM_ABCD);
-    c = _mm256_xor_ps(xormask, _mm256_permute_ps(_mm256_needsswap_ps(x, y), _MM_PERM_DBBD));
-    x = _mm256_blendv_ps(x, y, c);
 
     y = _mm256_permute_ps(x, _MM_PERM_CDAB);
     c = _mm256_permute_ps(_mm256_needsswap_ps(x, y), _MM_PERM_CCAA);
     x = _mm256_blendv_ps(x, y, c);
 
     y = _mm256_permute_ps(x, _MM_PERM_ABCD);
-    c = _mm256_xor_ps(xormask, _mm256_permute_ps(_mm256_needsswap_ps(x, y), _MM_PERM_DBBD));
+    c = _mm256_permute_ps(_mm256_needsswap_ps(x, y), _MM_PERM_ABBA);
+    x = _mm256_blendv_ps(x, y, c);
+
+    y = _mm256_permute_ps(x, _MM_PERM_CDAB);
+    c = _mm256_permute_ps(_mm256_needsswap_ps(x, y), _MM_PERM_CCAA);
     x = _mm256_blendv_ps(x, y, c);
 
     return x;
@@ -117,16 +115,15 @@ __forceinline static __m256 _mm256_sort1x5_ps(__m256 x) {
 
 // sort batches1 x elems6
 __forceinline static __m256 _mm256_sort1x6_ps(__m256 x) {
-    const __m256 xormask = _mm256_castsi256_ps(_mm256_setr_epi32(~0u, 0, 0, 0, 0, ~0u, 0, 0));
     const __m256i perm0 = _mm256_setr_epi32(5, 2, 1, 4, 3, 0, 6, 7);
     const __m256i perm1 = _mm256_setr_epi32(1, 0, 3, 2, 5, 4, 6, 7);
-    const __m256i permcmp0 = _mm256_setr_epi32(5, 1, 1, 3, 3, 5, 6, 7);
+    const __m256i permcmp0 = _mm256_setr_epi32(0, 1, 1, 3, 3, 0, 6, 7);
     const __m256i permcmp1 = _mm256_setr_epi32(0, 0, 2, 2, 4, 4, 6, 7);
 
     __m256 y, c;
 
     y = _mm256_permutevar8x32_ps(x, perm0);
-    c = _mm256_xor_ps(xormask, _mm256_permutevar8x32_ps(_mm256_needsswap_ps(x, y), permcmp0));
+    c = _mm256_permutevar8x32_ps(_mm256_needsswap_ps(x, y), permcmp0);
     x = _mm256_blendv_ps(x, y, c);
 
     y = _mm256_permutevar8x32_ps(x, perm1);
@@ -134,7 +131,7 @@ __forceinline static __m256 _mm256_sort1x6_ps(__m256 x) {
     x = _mm256_blendv_ps(x, y, c);
 
     y = _mm256_permutevar8x32_ps(x, perm0);
-    c = _mm256_xor_ps(xormask, _mm256_permutevar8x32_ps(_mm256_needsswap_ps(x, y), permcmp0));
+    c = _mm256_permutevar8x32_ps(_mm256_needsswap_ps(x, y), permcmp0);
     x = _mm256_blendv_ps(x, y, c);
 
     y = _mm256_permutevar8x32_ps(x, perm1);
@@ -142,7 +139,7 @@ __forceinline static __m256 _mm256_sort1x6_ps(__m256 x) {
     x = _mm256_blendv_ps(x, y, c);
 
     y = _mm256_permutevar8x32_ps(x, perm0);
-    c = _mm256_xor_ps(xormask, _mm256_permutevar8x32_ps(_mm256_needsswap_ps(x, y), permcmp0));
+    c = _mm256_permutevar8x32_ps(_mm256_needsswap_ps(x, y), permcmp0);
     x = _mm256_blendv_ps(x, y, c);
 
     return x;
@@ -1353,7 +1350,7 @@ __forceinline static int shortsort_n12_s(const uint n, float* v_ptr) {
     _mm256_storeu_ps(v_ptr + 4, y);
 
     x = _mm256_loadu_ps(v_ptr);
-    y = _mm256_sort_ps(x);
+    y = _mm256_halfsort_ps(x);
     _mm256_storeu_ps(v_ptr, y);
 
     return SUCCESS;
@@ -1404,10 +1401,10 @@ __forceinline static int shortsort_n4x12_s(const uint n, float* v_ptr) {
     x1 = _mm256_loadu_ps(v1_ptr);
     x2 = _mm256_loadu_ps(v2_ptr);
     x3 = _mm256_loadu_ps(v3_ptr);
-    y0 = _mm256_sort_ps(x0);
-    y1 = _mm256_sort_ps(x1);
-    y2 = _mm256_sort_ps(x2);
-    y3 = _mm256_sort_ps(x3);
+    y0 = _mm256_halfsort_ps(x0);
+    y1 = _mm256_halfsort_ps(x1);
+    y2 = _mm256_halfsort_ps(x2);
+    y3 = _mm256_halfsort_ps(x3);
     _mm256_storeu_ps(v0_ptr, y0);
     _mm256_storeu_ps(v1_ptr, y1);
     _mm256_storeu_ps(v2_ptr, y2);
