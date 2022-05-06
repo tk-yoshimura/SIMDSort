@@ -90,7 +90,7 @@ int sortasc_test_d() {
 }
 
 int sortasc_perm_test_d() {
-    for (uint s = 2; s <= 12; s++) {
+    for (uint s = 2; s <= 8; s++) {
         std::vector<double> v(s);
         for (uint i = 0; i < s; i++) {
             v[i] = (double)((i + 1) % s + 1);
