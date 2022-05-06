@@ -6,9 +6,9 @@
 #include "../simdsort.h"
 #include "../Sort/sort.h"
 
-int sort_random_speed_test_d() {
+int sort_long_random_speed_test_d() {
     std::ofstream ofs;
-    ofs.open("bin/sortd_random_speed.txt");
+    ofs.open("bin/sortd_long_random_speed.txt");
 
     ofs << "n,std,avx" << std::endl;
 
@@ -64,9 +64,9 @@ int sort_random_speed_test_d() {
     return SUCCESS;
 }
 
-int sort_inbalance_speed_test_d() {
+int sort_long_inbalance_speed_test_d() {
     std::ofstream ofs;
-    ofs.open("bin/sortd_inbalance_speed.txt");
+    ofs.open("bin/sortd_long_inbalance_speed.txt");
 
     ofs << "n,std,avx" << std::endl;
 
@@ -125,9 +125,9 @@ int sort_inbalance_speed_test_d() {
     return SUCCESS;
 }
 
-int sort_reverse_speed_test_d() {
+int sort_long_reverse_speed_test_d() {
     std::ofstream ofs;
-    ofs.open("bin/sortd_reverse_speed.txt");
+    ofs.open("bin/sortd_long_reverse_speed.txt");
 
     ofs << "n,std,avx" << std::endl;
 
@@ -183,9 +183,9 @@ int sort_reverse_speed_test_d() {
     return SUCCESS;
 }
 
-int sort_ndist_speed_test_d() {
+int sort_long_ndist_speed_test_d() {
     std::ofstream ofs;
-    ofs.open("bin/sortd_ndist_speed.txt");
+    ofs.open("bin/sortd_long_ndist_speed.txt");
 
     ofs << "n,std,avx" << std::endl;
 

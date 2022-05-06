@@ -9,10 +9,10 @@
 int main() {
     sortasc_test_s();
     //sortdsc_test_s();
-    //sort_ndist_speed_test_s();
-    //sort_random_speed_test_s();
-    //sort_reverse_speed_test_s();
-    sort_inbalance_speed_test_s();
+    sort_long_ndist_speed_test_s();
+    sort_long_random_speed_test_s();
+    sort_long_reverse_speed_test_s();
+    sort_long_inbalance_speed_test_s();
 
     //for (uint n = 32; n <= 0x8000000u; n *= 2) {
     //    printf("%d : ", n);
@@ -25,10 +25,10 @@ int main() {
     //}
 
     //sortasc_test_d();
-    //sort_ndist_speed_test_d();
-    //sort_random_speed_test_d();
-    //sort_reverse_speed_test_d();
-    //sort_inbalance_speed_test_d();
+    //sort_long_ndist_speed_test_d();
+    //sort_long_random_speed_test_d();
+    //sort_long_reverse_speed_test_d();
+    //sort_long_inbalance_speed_test_d();
 
     printf("end");
     return getchar();
