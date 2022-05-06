@@ -5,7 +5,7 @@
 #include "../simdsort.h"
 #include "../Sort/sort.h"
 
-int sortasc_d(const uint n, const uint s, double* v_ptr) {
+static int sortasc_d(const uint n, const uint s, double* v_ptr) {
     if (s <= 1) {
         return SUCCESS;
     }

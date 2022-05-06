@@ -1329,6 +1329,8 @@ __forceinline static int shortsort_n9to15_d(const uint n, double* v_ptr) {
 #endif //_DEBUG
 
     backtracksort_p4_d(n, v_ptr);
+
+    batchsort_p4_d(n, v_ptr);
     scansort_p4_d(n, v_ptr);
 
     return SUCCESS;

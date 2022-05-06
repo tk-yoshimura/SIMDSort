@@ -24,5 +24,15 @@ extern int sort_inbalance_speed_test_d();
 extern int sort_reverse_speed_test_d();
 extern int sort_ndist_speed_test_d();
 
+extern int sort_short_random_speed_test_s();
+extern int sort_short_inbalance_speed_test_s();
+extern int sort_short_reverse_speed_test_s();
+extern int sort_short_ndist_speed_test_s();
+
+extern int sort_short_random_speed_test_d();
+extern int sort_short_inbalance_speed_test_d();
+extern int sort_short_reverse_speed_test_d();
+extern int sort_short_ndist_speed_test_d();
+
 extern void check_dup_s(const uint n, const float* ptr, const char* message);
 extern void check_dup_d(const uint n, const double* ptr, const char* message);

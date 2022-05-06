@@ -1937,6 +1937,8 @@ __forceinline static int shortsort_n17to31_s(const uint n, float* v_ptr) {
 #endif //_DEBUG
 
     backtracksort_p8_s(n, v_ptr);
+
+    batchsort_p8_s(n, v_ptr);
     scansort_p8_s(n, v_ptr);
 
     return SUCCESS;

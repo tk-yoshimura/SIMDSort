@@ -45,7 +45,7 @@
     <ClCompile Include="Sort\sortasc_ignnan_s.cpp">
       <Filter>Source\Sort</Filter>
     </ClCompile>
-    <ClCompile Include="Tests\sort_speed_test_s.cpp">
+    <ClCompile Include="Tests\sort_long_speed_test_s.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
     <ClCompile Include="Sort\sortdsc_ignnan_s.cpp">
@@ -57,10 +57,16 @@
     <ClCompile Include="Tests\sort_test_d.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
-    <ClCompile Include="Tests\sort_speed_test_d.cpp">
+    <ClCompile Include="Tests\sort_long_speed_test_d.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
     <ClCompile Include="Tests\check_dup.cpp">
+      <Filter>Source\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\sort_short_speed_test_s.cpp">
+      <Filter>Source\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\sort_short_speed_test_d.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
   </ItemGroup>

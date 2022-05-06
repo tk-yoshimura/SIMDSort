@@ -91,10 +91,12 @@
     <ClCompile Include="Sort\sortdsc_ignnan_s.cpp" />
     <ClCompile Include="Tests\check_dup.cpp" />
     <ClCompile Include="Tests\mm_cmp_test_s.cpp" />
-    <ClCompile Include="Tests\sort_speed_test_d.cpp" />
+    <ClCompile Include="Tests\sort_short_speed_test_d.cpp" />
+    <ClCompile Include="Tests\sort_short_speed_test_s.cpp" />
+    <ClCompile Include="Tests\sort_long_speed_test_d.cpp" />
     <ClCompile Include="Tests\sort_test_d.cpp" />
     <ClCompile Include="Tests\sort_test_s.cpp" />
-    <ClCompile Include="Tests\sort_speed_test_s.cpp" />
+    <ClCompile Include="Tests\sort_long_speed_test_s.cpp" />
     <ClCompile Include="Util\util_mm_mask.cpp" />
     <ClCompile Include="Util\util_nan.cpp" />
     <ClCompile Include="_main.cpp" />
