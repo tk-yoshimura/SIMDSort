@@ -51,8 +51,11 @@ int sortasc_s(const uint n, const uint s, float* v_ptr) {
     else if (s <= 15) {
         return sortasc_ignnan_s15_s(n, s, v_ptr);
     }
+    else if (s <= 16) {
+        return sortasc_ignnan_s16_s(n, s, v_ptr);
+    }
     else if (s < 32) {
-        return sortasc_ignnan_s16to31_s(n, s, v_ptr);
+        return sortasc_ignnan_s17to31_s(n, s, v_ptr);
     }
     else if (s < 64) {
         return sortasc_ignnan_s32to63_s(n, s, v_ptr);
@@ -108,8 +111,11 @@ int sortdsc_s(const uint n, const uint s, float* v_ptr) {
     else if (s <= 15) {
         return sortdsc_ignnan_s15_s(n, s, v_ptr);
     }
+    else if (s <= 16) {
+        return sortdsc_ignnan_s16_s(n, s, v_ptr);
+    }
     else if (s < 32) {
-        return sortdsc_ignnan_s16to31_s(n, s, v_ptr);
+        return sortdsc_ignnan_s17to31_s(n, s, v_ptr);
     }
     else if (s < 64) {
         return sortdsc_ignnan_s32to63_s(n, s, v_ptr);
@@ -211,7 +217,7 @@ int sortdsc_test_s() {
 }
 
 int sortasc_perm_test_s() {
-    for (uint s = 2; s <= 15; s++) {
+    for (uint s = 16; s <= 16; s++) {
         std::vector<float> v(s);
         for (uint i = 0; i < s; i++) {
             v[i] = (float)((i + 1) % s + 1);

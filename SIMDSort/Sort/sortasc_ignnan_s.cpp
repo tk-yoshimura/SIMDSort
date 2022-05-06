@@ -1795,10 +1795,143 @@ __forceinline static int shortsort_n4x15_s(const uint n, float* v_ptr) {
     return SUCCESS;
 }
 
-// shortsort elems 16...31
-__forceinline static int shortsort_n16to31_s(const uint n, float* v_ptr) {
+// shortsort elems16
+__forceinline static int shortsort_n16_s(const uint n, float* v_ptr) {
 #ifdef _DEBUG
-    if (n < AVX2_FLOAT_STRIDE * 2 || n >= AVX2_FLOAT_STRIDE * 4) {
+    if (n != AVX2_FLOAT_STRIDE * 2) {
+        return FAILURE_BADPARAM;
+    }
+#endif //_DEBUG
+
+    __m256 x, y;
+
+    x = _mm256_loadu_ps(v_ptr);
+    y = _mm256_sort_ps(x);
+    _mm256_storeu_ps(v_ptr, y);
+
+    x = _mm256_loadu_ps(v_ptr + AVX2_FLOAT_STRIDE);
+    y = _mm256_sort_ps(x);
+    _mm256_storeu_ps(v_ptr + AVX2_FLOAT_STRIDE, y);
+
+    x = _mm256_loadu_ps(v_ptr + AVX2_FLOAT_STRIDE / 2);
+    y = _mm256_halfsort_ps(x);
+    _mm256_storeu_ps(v_ptr + AVX2_FLOAT_STRIDE / 2, y);
+
+    x = _mm256_loadu_ps(v_ptr);
+    y = _mm256_halfsort_ps(x);
+    _mm256_storeu_ps(v_ptr, y);
+
+    x = _mm256_loadu_ps(v_ptr + AVX2_FLOAT_STRIDE);
+    y = _mm256_halfsort_ps(x);
+    _mm256_storeu_ps(v_ptr + AVX2_FLOAT_STRIDE, y);
+
+    x = _mm256_loadu_ps(v_ptr + AVX2_FLOAT_STRIDE / 2);
+    y = _mm256_halfsort_ps(x);
+    _mm256_storeu_ps(v_ptr + AVX2_FLOAT_STRIDE / 2, y);
+
+    return SUCCESS;
+}
+
+// shortsort batches4 x elems16
+__forceinline static int shortsort_n4x16_s(const uint n, float* v_ptr) {
+#ifdef _DEBUG
+    if (n != AVX2_FLOAT_STRIDE * 2) {
+        return FAILURE_BADPARAM;
+    }
+#endif //_DEBUG
+
+    float* v0_ptr = v_ptr;
+    float* v1_ptr = v_ptr + AVX2_FLOAT_STRIDE * 2;
+    float* v2_ptr = v_ptr + AVX2_FLOAT_STRIDE * 4;
+    float* v3_ptr = v_ptr + AVX2_FLOAT_STRIDE * 6;
+
+    __m256 x0, x1, x2, x3, y0, y1, y2, y3;
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + AVX2_FLOAT_STRIDE);
+    x1 = _mm256_loadu_ps(v1_ptr + AVX2_FLOAT_STRIDE);
+    x2 = _mm256_loadu_ps(v2_ptr + AVX2_FLOAT_STRIDE);
+    x3 = _mm256_loadu_ps(v3_ptr + AVX2_FLOAT_STRIDE);
+    y0 = _mm256_sort_ps(x0);
+    y1 = _mm256_sort_ps(x1);
+    y2 = _mm256_sort_ps(x2);
+    y3 = _mm256_sort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + AVX2_FLOAT_STRIDE, y0);
+    _mm256_storeu_ps(v1_ptr + AVX2_FLOAT_STRIDE, y1);
+    _mm256_storeu_ps(v2_ptr + AVX2_FLOAT_STRIDE, y2);
+    _mm256_storeu_ps(v3_ptr + AVX2_FLOAT_STRIDE, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + AVX2_FLOAT_STRIDE / 2);
+    x1 = _mm256_loadu_ps(v1_ptr + AVX2_FLOAT_STRIDE / 2);
+    x2 = _mm256_loadu_ps(v2_ptr + AVX2_FLOAT_STRIDE / 2);
+    x3 = _mm256_loadu_ps(v3_ptr + AVX2_FLOAT_STRIDE / 2);
+    y0 = _mm256_halfsort_ps(x0);
+    y1 = _mm256_halfsort_ps(x1);
+    y2 = _mm256_halfsort_ps(x2);
+    y3 = _mm256_halfsort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + AVX2_FLOAT_STRIDE / 2, y0);
+    _mm256_storeu_ps(v1_ptr + AVX2_FLOAT_STRIDE / 2, y1);
+    _mm256_storeu_ps(v2_ptr + AVX2_FLOAT_STRIDE / 2, y2);
+    _mm256_storeu_ps(v3_ptr + AVX2_FLOAT_STRIDE / 2, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr);
+    x1 = _mm256_loadu_ps(v1_ptr);
+    x2 = _mm256_loadu_ps(v2_ptr);
+    x3 = _mm256_loadu_ps(v3_ptr);
+    y0 = _mm256_halfsort_ps(x0);
+    y1 = _mm256_halfsort_ps(x1);
+    y2 = _mm256_halfsort_ps(x2);
+    y3 = _mm256_halfsort_ps(x3);
+    _mm256_storeu_ps(v0_ptr, y0);
+    _mm256_storeu_ps(v1_ptr, y1);
+    _mm256_storeu_ps(v2_ptr, y2);
+    _mm256_storeu_ps(v3_ptr, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + AVX2_FLOAT_STRIDE);
+    x1 = _mm256_loadu_ps(v1_ptr + AVX2_FLOAT_STRIDE);
+    x2 = _mm256_loadu_ps(v2_ptr + AVX2_FLOAT_STRIDE);
+    x3 = _mm256_loadu_ps(v3_ptr + AVX2_FLOAT_STRIDE);
+    y0 = _mm256_halfsort_ps(x0);
+    y1 = _mm256_halfsort_ps(x1);
+    y2 = _mm256_halfsort_ps(x2);
+    y3 = _mm256_halfsort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + AVX2_FLOAT_STRIDE, y0);
+    _mm256_storeu_ps(v1_ptr + AVX2_FLOAT_STRIDE, y1);
+    _mm256_storeu_ps(v2_ptr + AVX2_FLOAT_STRIDE, y2);
+    _mm256_storeu_ps(v3_ptr + AVX2_FLOAT_STRIDE, y3);
+
+    x0 = _mm256_loadu_ps(v0_ptr + AVX2_FLOAT_STRIDE / 2);
+    x1 = _mm256_loadu_ps(v1_ptr + AVX2_FLOAT_STRIDE / 2);
+    x2 = _mm256_loadu_ps(v2_ptr + AVX2_FLOAT_STRIDE / 2);
+    x3 = _mm256_loadu_ps(v3_ptr + AVX2_FLOAT_STRIDE / 2);
+    y0 = _mm256_halfsort_ps(x0);
+    y1 = _mm256_halfsort_ps(x1);
+    y2 = _mm256_halfsort_ps(x2);
+    y3 = _mm256_halfsort_ps(x3);
+    _mm256_storeu_ps(v0_ptr + AVX2_FLOAT_STRIDE / 2, y0);
+    _mm256_storeu_ps(v1_ptr + AVX2_FLOAT_STRIDE / 2, y1);
+    _mm256_storeu_ps(v2_ptr + AVX2_FLOAT_STRIDE / 2, y2);
+    _mm256_storeu_ps(v3_ptr + AVX2_FLOAT_STRIDE / 2, y3);
+
+    return SUCCESS;
+}
+
+// shortsort elems 17...31
+__forceinline static int shortsort_n17to31_s(const uint n, float* v_ptr) {
+#ifdef _DEBUG
+    if (n <= AVX2_FLOAT_STRIDE * 2 || n >= AVX2_FLOAT_STRIDE * 4) {
         return FAILURE_BADPARAM;
     }
 #endif //_DEBUG
@@ -2337,13 +2470,30 @@ int sortasc_ignnan_s15_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortasc_ignnan_s16to31_s(const uint n, const uint s, float* v_ptr) {
-    if (s < AVX2_FLOAT_STRIDE * 2 || s >= AVX2_FLOAT_STRIDE * 4) {
+int sortasc_ignnan_s16_s(const uint n, const uint s, float* v_ptr) {
+    if (s != AVX2_FLOAT_STRIDE * 2) {
+        return FAILURE_BADPARAM;
+    }
+
+    for (uint i = 0; i < (n & (~3u)); i += 4u) {
+        shortsort_n4x16_s(s, v_ptr);
+        v_ptr += s * 4;
+    }
+    for (uint i = (n & (~3u)); i < n; i++) {
+        shortsort_n16_s(s, v_ptr);
+        v_ptr += s;
+    }
+
+    return SUCCESS;
+}
+
+int sortasc_ignnan_s17to31_s(const uint n, const uint s, float* v_ptr) {
+    if (s <= AVX2_FLOAT_STRIDE * 2 || s >= AVX2_FLOAT_STRIDE * 4) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < n; i++) {
-        shortsort_n16to31_s(s, v_ptr);
+        shortsort_n17to31_s(s, v_ptr);
         v_ptr += s;
     }
 
