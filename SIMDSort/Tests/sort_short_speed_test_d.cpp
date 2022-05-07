@@ -31,11 +31,32 @@ static int sortasc_d(const uint n, const uint s, double* v_ptr) {
     else if (s <= 8) {
         return sortasc_ignnan_s8_d(n, s, v_ptr);
     }
-    else if (s < 16) {
-        return sortasc_ignnan_s9to15_d(n, s, v_ptr);
+    else if (s <= 9) {
+        return sortasc_ignnan_s9_d(n, s, v_ptr);
+    }
+    else if (s <= 10) {
+        return sortasc_ignnan_s10_d(n, s, v_ptr);
+    }
+    else if (s <= 11) {
+        return sortasc_ignnan_s11_d(n, s, v_ptr);
+    }
+    else if (s <= 12) {
+        return sortasc_ignnan_s12_d(n, s, v_ptr);
+    }
+    else if (s <= 13) {
+        return sortasc_ignnan_s13_d(n, s, v_ptr);
+    }
+    else if (s <= 14) {
+        return sortasc_ignnan_s14_d(n, s, v_ptr);
+    }
+    else if (s <= 15) {
+        return sortasc_ignnan_s15_d(n, s, v_ptr);
+    }
+    else if (s <= 16) {
+        return sortasc_ignnan_s16_d(n, s, v_ptr);
     }
     else if (s < 32) {
-        return sortasc_ignnan_s16to31_d(n, s, v_ptr);
+        return sortasc_ignnan_s17to31_d(n, s, v_ptr);
     }
     else {
         return sortasc_ignnan_s32plus_d(n, s, v_ptr);

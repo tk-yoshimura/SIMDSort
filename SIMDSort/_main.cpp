@@ -8,27 +8,18 @@
 
 int main() {
     sortasc_test_s();
-    //sortdsc_test_s();
-    sort_long_ndist_speed_test_s();
-    sort_long_random_speed_test_s();
-    sort_long_reverse_speed_test_s();
-    sort_long_inbalance_speed_test_s();
+    sortdsc_test_s();
+    sortasc_test_d();
 
-    //for (uint n = 32; n <= 0x8000000u; n *= 2) {
-    //    printf("%d : ", n);
-    //
-    //    for (uint h = (uint)(n * 10L / 13L); h > 1; h = (uint)(h * 10L / 13L)) {
-    //        printf("%d -> ", h);
-    //    }
-    //
-    //    printf("\n");
-    //}
+    sort_short_random_speed_test_d();
+    sort_short_ndist_speed_test_d();
+    sort_short_reverse_speed_test_d();
+    sort_short_inbalance_speed_test_d();
 
-    //sortasc_test_d();
-    //sort_long_ndist_speed_test_d();
-    //sort_long_random_speed_test_d();
-    //sort_long_reverse_speed_test_d();
-    //sort_long_inbalance_speed_test_d();
+    sort_short_random_speed_test_s();
+    sort_short_ndist_speed_test_s();
+    sort_short_reverse_speed_test_s();
+    sort_short_inbalance_speed_test_s();
 
     printf("end");
     return getchar();

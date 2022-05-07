@@ -54,8 +54,11 @@ static int sortasc_s(const uint n, const uint s, float* v_ptr) {
     else if (s <= 16) {
         return sortasc_ignnan_s16_s(n, s, v_ptr);
     }
+    else if (s < 21) {
+        return sortasc_ignnan_s17to20_s(n, s, v_ptr);
+    }
     else if (s < 32) {
-        return sortasc_ignnan_s17to31_s(n, s, v_ptr);
+        return sortasc_ignnan_s21to31_s(n, s, v_ptr);
     }
     else if (s < 64) {
         return sortasc_ignnan_s32to63_s(n, s, v_ptr);
@@ -114,8 +117,11 @@ int sortdsc_s(const uint n, const uint s, float* v_ptr) {
     else if (s <= 16) {
         return sortdsc_ignnan_s16_s(n, s, v_ptr);
     }
+    else if (s < 21) {
+        return sortdsc_ignnan_s17to20_s(n, s, v_ptr);
+    }
     else if (s < 32) {
-        return sortdsc_ignnan_s17to31_s(n, s, v_ptr);
+        return sortdsc_ignnan_s21to31_s(n, s, v_ptr);
     }
     else if (s < 64) {
         return sortdsc_ignnan_s32to63_s(n, s, v_ptr);
@@ -220,7 +226,46 @@ int sortasc_perm_test_s() {
     for (uint s = 2; s <= 16; s++) {
         std::vector<float> v(s);
         for (uint i = 0; i < s; i++) {
-            v[i] = (float)((i + 1) % s + 1);
+            v[i] = (float)(i + 1);
+        }
+
+        std::reverse(v.begin(), v.end());
+
+        uint c = 0;
+
+        float* t = (float*)_aligned_malloc((s + 4) * sizeof(float), AVX2_ALIGNMENT);
+        if (t == nullptr) {
+            return FAILURE_BADALLOC;
+        }
+
+        memcpy_s(t, s * sizeof(float), v.data(), s * sizeof(float));
+
+        for (uint i = s; i < s + 4; i++) {
+            t[i] = (float)(((i + c) * 31) % s);
+        }
+
+        sortasc_s(1, s, t);
+
+        for (uint i = 1; i < s; i++) {
+            if (t[i - 1u] >= t[i]) {
+                throw std::exception("err");
+            }
+        }
+        for (uint i = s; i < s + 4; i++) {
+            if (t[i] != ((i + c) * 31) % s) {
+                throw std::exception("err");
+            }
+        }
+
+        _aligned_free(t);
+
+        printf("\npermute ok s=%d\n", s);
+    }
+
+    for (uint s = 2; s <= 16; s++) {
+        std::vector<float> v(s);
+        for (uint i = 0; i < s; i++) {
+            v[i] = (float)(i + 1);
         }
 
         uint c = 0;

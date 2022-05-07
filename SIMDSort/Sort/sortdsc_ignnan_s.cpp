@@ -265,6 +265,40 @@ __forceinline static uint _mm256_cmpswap_indexed_ps(__m256 a, __m256 b, __m256& 
     return index;
 }
 
+// compare and swap with permutate
+__forceinline static void _mm256_cmpswap_withperm_ps(__m256 a, __m256 b, __m256& x, __m256& y) {
+
+    _mm256_cmpswap_ps(a, b, x, y);
+
+    a = _mm256_permute_ps(x, _MM_PERM_CBAD);
+    b = y;
+    _mm256_cmpswap_ps(a, b, x, y);
+
+    a = _mm256_permute_ps(x, _MM_PERM_CBAD);
+    b = y;
+    _mm256_cmpswap_ps(a, b, x, y);
+
+    a = _mm256_permute_ps(x, _MM_PERM_CBAD);
+    b = y;
+    _mm256_cmpswap_ps(a, b, x, y);
+
+    a = _mm256_castpd_ps(_mm256_permute4x64_pd(_mm256_castps_pd(x), _MM_PERM_BADC));
+    b = y;
+    _mm256_cmpswap_ps(a, b, x, y);
+
+    a = _mm256_permute_ps(x, _MM_PERM_CBAD);
+    b = y;
+    _mm256_cmpswap_ps(a, b, x, y);
+
+    a = _mm256_permute_ps(x, _MM_PERM_CBAD);
+    b = y;
+    _mm256_cmpswap_ps(a, b, x, y);
+
+    a = _mm256_permute_ps(x, _MM_PERM_CBAD);
+    b = y;
+    _mm256_cmpswap_ps(a, b, x, y);
+}
+
 #pragma endregion cmp and swap
 
 #pragma region combsort
@@ -1560,7 +1594,7 @@ __forceinline static int shortsort_n14_s(const uint n, float* v_ptr) {
     _mm256_storeu_ps(v_ptr + 6, y);
 
     x = _mm256_loadu_ps(v_ptr + 3);
-    y = _mm256_sort_ps(x);
+    y = _mm256_sort4x2_ps(x);
     _mm256_storeu_ps(v_ptr + 3, y);
 
     return SUCCESS;
@@ -1650,10 +1684,10 @@ __forceinline static int shortsort_n4x14_s(const uint n, float* v_ptr) {
     x1 = _mm256_loadu_ps(v1_ptr + 3);
     x2 = _mm256_loadu_ps(v2_ptr + 3);
     x3 = _mm256_loadu_ps(v3_ptr + 3);
-    y0 = _mm256_sort_ps(x0);
-    y1 = _mm256_sort_ps(x1);
-    y2 = _mm256_sort_ps(x2);
-    y3 = _mm256_sort_ps(x3);
+    y0 = _mm256_sort4x2_ps(x0);
+    y1 = _mm256_sort4x2_ps(x1);
+    y2 = _mm256_sort4x2_ps(x2);
+    y3 = _mm256_sort4x2_ps(x3);
     _mm256_storeu_ps(v0_ptr + 3, y0);
     _mm256_storeu_ps(v1_ptr + 3, y1);
     _mm256_storeu_ps(v2_ptr + 3, y2);
@@ -1928,10 +1962,40 @@ __forceinline static int shortsort_n4x16_s(const uint n, float* v_ptr) {
     return SUCCESS;
 }
 
-// shortsort elems 17...31
-__forceinline static int shortsort_n17to31_s(const uint n, float* v_ptr) {
+// shortsort elems 17...20
+__forceinline static int shortsort_n17to20_s(const uint n, float* v_ptr) {
 #ifdef _DEBUG
-    if (n <= AVX2_FLOAT_STRIDE * 2 || n >= AVX2_FLOAT_STRIDE * 4) {
+    if (n <= AVX2_FLOAT_STRIDE * 2 || n > AVX2_FLOAT_STRIDE * 5 / 2) {
+        return FAILURE_BADPARAM;
+    }
+#endif //_DEBUG
+
+    __m256 a, b, x, y;
+
+    x = _mm256_loadu_ps(v_ptr + (n - AVX2_FLOAT_STRIDE) / 2);
+    y = _mm256_sort_ps(x);
+    _mm256_storeu_ps(v_ptr + (n - AVX2_FLOAT_STRIDE) / 2, y);
+
+    a = _mm256_loadu_ps(v_ptr);
+    b = _mm256_loadu_ps(v_ptr + (n - AVX2_FLOAT_STRIDE));
+
+    _mm256_cmpswap_withperm_ps(a, b, x, y);
+
+    x = _mm256_sort_ps(x);
+    y = _mm256_sort_ps(y);
+
+    _mm256_storeu_ps(v_ptr, x);
+    _mm256_storeu_ps(v_ptr + (n - AVX2_FLOAT_STRIDE), y);
+
+    scansort_p8_s(n, v_ptr);
+
+    return SUCCESS;
+}
+
+// shortsort elems 21...31
+__forceinline static int shortsort_n21to31_s(const uint n, float* v_ptr) {
+#ifdef _DEBUG
+    if (n <= AVX2_FLOAT_STRIDE * 5 / 2 || n >= AVX2_FLOAT_STRIDE * 4) {
         return FAILURE_BADPARAM;
     }
 #endif //_DEBUG
@@ -2489,18 +2553,32 @@ int sortdsc_ignnan_s16_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortdsc_ignnan_s17to31_s(const uint n, const uint s, float* v_ptr) {
-    if (s <= AVX2_FLOAT_STRIDE * 2 || s >= AVX2_FLOAT_STRIDE * 4) {
+int sortdsc_ignnan_s17to20_s(const uint n, const uint s, float* v_ptr) {
+    if (s <= AVX2_FLOAT_STRIDE * 2 || s > AVX2_FLOAT_STRIDE * 5 / 2) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < n; i++) {
-        shortsort_n17to31_s(s, v_ptr);
+        shortsort_n17to20_s(s, v_ptr);
         v_ptr += s;
     }
 
     return SUCCESS;
 }
+
+int sortdsc_ignnan_s21to31_s(const uint n, const uint s, float* v_ptr) {
+    if (s <= AVX2_FLOAT_STRIDE * 5 / 2 || s >= AVX2_FLOAT_STRIDE * 4) {
+        return FAILURE_BADPARAM;
+    }
+
+    for (uint i = 0; i < n; i++) {
+        shortsort_n21to31_s(s, v_ptr);
+        v_ptr += s;
+    }
+
+    return SUCCESS;
+}
+
 
 int sortdsc_ignnan_s32to63_s(const uint n, const uint s, float* v_ptr) {
     if (s < AVX2_FLOAT_STRIDE * 4 || s >= AVX2_FLOAT_STRIDE * 8) {

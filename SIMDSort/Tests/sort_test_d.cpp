@@ -30,11 +30,32 @@ static int sortasc_d(const uint n, const uint s, double* v_ptr) {
     else if (s <= 8) {
         return sortasc_ignnan_s8_d(n, s, v_ptr);
     }
-    else if (s < 16) {
-        return sortasc_ignnan_s9to15_d(n, s, v_ptr);
+    else if (s <= 9) {
+        return sortasc_ignnan_s9_d(n, s, v_ptr);
+    }
+    else if (s <= 10) {
+        return sortasc_ignnan_s10_d(n, s, v_ptr);
+    }
+    else if (s <= 11) {
+        return sortasc_ignnan_s11_d(n, s, v_ptr);
+    }
+    else if (s <= 12) {
+        return sortasc_ignnan_s12_d(n, s, v_ptr);
+    }
+    else if (s <= 13) {
+        return sortasc_ignnan_s13_d(n, s, v_ptr);
+    }
+    else if (s <= 14) {
+        return sortasc_ignnan_s14_d(n, s, v_ptr);
+    }
+    else if (s <= 15) {
+        return sortasc_ignnan_s15_d(n, s, v_ptr);
+    }
+    else if (s <= 16) {
+        return sortasc_ignnan_s16_d(n, s, v_ptr);
     }
     else if (s < 32) {
-        return sortasc_ignnan_s16to31_d(n, s, v_ptr);
+        return sortasc_ignnan_s17to31_d(n, s, v_ptr);
     }
     else {
         return sortasc_ignnan_s32plus_d(n, s, v_ptr);
@@ -90,10 +111,49 @@ int sortasc_test_d() {
 }
 
 int sortasc_perm_test_d() {
-    for (uint s = 2; s <= 8; s++) {
+    for (uint s = 2; s <= 16; s++) {
         std::vector<double> v(s);
         for (uint i = 0; i < s; i++) {
-            v[i] = (double)((i + 1) % s + 1);
+            v[i] = (double)(i + 1);
+        }
+
+        std::reverse(v.begin(), v.end());
+
+        uint c = 0;
+
+        double* t = (double*)_aligned_malloc((s + 4) * sizeof(double), AVX2_ALIGNMENT);
+        if (t == nullptr) {
+            return FAILURE_BADALLOC;
+        }
+
+        memcpy_s(t, s * sizeof(double), v.data(), s * sizeof(double));
+
+        for (uint i = s; i < s + 4; i++) {
+            t[i] = (double)(((i + c) * 31) % s);
+        }
+
+        sortasc_d(1, s, t);
+
+        for (uint i = 1; i < s; i++) {
+            if (t[i - 1u] >= t[i]) {
+                throw std::exception("err");
+            }
+        }
+        for (uint i = s; i < s + 4; i++) {
+            if (t[i] != ((i + c) * 31) % s) {
+                throw std::exception("err");
+            }
+        }
+
+        _aligned_free(t);
+
+        printf("\npermute ok s=%d\n", s);
+    }
+
+    for (uint s = 2; s <= 16; s++) {
+        std::vector<double> v(s);
+        for (uint i = 0; i < s; i++) {
+            v[i] = (double)(i + 1);
         }
 
         uint c = 0;
@@ -104,7 +164,6 @@ int sortasc_perm_test_d() {
         }
 
         do {
-
             memcpy_s(t, s * sizeof(double), v.data(), s * sizeof(double));
 
             for (uint i = s; i < s + 4; i++) {
@@ -115,6 +174,9 @@ int sortasc_perm_test_d() {
 
             for (uint i = 1; i < s; i++) {
                 if (t[i - 1u] >= t[i]) {
+                    std::vector<double> u(s);
+                    memcpy_s(u.data(), s * sizeof(double), t, s * sizeof(double));
+
                     throw std::exception("err");
                 }
             }

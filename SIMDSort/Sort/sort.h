@@ -20,7 +20,8 @@ extern int sortasc_ignnan_s13_s(const uint n, const uint s, float* v_ptr);
 extern int sortasc_ignnan_s14_s(const uint n, const uint s, float* v_ptr);
 extern int sortasc_ignnan_s15_s(const uint n, const uint s, float* v_ptr);
 extern int sortasc_ignnan_s16_s(const uint n, const uint s, float* v_ptr);
-extern int sortasc_ignnan_s17to31_s(const uint n, const uint s, float* v_ptr);
+extern int sortasc_ignnan_s17to20_s(const uint n, const uint s, float* v_ptr);
+extern int sortasc_ignnan_s21to31_s(const uint n, const uint s, float* v_ptr);
 extern int sortasc_ignnan_s32to63_s(const uint n, const uint s, float* v_ptr);
 extern int sortasc_ignnan_s64plus_s(const uint n, const uint s, float* v_ptr);
 
@@ -43,7 +44,8 @@ extern int sortdsc_ignnan_s13_s(const uint n, const uint s, float* v_ptr);
 extern int sortdsc_ignnan_s14_s(const uint n, const uint s, float* v_ptr);
 extern int sortdsc_ignnan_s15_s(const uint n, const uint s, float* v_ptr);
 extern int sortdsc_ignnan_s16_s(const uint n, const uint s, float* v_ptr);
-extern int sortdsc_ignnan_s17to31_s(const uint n, const uint s, float* v_ptr);
+extern int sortdsc_ignnan_s17to20_s(const uint n, const uint s, float* v_ptr);
+extern int sortdsc_ignnan_s21to31_s(const uint n, const uint s, float* v_ptr);
 extern int sortdsc_ignnan_s32to63_s(const uint n, const uint s, float* v_ptr);
 extern int sortdsc_ignnan_s64plus_s(const uint n, const uint s, float* v_ptr);
 
@@ -58,8 +60,15 @@ extern int sortasc_ignnan_s5_d(const uint n, const uint s, double* v_ptr);
 extern int sortasc_ignnan_s6_d(const uint n, const uint s, double* v_ptr);
 extern int sortasc_ignnan_s7_d(const uint n, const uint s, double* v_ptr);
 extern int sortasc_ignnan_s8_d(const uint n, const uint s, double* v_ptr);
-extern int sortasc_ignnan_s9to15_d(const uint n, const uint s, double* v_ptr);
-extern int sortasc_ignnan_s16to31_d(const uint n, const uint s, double* v_ptr);
+extern int sortasc_ignnan_s9_d(const uint n, const uint s, double* v_ptr);
+extern int sortasc_ignnan_s10_d(const uint n, const uint s, double* v_ptr);
+extern int sortasc_ignnan_s11_d(const uint n, const uint s, double* v_ptr);
+extern int sortasc_ignnan_s12_d(const uint n, const uint s, double* v_ptr);
+extern int sortasc_ignnan_s13_d(const uint n, const uint s, double* v_ptr);
+extern int sortasc_ignnan_s14_d(const uint n, const uint s, double* v_ptr);
+extern int sortasc_ignnan_s15_d(const uint n, const uint s, double* v_ptr);
+extern int sortasc_ignnan_s16_d(const uint n, const uint s, double* v_ptr);
+extern int sortasc_ignnan_s17to31_d(const uint n, const uint s, double* v_ptr);
 extern int sortasc_ignnan_s32plus_d(const uint n, const uint s, double* v_ptr);
 
 #pragma endregion double ascending sort ignore nan
