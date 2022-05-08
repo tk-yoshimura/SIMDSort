@@ -2161,8 +2161,8 @@ __forceinline static int shortsort_n17to31_d(const uint n, double* v_ptr) {
     }
 #endif //_DEBUG
 
+    combsort_h12_d(n, v_ptr);
     paracombsort_p2x4_d(n, v_ptr);
-    backtracksort_p4_d(n, v_ptr);
 
     batchsort_p4_d(n, v_ptr);
     scansort_p4_d(n, v_ptr);

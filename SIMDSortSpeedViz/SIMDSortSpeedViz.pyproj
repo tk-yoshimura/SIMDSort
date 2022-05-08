@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>6a2b4486-4375-477f-bb7e-590474385374</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>speedviz.py</StartupFile>
+    <StartupFile>speedviz_sortshort.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -21,7 +21,8 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="speedviz.py" />
+    <Compile Include="speedviz_sortshort.py" />
+    <Compile Include="speedviz_sortlong.py" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

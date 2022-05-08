@@ -77,7 +77,7 @@ int sort_short_random_speed_test_s() {
 
     std::mt19937 mt(1234);
 
-    for (uint s = 2; s <= 1024; s++) {
+    for (uint s = 2; s <= 1024; s += s / 32 + 1) {
         const uint n = 400000 / s;
 
         std::vector<long long> stdsorttimes, avxsorttimes;
@@ -138,7 +138,7 @@ int sort_short_inbalance_speed_test_s() {
 
     std::mt19937 mt(1234);
 
-    for (uint s = 2; s <= 1024; s++) {
+    for (uint s = 2; s <= 1024; s += s / 32 + 1) {
         const uint n = 400000 / s;
 
         std::vector<long long> stdsorttimes, avxsorttimes;
@@ -200,7 +200,7 @@ int sort_short_reverse_speed_test_s() {
 
     ofs << "n,std,avx" << std::endl;
 
-    for (uint s = 2; s <= 1024; s++) {
+    for (uint s = 2; s <= 1024; s += s / 32 + 1) {
         const uint n = 400000 / s;
 
         std::vector<long long> stdsorttimes, avxsorttimes;
@@ -265,7 +265,7 @@ int sort_short_ndist_speed_test_s() {
     std::normal_distribution<float> ndist(0, 1);
     std::default_random_engine engine(seed_gen());
 
-    for (uint s = 2; s <= 1024; s++) {
+    for (uint s = 2; s <= 1024; s += s / 32 + 1) {
         const uint n = 400000 / s;
 
         std::vector<long long> stdsorttimes, avxsorttimes;
