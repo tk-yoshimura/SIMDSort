@@ -55,11 +55,8 @@ static int sortasc_s(const uint n, const uint s, float* v_ptr) {
     else if (s <= 16) {
         return sortasc_ignnan_s16_s(n, s, v_ptr);
     }
-    else if (s < 21) {
-        return sortasc_ignnan_s17to20_s(n, s, v_ptr);
-    }
     else if (s < 32) {
-        return sortasc_ignnan_s21to31_s(n, s, v_ptr);
+        return sortasc_ignnan_s17to31_s(n, s, v_ptr);
     }
     else if (s < 64) {
         return sortasc_ignnan_s32to63_s(n, s, v_ptr);

@@ -1117,6 +1117,192 @@ __forceinline static int scansort_p8_s(const uint n, float* v_ptr) {
 
 #pragma endregion scansort
 
+#pragma region permcombsort
+
+// permcombsort 8 elems wise
+__forceinline static int permcombsort_p8_s(const uint n, float* v_ptr) {
+#ifdef _DEBUG
+    if (n < AVX2_FLOAT_STRIDE * 2 || n >= AVX2_FLOAT_STRIDE * 4) {
+        return FAILURE_BADPARAM;
+    }
+#endif
+
+    const uint c = n / AVX2_FLOAT_STRIDE;
+
+    __m256 a, b, x, y;
+
+    for (uint h = c > 2 ? 2 : 1; h >= 1; h /= 2) {
+        for (uint i = 0; i < c - h; i++) {
+            a = _mm256_loadu_ps(v_ptr + i * AVX2_FLOAT_STRIDE);
+            b = _mm256_loadu_ps(v_ptr + (i + h) * AVX2_FLOAT_STRIDE);
+
+            _mm256_cmpswap_withperm_ps(a, b, x, y);
+
+            _mm256_storeu_ps(v_ptr + i * AVX2_FLOAT_STRIDE, x);
+            _mm256_storeu_ps(v_ptr + (i + h) * AVX2_FLOAT_STRIDE, y);
+        }
+    }
+
+    if ((n & AVX2_FLOAT_REMAIN_MASK) != 0) {
+        b = _mm256_loadu_ps(v_ptr + (n - AVX2_FLOAT_STRIDE));
+
+        for (uint i = 0; i < c - 1; i++) {
+            a = _mm256_loadu_ps(v_ptr + i * AVX2_FLOAT_STRIDE);
+
+            _mm256_cmpswap_ps(a, b, x, y);
+            x = _mm256_sort_ps(x);
+            b = y;
+
+            _mm256_storeu_ps(v_ptr + i * AVX2_FLOAT_STRIDE, x);
+        }
+
+        a = _mm256_loadu_ps(v_ptr + (n - AVX2_FLOAT_STRIDE * 2));
+
+        _mm256_cmpswap_withperm_ps(a, b, x, y);
+
+        x = _mm256_sort_ps(x);
+        y = _mm256_sort_ps(y);
+
+        _mm256_storeu_ps(v_ptr + (n - AVX2_FLOAT_STRIDE * 2), x);
+        _mm256_storeu_ps(v_ptr + (n - AVX2_FLOAT_STRIDE), y);
+    }
+    else {
+        for (uint i = 0; i < c; i++) {
+            a = _mm256_loadu_ps(v_ptr + i * AVX2_FLOAT_STRIDE);
+            a = _mm256_sort_ps(a);
+            _mm256_storeu_ps(v_ptr + i * AVX2_FLOAT_STRIDE, a);
+        }
+    }
+
+    return SUCCESS;
+}
+
+// permcombsort 8 elems wise 4 batches
+__forceinline static int permcombsort_p4x8_s(const uint n, float* v_ptr) {
+#ifdef _DEBUG
+    if (n < AVX2_FLOAT_STRIDE * 2 || n >= AVX2_FLOAT_STRIDE * 4) {
+        return FAILURE_BADPARAM;
+    }
+#endif
+
+    const uint c = n / AVX2_FLOAT_STRIDE;
+
+    float* v0_ptr = v_ptr;
+    float* v1_ptr = v_ptr + n;
+    float* v2_ptr = v_ptr + n * 2;
+    float* v3_ptr = v_ptr + n * 3;
+
+    __m256 a0, b0, x0, y0, a1, b1, x1, y1, a2, b2, x2, y2, a3, b3, x3, y3;
+
+    for (uint h = c > 2 ? 2 : 1; h >= 1; h /= 2) {
+        for (uint i = 0; i < c - h; i++) {
+            a0 = _mm256_loadu_ps(v0_ptr + i * AVX2_FLOAT_STRIDE);
+            a1 = _mm256_loadu_ps(v1_ptr + i * AVX2_FLOAT_STRIDE);
+            a2 = _mm256_loadu_ps(v2_ptr + i * AVX2_FLOAT_STRIDE);
+            a3 = _mm256_loadu_ps(v3_ptr + i * AVX2_FLOAT_STRIDE);
+            b0 = _mm256_loadu_ps(v0_ptr + (i + h) * AVX2_FLOAT_STRIDE);
+            b1 = _mm256_loadu_ps(v1_ptr + (i + h) * AVX2_FLOAT_STRIDE);
+            b2 = _mm256_loadu_ps(v2_ptr + (i + h) * AVX2_FLOAT_STRIDE);
+            b3 = _mm256_loadu_ps(v3_ptr + (i + h) * AVX2_FLOAT_STRIDE);
+
+            _mm256_cmpswap_withperm_ps(a0, b0, x0, y0);
+            _mm256_cmpswap_withperm_ps(a1, b1, x1, y1);
+            _mm256_cmpswap_withperm_ps(a2, b2, x2, y2);
+            _mm256_cmpswap_withperm_ps(a3, b3, x3, y3);
+
+            _mm256_storeu_ps(v0_ptr + i * AVX2_FLOAT_STRIDE, x0);
+            _mm256_storeu_ps(v1_ptr + i * AVX2_FLOAT_STRIDE, x1);
+            _mm256_storeu_ps(v2_ptr + i * AVX2_FLOAT_STRIDE, x2);
+            _mm256_storeu_ps(v3_ptr + i * AVX2_FLOAT_STRIDE, x3);
+            _mm256_storeu_ps(v0_ptr + (i + h) * AVX2_FLOAT_STRIDE, y0);
+            _mm256_storeu_ps(v1_ptr + (i + h) * AVX2_FLOAT_STRIDE, y1);
+            _mm256_storeu_ps(v2_ptr + (i + h) * AVX2_FLOAT_STRIDE, y2);
+            _mm256_storeu_ps(v3_ptr + (i + h) * AVX2_FLOAT_STRIDE, y3);
+        }
+    }
+
+    if ((n & AVX2_FLOAT_REMAIN_MASK) != 0) {
+        b0 = _mm256_loadu_ps(v0_ptr + (n - AVX2_FLOAT_STRIDE));
+        b1 = _mm256_loadu_ps(v1_ptr + (n - AVX2_FLOAT_STRIDE));
+        b2 = _mm256_loadu_ps(v2_ptr + (n - AVX2_FLOAT_STRIDE));
+        b3 = _mm256_loadu_ps(v3_ptr + (n - AVX2_FLOAT_STRIDE));
+
+        for (uint i = 0; i < c - 1; i++) {
+            a0 = _mm256_loadu_ps(v0_ptr + i * AVX2_FLOAT_STRIDE);
+            a1 = _mm256_loadu_ps(v1_ptr + i * AVX2_FLOAT_STRIDE);
+            a2 = _mm256_loadu_ps(v2_ptr + i * AVX2_FLOAT_STRIDE);
+            a3 = _mm256_loadu_ps(v3_ptr + i * AVX2_FLOAT_STRIDE);
+
+            _mm256_cmpswap_ps(a0, b0, x0, y0);
+            _mm256_cmpswap_ps(a1, b1, x1, y1);
+            _mm256_cmpswap_ps(a2, b2, x2, y2);
+            _mm256_cmpswap_ps(a3, b3, x3, y3);
+
+            x0 = _mm256_sort_ps(x0);
+            x1 = _mm256_sort_ps(x1);
+            x2 = _mm256_sort_ps(x2);
+            x3 = _mm256_sort_ps(x3);
+            b0 = y0;
+            b1 = y1;
+            b2 = y2;
+            b3 = y3;
+
+            _mm256_storeu_ps(v0_ptr + i * AVX2_FLOAT_STRIDE, x0);
+            _mm256_storeu_ps(v1_ptr + i * AVX2_FLOAT_STRIDE, x1);
+            _mm256_storeu_ps(v2_ptr + i * AVX2_FLOAT_STRIDE, x2);
+            _mm256_storeu_ps(v3_ptr + i * AVX2_FLOAT_STRIDE, x3);
+        }
+
+        a0 = _mm256_loadu_ps(v0_ptr + (n - AVX2_FLOAT_STRIDE * 2));
+        a1 = _mm256_loadu_ps(v1_ptr + (n - AVX2_FLOAT_STRIDE * 2));
+        a2 = _mm256_loadu_ps(v2_ptr + (n - AVX2_FLOAT_STRIDE * 2));
+        a3 = _mm256_loadu_ps(v3_ptr + (n - AVX2_FLOAT_STRIDE * 2));
+
+        _mm256_cmpswap_withperm_ps(a0, b0, x0, y0);
+        _mm256_cmpswap_withperm_ps(a1, b1, x1, y1);
+        _mm256_cmpswap_withperm_ps(a2, b2, x2, y2);
+        _mm256_cmpswap_withperm_ps(a3, b3, x3, y3);
+
+        x0 = _mm256_sort_ps(x0);
+        x1 = _mm256_sort_ps(x1);
+        x2 = _mm256_sort_ps(x2);
+        x3 = _mm256_sort_ps(x3);
+        y0 = _mm256_sort_ps(y0);
+        y1 = _mm256_sort_ps(y1);
+        y2 = _mm256_sort_ps(y2);
+        y3 = _mm256_sort_ps(y3);
+
+        _mm256_storeu_ps(v0_ptr + (n - AVX2_FLOAT_STRIDE * 2), x0);
+        _mm256_storeu_ps(v1_ptr + (n - AVX2_FLOAT_STRIDE * 2), x1);
+        _mm256_storeu_ps(v2_ptr + (n - AVX2_FLOAT_STRIDE * 2), x2);
+        _mm256_storeu_ps(v3_ptr + (n - AVX2_FLOAT_STRIDE * 2), x3);
+        _mm256_storeu_ps(v0_ptr + (n - AVX2_FLOAT_STRIDE), y0);
+        _mm256_storeu_ps(v1_ptr + (n - AVX2_FLOAT_STRIDE), y1);
+        _mm256_storeu_ps(v2_ptr + (n - AVX2_FLOAT_STRIDE), y2);
+        _mm256_storeu_ps(v3_ptr + (n - AVX2_FLOAT_STRIDE), y3);
+    }
+    else {
+        for (uint i = 0; i < c; i++) {
+            a0 = _mm256_loadu_ps(v0_ptr + i * AVX2_FLOAT_STRIDE);
+            a1 = _mm256_loadu_ps(v1_ptr + i * AVX2_FLOAT_STRIDE);
+            a2 = _mm256_loadu_ps(v2_ptr + i * AVX2_FLOAT_STRIDE);
+            a3 = _mm256_loadu_ps(v3_ptr + i * AVX2_FLOAT_STRIDE);
+            a0 = _mm256_sort_ps(a0);
+            a1 = _mm256_sort_ps(a1);
+            a2 = _mm256_sort_ps(a2);
+            a3 = _mm256_sort_ps(a3);
+            _mm256_storeu_ps(v0_ptr + i * AVX2_FLOAT_STRIDE, a0);
+            _mm256_storeu_ps(v1_ptr + i * AVX2_FLOAT_STRIDE, a1);
+            _mm256_storeu_ps(v2_ptr + i * AVX2_FLOAT_STRIDE, a2);
+            _mm256_storeu_ps(v3_ptr + i * AVX2_FLOAT_STRIDE, a3);
+        }
+    }
+
+    return SUCCESS;
+}
+
+#pragma endregion permcombsort
+
 #pragma region shortsort
 
 // shortsort elems9
@@ -1962,52 +2148,6 @@ __forceinline static int shortsort_n4x16_s(const uint n, float* v_ptr) {
     return SUCCESS;
 }
 
-// shortsort elems 17...20
-__forceinline static int shortsort_n17to20_s(const uint n, float* v_ptr) {
-#ifdef _DEBUG
-    if (n <= AVX2_FLOAT_STRIDE * 2 || n > AVX2_FLOAT_STRIDE * 5 / 2) {
-        return FAILURE_BADPARAM;
-    }
-#endif //_DEBUG
-
-    __m256 a, b, x, y;
-
-    x = _mm256_loadu_ps(v_ptr + (n - AVX2_FLOAT_STRIDE) / 2);
-    y = _mm256_sort_ps(x);
-    _mm256_storeu_ps(v_ptr + (n - AVX2_FLOAT_STRIDE) / 2, y);
-
-    a = _mm256_loadu_ps(v_ptr);
-    b = _mm256_loadu_ps(v_ptr + (n - AVX2_FLOAT_STRIDE));
-
-    _mm256_cmpswap_withperm_ps(a, b, x, y);
-
-    x = _mm256_sort_ps(x);
-    y = _mm256_sort_ps(y);
-
-    _mm256_storeu_ps(v_ptr, x);
-    _mm256_storeu_ps(v_ptr + (n - AVX2_FLOAT_STRIDE), y);
-
-    scansort_p8_s(n, v_ptr);
-
-    return SUCCESS;
-}
-
-// shortsort elems 21...31
-__forceinline static int shortsort_n21to31_s(const uint n, float* v_ptr) {
-#ifdef _DEBUG
-    if (n <= AVX2_FLOAT_STRIDE * 5 / 2 || n >= AVX2_FLOAT_STRIDE * 4) {
-        return FAILURE_BADPARAM;
-    }
-#endif //_DEBUG
-
-    backtracksort_p8_s(n, v_ptr);
-
-    batchsort_p8_s(n, v_ptr);
-    scansort_p8_s(n, v_ptr);
-
-    return SUCCESS;
-}
-
 #pragma endregion shortsort
 
 #pragma region longsort
@@ -2553,32 +2693,28 @@ int sortdsc_ignnan_s16_s(const uint n, const uint s, float* v_ptr) {
     return SUCCESS;
 }
 
-int sortdsc_ignnan_s17to20_s(const uint n, const uint s, float* v_ptr) {
-    if (s <= AVX2_FLOAT_STRIDE * 2 || s > AVX2_FLOAT_STRIDE * 5 / 2) {
+int sortdsc_ignnan_s17to31_s(const uint n, const uint s, float* v_ptr) {
+    if (s <= AVX2_FLOAT_STRIDE * 2 || s >= AVX2_FLOAT_STRIDE * 4) {
         return FAILURE_BADPARAM;
     }
 
-    for (uint i = 0; i < n; i++) {
-        shortsort_n17to20_s(s, v_ptr);
+    for (uint i = 0; i < (n & (~3u)); i += 4u) {
+        permcombsort_p4x8_s(s, v_ptr);
+        scansort_p8_s(s, v_ptr);
+        scansort_p8_s(s, v_ptr + s);
+        scansort_p8_s(s, v_ptr + s * 2);
+        scansort_p8_s(s, v_ptr + s * 3);
+        v_ptr += s * 4;
+    }
+    for (uint i = (n & (~3u)); i < n; i++) {
+        permcombsort_p8_s(s, v_ptr);
+        scansort_p8_s(s, v_ptr);
+
         v_ptr += s;
     }
 
     return SUCCESS;
 }
-
-int sortdsc_ignnan_s21to31_s(const uint n, const uint s, float* v_ptr) {
-    if (s <= AVX2_FLOAT_STRIDE * 5 / 2 || s >= AVX2_FLOAT_STRIDE * 4) {
-        return FAILURE_BADPARAM;
-    }
-
-    for (uint i = 0; i < n; i++) {
-        shortsort_n21to31_s(s, v_ptr);
-        v_ptr += s;
-    }
-
-    return SUCCESS;
-}
-
 
 int sortdsc_ignnan_s32to63_s(const uint n, const uint s, float* v_ptr) {
     if (s < AVX2_FLOAT_STRIDE * 4 || s >= AVX2_FLOAT_STRIDE * 8) {
