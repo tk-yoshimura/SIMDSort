@@ -96,6 +96,12 @@
     <ClCompile Include="Sort\sortdsc_maxnan_d.cpp">
       <Filter>Source\Sort</Filter>
     </ClCompile>
+    <ClCompile Include="Tests\sort_limit_speed_test_d.cpp">
+      <Filter>Source\Tests</Filter>
+    </ClCompile>
+    <ClCompile Include="Tests\sort_limit_speed_test_s.cpp">
+      <Filter>Source\Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="simdsort.h">
