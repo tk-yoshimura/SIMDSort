@@ -69,6 +69,33 @@
     <ClCompile Include="Tests\sort_short_speed_test_d.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
+    <ClCompile Include="Sort\sortdsc_ignnan_d.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\sortdsc_maxnan_s.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\sortasc_maxnan_s.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\sortdsc_minnan_s.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\sortasc_minnan_s.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\sortdsc_minnan_d.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\sortasc_minnan_d.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\sortasc_maxnan_d.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\sortdsc_maxnan_d.cpp">
+      <Filter>Source\Sort</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="simdsort.h">

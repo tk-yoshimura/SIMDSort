@@ -88,7 +88,16 @@
   <ItemGroup>
     <ClCompile Include="Sort\sortasc_ignnan_d.cpp" />
     <ClCompile Include="Sort\sortasc_ignnan_s.cpp" />
+    <ClCompile Include="Sort\sortasc_maxnan_d.cpp" />
+    <ClCompile Include="Sort\sortasc_maxnan_s.cpp" />
+    <ClCompile Include="Sort\sortasc_minnan_d.cpp" />
+    <ClCompile Include="Sort\sortasc_minnan_s.cpp" />
+    <ClCompile Include="Sort\sortdsc_ignnan_d.cpp" />
     <ClCompile Include="Sort\sortdsc_ignnan_s.cpp" />
+    <ClCompile Include="Sort\sortdsc_maxnan_d.cpp" />
+    <ClCompile Include="Sort\sortdsc_maxnan_s.cpp" />
+    <ClCompile Include="Sort\sortdsc_minnan_d.cpp" />
+    <ClCompile Include="Sort\sortdsc_minnan_s.cpp" />
     <ClCompile Include="Tests\check_dup.cpp" />
     <ClCompile Include="Tests\mm_cmp_test_s.cpp" />
     <ClCompile Include="Tests\sort_short_speed_test_d.cpp" />
