@@ -1122,7 +1122,7 @@ __forceinline static int scansort_p8_s(const uint n, float* v_ptr) {
 // permcombsort 8 elems wise
 __forceinline static int permcombsort_p8_s(const uint n, float* v_ptr) {
 #ifdef _DEBUG
-    if (n < AVX2_FLOAT_STRIDE * 2 || n >= AVX2_FLOAT_STRIDE * 4) {
+    if (n <= AVX2_FLOAT_STRIDE * 2 || n >= AVX2_FLOAT_STRIDE * 4) {
         return FAILURE_BADPARAM;
     }
 #endif
@@ -1180,7 +1180,7 @@ __forceinline static int permcombsort_p8_s(const uint n, float* v_ptr) {
 // permcombsort 8 elems wise 4 batches
 __forceinline static int permcombsort_p4x8_s(const uint n, float* v_ptr) {
 #ifdef _DEBUG
-    if (n < AVX2_FLOAT_STRIDE * 2 || n >= AVX2_FLOAT_STRIDE * 4) {
+    if (n <= AVX2_FLOAT_STRIDE * 2 || n >= AVX2_FLOAT_STRIDE * 4) {
         return FAILURE_BADPARAM;
     }
 #endif

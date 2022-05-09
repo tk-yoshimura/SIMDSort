@@ -6,13 +6,13 @@ import matplotlib.pyplot as plt
 tests = 32
 ns = -1
 
-filepaths = glob.glob("../SIMDSort/bin/sorts_short_*_speed.txt")
+filepaths = glob.glob("../SIMDSort/bin/sortd_short_*_speed.txt")
 
 datas = []
 
 for filepath in filepaths:
     data = pd.read_csv(filepath, delimiter=',')
-    cond = filepath.replace('\\', '/').split('/')[-1][len('sorts_short_'):-len('_speed.txt')]
+    cond = filepath.replace('\\', '/').split('/')[-1][len('sortd_short_'):-len('_speed.txt')]
 
     n, stdsort, avxsort = data['n'].to_numpy(), data['std'].to_numpy(), data['avx'].to_numpy()
 
@@ -65,7 +65,7 @@ for filepath in filepaths:
     
     plt.legend(loc='lower right')
 
-    plt.savefig('../figures/sort_short_{}_speed_s.svg'.format(cond))
+    plt.savefig('../figures/sort_short_{}_speed_d.svg'.format(cond))
     plt.cla()
 
 fig = plt.figure(figsize=(12, 6))
@@ -85,5 +85,5 @@ for (cond, n, speed) in datas:
 
 plt.legend(loc='lower right')
 
-plt.savefig('../figures/sort_short_avxall_speed_s.svg')
+plt.savefig('../figures/sort_short_avxall_speed_d.svg')
 plt.cla()
