@@ -837,7 +837,7 @@ static int batchsort_p8_s(const uint n, float* v_ptr) {
 
             _mm256_storeu_x1_ps(vc_ptr, y0);
         }
-        if (r > 0) {
+        if ((r & AVX2_FLOAT_REMAIN_MASK) > 0) {
             _mm256_loadu_x1_ps(ve_ptr, x0);
 
             y0 = _mm256_sort_ps(x0);
@@ -886,7 +886,7 @@ static int batchsort_p8_s(const uint n, float* v_ptr) {
 
             _mm256_storeu_x1_ps(vc_ptr, y0);
         }
-        if (r > 0) {
+        if ((r & AVX2_FLOAT_REMAIN_MASK) > 0) {
             _mm256_loadu_x1_ps(ve_ptr, x0);
 
             y0 = _mm256_sort_ps(x0);
@@ -935,7 +935,7 @@ static int batchsort_p8_s(const uint n, float* v_ptr) {
 
             _mm256_storeu_x1_ps(vc_ptr, y0);
         }
-        if (r > 0) {
+        if ((r & AVX2_FLOAT_REMAIN_MASK) > 0) {
             _mm256_loadu_x1_ps(ve_ptr, x0);
 
             y0 = _mm256_sort_ps(x0);
@@ -984,7 +984,7 @@ static int batchsort_p8_s(const uint n, float* v_ptr) {
 
             _mm256_storeu_x1_ps(vc_ptr, y0);
         }
-        if (r > 0) {
+        if ((r & AVX2_FLOAT_REMAIN_MASK) > 0) {
             _mm256_loadu_x1_ps(ve_ptr, x0);
 
             y0 = _mm256_sort_ps(x0);
@@ -2179,7 +2179,7 @@ __forceinline static int longsort_n64plus_s(const uint n, float* v_ptr) {
 
     uint h;
 
-    for (h = (uint)(n * 10L / 13L); h > 33; h = (uint)(h * 10L / 13L)) {
+    for (h = (uint)(n * 10uL / 13uL); h > 33; h = (uint)(h * 10uL / 13uL)) {
         combsort_h33plus_s(n, h, v_ptr);
     }
     if (h >= 32) {

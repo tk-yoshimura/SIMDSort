@@ -715,7 +715,7 @@ static int batchsort_p4_d(const uint n, double* v_ptr) {
 
             _mm256_storeu_x1_pd(vc_ptr, y0);
         }
-        if (r > 0) {
+        if ((r & AVX2_FLOAT_REMAIN_MASK) > 0) {
             _mm256_loadu_x1_pd(ve_ptr, x0);
 
             y0 = _mm256_sort_pd(x0);
@@ -764,7 +764,7 @@ static int batchsort_p4_d(const uint n, double* v_ptr) {
 
             _mm256_storeu_x1_pd(vc_ptr, y0);
         }
-        if (r > 0) {
+        if ((r & AVX2_FLOAT_REMAIN_MASK) > 0) {
             _mm256_loadu_x1_pd(ve_ptr, x0);
 
             y0 = _mm256_sort_pd(x0);
@@ -813,7 +813,7 @@ static int batchsort_p4_d(const uint n, double* v_ptr) {
 
             _mm256_storeu_x1_pd(vc_ptr, y0);
         }
-        if (r > 0) {
+        if ((r & AVX2_FLOAT_REMAIN_MASK) > 0) {
             _mm256_loadu_x1_pd(ve_ptr, x0);
 
             y0 = _mm256_sort_pd(x0);
@@ -862,7 +862,7 @@ static int batchsort_p4_d(const uint n, double* v_ptr) {
 
             _mm256_storeu_x1_pd(vc_ptr, y0);
         }
-        if (r > 0) {
+        if ((r & AVX2_FLOAT_REMAIN_MASK) > 0) {
             _mm256_loadu_x1_pd(ve_ptr, x0);
 
             y0 = _mm256_sort_pd(x0);
@@ -2388,7 +2388,7 @@ __forceinline static int longsort_n32plus_d(const uint n, double* v_ptr) {
 
     uint h;
 
-    for (h = (uint)(n * 10L / 13L); h > 16; h = (uint)(h * 10L / 13L)) {
+    for (h = (uint)(n * 10uL / 13uL); h > 33; h = (uint)(h * 10uL / 13uL)) {
         combsort_h17plus_d(n, h, v_ptr);
     }
     if (h >= 16) {

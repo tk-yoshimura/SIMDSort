@@ -9,6 +9,9 @@ typedef const double* __restrict indoubles;
 typedef float* __restrict outfloats;
 typedef double* __restrict outdoubles;
 
+typedef const uint* __restrict inuints;
+typedef uint* __restrict outuints;
+
 static_assert(sizeof(unsigned char) == 1, "sizeof byte must be 1");
 
 static_assert(sizeof(float) == 4, "sizeof float must be 4");

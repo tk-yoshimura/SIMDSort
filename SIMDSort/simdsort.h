@@ -14,6 +14,8 @@ extern int sortasc_perm_test_s();
 extern int sortasc_test_d();
 extern int sortasc_perm_test_d();
 
+extern int sortwithkeyasc_test_s();
+
 extern int sort_long_random_speed_test_s();
 extern int sort_long_inbalance_speed_test_s();
 extern int sort_long_reverse_speed_test_s();
