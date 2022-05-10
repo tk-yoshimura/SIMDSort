@@ -2179,7 +2179,7 @@ __forceinline static int longsort_n64plus_s(const uint n, float* v_ptr) {
 
     uint h;
 
-    for (h = (uint)(n * 10uL / 13uL); h > 33; h = (uint)(h * 10uL / 13uL)) {
+    for (h = (uint)(n * 10uLL / 13uLL); h > 33; h = (uint)(h * 10uLL / 13uLL)) {
         combsort_h33plus_s(n, h, v_ptr);
     }
     if (h >= 32) {

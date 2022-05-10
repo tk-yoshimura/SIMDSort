@@ -2388,7 +2388,7 @@ __forceinline static int longsort_n32plus_d(const uint n, double* v_ptr) {
 
     uint h;
 
-    for (h = (uint)(n * 10uL / 13uL); h > 33; h = (uint)(h * 10uL / 13uL)) {
+    for (h = (uint)(n * 10uLL / 13uLL); h > 33; h = (uint)(h * 10uLL / 13uLL)) {
         combsort_h17plus_d(n, h, v_ptr);
     }
     if (h >= 16) {
