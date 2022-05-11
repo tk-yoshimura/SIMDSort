@@ -2,7 +2,8 @@
 
 #include <immintrin.h>
 
-typedef unsigned int uint;
+typedef unsigned __int32 uint;
+typedef unsigned __int64 ulong;
 
 typedef const float* __restrict infloats;
 typedef const double* __restrict indoubles;
@@ -11,12 +12,15 @@ typedef double* __restrict outdoubles;
 
 typedef const uint* __restrict inuints;
 typedef uint* __restrict outuints;
+typedef const ulong* __restrict inulongs;
+typedef ulong* __restrict outulongs;
 
 static_assert(sizeof(unsigned char) == 1, "sizeof byte must be 1");
 
 static_assert(sizeof(float) == 4, "sizeof float must be 4");
 static_assert(sizeof(double) == 8, "sizeof float must be 8");
 static_assert(sizeof(uint) == 4, "sizeof uint must be 4");
+static_assert(sizeof(ulong) == 8, "sizeof ulong must be 8");
 
 union _m32 {
     float f;

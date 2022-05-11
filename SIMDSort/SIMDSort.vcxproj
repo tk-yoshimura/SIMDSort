@@ -86,6 +86,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="SortWithKey\sortwithkeyasc_ignnan_d.cpp" />
     <ClCompile Include="SortWithKey\sortwithkeyasc_ignnan_s.cpp" />
     <ClCompile Include="Sort\sortasc_ignnan_d.cpp" />
     <ClCompile Include="Sort\sortasc_ignnan_s.cpp" />
@@ -121,6 +122,7 @@
     <ClInclude Include="Inline\inline_cmp_s.hpp" />
     <ClInclude Include="Inline\inline_loadstore_xn_d.hpp" />
     <ClInclude Include="Inline\inline_loadstore_xn_epi32.hpp" />
+    <ClInclude Include="Inline\inline_loadstore_xn_epi64.hpp" />
     <ClInclude Include="Inline\inline_loadstore_xn_s.hpp" />
     <ClInclude Include="Inline\inline_misc.hpp" />
     <ClInclude Include="Inline\inline_ope_d.hpp" />

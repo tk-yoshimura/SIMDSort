@@ -111,6 +111,9 @@
     <ClCompile Include="Tests\sortwithkey_test_s.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
+    <ClCompile Include="SortWithKey\sortwithkeyasc_ignnan_d.cpp">
+      <Filter>Source\SortWithKey</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="simdsort.h">
@@ -159,6 +162,9 @@
       <Filter>Source\SortWithKey</Filter>
     </ClInclude>
     <ClInclude Include="Inline\inline_loadstore_xn_epi32.hpp">
+      <Filter>Source\Inline</Filter>
+    </ClInclude>
+    <ClInclude Include="Inline\inline_loadstore_xn_epi64.hpp">
       <Filter>Source\Inline</Filter>
     </ClInclude>
   </ItemGroup>
