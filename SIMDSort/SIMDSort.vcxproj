@@ -102,6 +102,7 @@
     <ClCompile Include="Sort\sortdsc_minnan_s.cpp" />
     <ClCompile Include="Tests\check_dup.cpp" />
     <ClCompile Include="Tests\mm_cmp_test_s.cpp" />
+    <ClCompile Include="Tests\sortwithkey_test_d.cpp" />
     <ClCompile Include="Tests\sortwithkey_test_s.cpp" />
     <ClCompile Include="Tests\sort_limit_speed_test_d.cpp" />
     <ClCompile Include="Tests\sort_limit_speed_test_s.cpp" />

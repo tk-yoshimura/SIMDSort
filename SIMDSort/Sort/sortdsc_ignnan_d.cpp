@@ -2357,23 +2357,6 @@ __forceinline static int shortsort_n4x16_d(const uint n, double* v_ptr) {
     return SUCCESS;
 }
 
-// shortsort elems 17...31
-__forceinline static int shortsort_n17to31_d(const uint n, double* v_ptr) {
-#ifdef _DEBUG
-    if (n <= AVX2_DOUBLE_STRIDE * 4 || n >= AVX2_DOUBLE_STRIDE * 8) {
-        return FAILURE_BADPARAM;
-    }
-#endif //_DEBUG
-
-    combsort_h12_d(n, v_ptr);
-    paracombsort_p2x4_d(n, v_ptr);
-
-    batchsort_p4_d(n, v_ptr);
-    scansort_p4_d(n, v_ptr);
-
-    return SUCCESS;
-}
-
 #pragma endregion shortsort
 
 #pragma region longsort

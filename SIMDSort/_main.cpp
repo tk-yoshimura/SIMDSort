@@ -7,9 +7,8 @@
 #include "Inline/inline_cmp_s.hpp"
 
 int main() {
-    
-    sort_limit_random_test_s();
-    sort_limit_random_test_d();
+    sortwithkeyasc_test_d();
+    sortwithkeyasc_test_s();
 
     printf("end");
     return getchar();

@@ -114,6 +114,9 @@
     <ClCompile Include="SortWithKey\sortwithkeyasc_ignnan_d.cpp">
       <Filter>Source\SortWithKey</Filter>
     </ClCompile>
+    <ClCompile Include="Tests\sortwithkey_test_d.cpp">
+      <Filter>Source\Tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="simdsort.h">

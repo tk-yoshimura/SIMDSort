@@ -115,7 +115,7 @@ __forceinline static __m256dkv _mm256_halfsort_pd(__m256dkv x) {
 // sort elems8
 __forceinline static __m256dkvx2 _mm256x2_sort_pd(__m256dkvx2 x) {
     __m256dkvx2 y;
-    __m256d c0, c1, swaps, notswaps;
+    __m256d swaps, notswaps;
 
     swaps = _mm256_needsswap_pd(x.k0, x.k1);
     notswaps = _mm256_not_pd(swaps);
@@ -197,17 +197,17 @@ __forceinline static void _mm256_cmpswap_withperm_pd(__m256dkv a, __m256dkv b, _
 
     _mm256_cmpswap_pd(a, b, x, y);
 
-    a.k = _mm256_permute_pd(x.k, _MM_PERM_CBAD);
+    a.k = _mm256_permute4x64_pd(x.k, _MM_PERM_CBAD);
     a.v = _mm256_permute4x64_epi64(x.v, _MM_PERM_CBAD);
     b = y;
     _mm256_cmpswap_pd(a, b, x, y);
 
-    a.k = _mm256_permute_pd(x.k, _MM_PERM_CBAD);
+    a.k = _mm256_permute4x64_pd(x.k, _MM_PERM_CBAD);
     a.v = _mm256_permute4x64_epi64(x.v, _MM_PERM_CBAD);
     b = y;
     _mm256_cmpswap_pd(a, b, x, y);
 
-    a.k = _mm256_permute_pd(x.k, _MM_PERM_CBAD);
+    a.k = _mm256_permute4x64_pd(x.k, _MM_PERM_CBAD);
     a.v = _mm256_permute4x64_epi64(x.v, _MM_PERM_CBAD);
     b = y;
     _mm256_cmpswap_pd(a, b, x, y);
@@ -2568,31 +2568,44 @@ __forceinline static int shortsort_n14_d(const uint n, ulong* __restrict v_ptr, 
     }
 #endif //_DEBUG
 
-    __m256dx2 x, y;
+    __m256dkvx2 x, y;
+    __m256dkv z;
 
-    _mm256_loadu_x2_pd(v_ptr, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr, y.v0, y.v1);
 
-    _mm256_loadu_x2_pd(v_ptr + 6, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr + 6, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr + 6, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr + 6, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr + 6, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr + 6, y.v0, y.v1);
 
-    _mm256_loadu_x2_pd(v_ptr + 3, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr + 3, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr + 3, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr + 3, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr + 3, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr + 3, y.v0, y.v1);
 
-    _mm256_loadu_x2_pd(v_ptr, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr, y.v0, y.v1);
 
-    _mm256_loadu_x2_pd(v_ptr + 6, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr + 6, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr + 6, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr + 6, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr + 6, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr + 6, y.v0, y.v1);
 
-    x.imm0 = _mm256_loadu_pd(v_ptr + 5);
-    y.imm0 = _mm256_sort2x2_pd(x.imm0);
-    _mm256_storeu_pd(v_ptr + 5, y.imm0);
+    z.k = _mm256_loadu_pd(k_ptr + 5);
+    z.v = _mm256_loadu_epi64(v_ptr + 5);
+    z = _mm256_sort2x2_pd(z);
+    _mm256_storeu_pd(k_ptr + 5, z.k);
+    _mm256_storeu_epi64(v_ptr + 5, z.v);
 
     return SUCCESS;
 }
@@ -2605,90 +2618,144 @@ __forceinline static int shortsort_n4x14_d(const uint n, ulong* __restrict v_ptr
     }
 #endif //_DEBUG
 
-    double* v0_ptr = v_ptr;
-    double* v1_ptr = v_ptr + 14;
-    double* v2_ptr = v_ptr + 28;
-    double* v3_ptr = v_ptr + 42;
+    double* k0_ptr = k_ptr;
+    double* k1_ptr = k_ptr + 14;
+    double* k2_ptr = k_ptr + 28;
+    double* k3_ptr = k_ptr + 42;
 
-    __m256dx2 x0, x1, x2, x3, y0, y1, y2, y3;
+    ulong* v0_ptr = v_ptr;
+    ulong* v1_ptr = v_ptr + 14;
+    ulong* v2_ptr = v_ptr + 28;
+    ulong* v3_ptr = v_ptr + 42;
 
-    _mm256_loadu_x2_pd(v0_ptr, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr, x3.imm0, x3.imm1);
+    __m256dkvx2 x0, x1, x2, x3, y0, y1, y2, y3;
+    __m256dkv z0, z1, z2, z3;
+
+    _mm256_loadu_x2_pd(k0_ptr, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr, y3.v0, y3.v1);
 
-    _mm256_loadu_x2_pd(v0_ptr + 6, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr + 6, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr + 6, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr + 6, x3.imm0, x3.imm1);
+    _mm256_loadu_x2_pd(k0_ptr + 6, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr + 6, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr + 6, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr + 6, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr + 6, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr + 6, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr + 6, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr + 6, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr + 6, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr + 6, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr + 6, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr + 6, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr + 6, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr + 6, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr + 6, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr + 6, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr + 6, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr + 6, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr + 6, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr + 6, y3.v0, y3.v1);
 
-    _mm256_loadu_x2_pd(v0_ptr + 3, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr + 3, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr + 3, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr + 3, x3.imm0, x3.imm1);
+    _mm256_loadu_x2_pd(k0_ptr + 3, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr + 3, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr + 3, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr + 3, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr + 3, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr + 3, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr + 3, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr + 3, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr + 3, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr + 3, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr + 3, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr + 3, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr + 3, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr + 3, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr + 3, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr + 3, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr + 3, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr + 3, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr + 3, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr + 3, y3.v0, y3.v1);
 
-    _mm256_loadu_x2_pd(v0_ptr, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr, x3.imm0, x3.imm1);
+    _mm256_loadu_x2_pd(k0_ptr, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr, y3.v0, y3.v1);
 
-    _mm256_loadu_x2_pd(v0_ptr + 6, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr + 6, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr + 6, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr + 6, x3.imm0, x3.imm1);
+    _mm256_loadu_x2_pd(k0_ptr + 6, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr + 6, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr + 6, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr + 6, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr + 6, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr + 6, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr + 6, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr + 6, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr + 6, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr + 6, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr + 6, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr + 6, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr + 6, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr + 6, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr + 6, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr + 6, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr + 6, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr + 6, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr + 6, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr + 6, y3.v0, y3.v1);
 
-    x0.imm0 = _mm256_loadu_pd(v0_ptr + 5);
-    x1.imm0 = _mm256_loadu_pd(v1_ptr + 5);
-    x2.imm0 = _mm256_loadu_pd(v2_ptr + 5);
-    x3.imm0 = _mm256_loadu_pd(v3_ptr + 5);
-    y0.imm0 = _mm256_sort2x2_pd(x0.imm0);
-    y1.imm0 = _mm256_sort2x2_pd(x1.imm0);
-    y2.imm0 = _mm256_sort2x2_pd(x2.imm0);
-    y3.imm0 = _mm256_sort2x2_pd(x3.imm0);
-    _mm256_storeu_pd(v0_ptr + 5, y0.imm0);
-    _mm256_storeu_pd(v1_ptr + 5, y1.imm0);
-    _mm256_storeu_pd(v2_ptr + 5, y2.imm0);
-    _mm256_storeu_pd(v3_ptr + 5, y3.imm0);
+    z0.k = _mm256_loadu_pd(k0_ptr + 5);
+    z1.k = _mm256_loadu_pd(k1_ptr + 5);
+    z2.k = _mm256_loadu_pd(k2_ptr + 5);
+    z3.k = _mm256_loadu_pd(k3_ptr + 5);
+    z0.v = _mm256_loadu_epi64(v0_ptr + 5);
+    z1.v = _mm256_loadu_epi64(v1_ptr + 5);
+    z2.v = _mm256_loadu_epi64(v2_ptr + 5);
+    z3.v = _mm256_loadu_epi64(v3_ptr + 5);
+    z0 = _mm256_sort2x2_pd(z0);
+    z1 = _mm256_sort2x2_pd(z1);
+    z2 = _mm256_sort2x2_pd(z2);
+    z3 = _mm256_sort2x2_pd(z3);
+    _mm256_storeu_pd(k0_ptr + 5, z0.k);
+    _mm256_storeu_pd(k1_ptr + 5, z1.k);
+    _mm256_storeu_pd(k2_ptr + 5, z2.k);
+    _mm256_storeu_pd(k3_ptr + 5, z3.k);
+    _mm256_storeu_epi64(v0_ptr + 5, z0.v);
+    _mm256_storeu_epi64(v1_ptr + 5, z1.v);
+    _mm256_storeu_epi64(v2_ptr + 5, z2.v);
+    _mm256_storeu_epi64(v3_ptr + 5, z3.v);
 
     return SUCCESS;
 }
@@ -2701,31 +2768,43 @@ __forceinline static int shortsort_n15_d(const uint n, ulong* __restrict v_ptr, 
     }
 #endif //_DEBUG
 
-    __m256dx2 x, y;
+    __m256dkvx2 x, y;
 
-    _mm256_loadu_x2_pd(v_ptr, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr, y.v0, y.v1);
 
-    _mm256_loadu_x2_pd(v_ptr + 7, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr + 7, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr + 7, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr + 7, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr + 7, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr + 7, y.v0, y.v1);
 
-    _mm256_loadu_x2_pd(v_ptr + 3, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr + 3, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr + 3, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr + 3, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr + 3, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr + 3, y.v0, y.v1);
 
-    _mm256_loadu_x2_pd(v_ptr, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr, y.v0, y.v1);
 
-    _mm256_loadu_x2_pd(v_ptr + 7, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr + 7, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr + 7, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr + 7, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr + 7, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr + 7, y.v0, y.v1);
 
-    _mm256_loadu_x2_pd(v_ptr + 4, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr + 4, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr + 4, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr + 4, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr + 4, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr + 4, y.v0, y.v1);
 
     return SUCCESS;
 }
@@ -2738,90 +2817,143 @@ __forceinline static int shortsort_n4x15_d(const uint n, ulong* __restrict v_ptr
     }
 #endif //_DEBUG
 
-    double* v0_ptr = v_ptr;
-    double* v1_ptr = v_ptr + 15;
-    double* v2_ptr = v_ptr + 30;
-    double* v3_ptr = v_ptr + 45;
+    double* k0_ptr = k_ptr;
+    double* k1_ptr = k_ptr + 15;
+    double* k2_ptr = k_ptr + 30;
+    double* k3_ptr = k_ptr + 45;
 
-    __m256dx2 x0, x1, x2, x3, y0, y1, y2, y3;
+    ulong* v0_ptr = v_ptr;
+    ulong* v1_ptr = v_ptr + 15;
+    ulong* v2_ptr = v_ptr + 30;
+    ulong* v3_ptr = v_ptr + 45;
 
-    _mm256_loadu_x2_pd(v0_ptr, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr, x3.imm0, x3.imm1);
+    __m256dkvx2 x0, x1, x2, x3, y0, y1, y2, y3;
+
+    _mm256_loadu_x2_pd(k0_ptr, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr, y3.v0, y3.v1);
 
-    _mm256_loadu_x2_pd(v0_ptr + 7, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr + 7, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr + 7, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr + 7, x3.imm0, x3.imm1);
+    _mm256_loadu_x2_pd(k0_ptr + 7, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr + 7, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr + 7, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr + 7, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr + 7, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr + 7, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr + 7, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr + 7, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr + 7, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr + 7, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr + 7, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr + 7, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr + 7, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr + 7, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr + 7, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr + 7, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr + 7, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr + 7, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr + 7, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr + 7, y3.v0, y3.v1);
 
-    _mm256_loadu_x2_pd(v0_ptr + 3, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr + 3, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr + 3, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr + 3, x3.imm0, x3.imm1);
+    _mm256_loadu_x2_pd(k0_ptr + 3, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr + 3, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr + 3, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr + 3, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr + 3, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr + 3, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr + 3, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr + 3, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr + 3, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr + 3, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr + 3, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr + 3, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr + 3, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr + 3, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr + 3, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr + 3, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr + 3, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr + 3, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr + 3, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr + 3, y3.v0, y3.v1);
 
-    _mm256_loadu_x2_pd(v0_ptr, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr, x3.imm0, x3.imm1);
+    _mm256_loadu_x2_pd(k0_ptr, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr, y3.v0, y3.v1);
 
-    _mm256_loadu_x2_pd(v0_ptr + 7, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr + 7, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr + 7, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr + 7, x3.imm0, x3.imm1);
+    _mm256_loadu_x2_pd(k0_ptr + 7, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr + 7, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr + 7, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr + 7, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr + 7, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr + 7, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr + 7, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr + 7, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr + 7, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr + 7, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr + 7, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr + 7, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr + 7, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr + 7, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr + 7, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr + 7, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr + 7, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr + 7, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr + 7, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr + 7, y3.v0, y3.v1);
 
-    _mm256_loadu_x2_pd(v0_ptr + 4, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr + 4, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr + 4, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr + 4, x3.imm0, x3.imm1);
+    _mm256_loadu_x2_pd(k0_ptr + 4, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr + 4, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr + 4, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr + 4, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr + 4, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr + 4, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr + 4, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr + 4, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr + 4, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr + 4, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr + 4, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr + 4, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr + 4, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr + 4, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr + 4, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr + 4, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr + 4, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr + 4, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr + 4, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr + 4, y3.v0, y3.v1);
 
     return SUCCESS;
 }
@@ -2834,31 +2966,43 @@ __forceinline static int shortsort_n16_d(const uint n, ulong* __restrict v_ptr, 
     }
 #endif //_DEBUG
 
-    __m256dx2 x, y;
+    __m256dkvx2 x, y;
 
-    _mm256_loadu_x2_pd(v_ptr, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr, y.v0, y.v1);
 
-    _mm256_loadu_x2_pd(v_ptr + AVX2_DOUBLE_STRIDE * 2, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr + AVX2_DOUBLE_STRIDE * 2, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr + AVX2_DOUBLE_STRIDE * 2, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr + AVX2_DOUBLE_STRIDE * 2, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr + AVX2_DOUBLE_STRIDE * 2, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr + AVX2_DOUBLE_STRIDE * 2, y.v0, y.v1);
 
-    _mm256_loadu_x2_pd(v_ptr + AVX2_DOUBLE_STRIDE, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr + AVX2_DOUBLE_STRIDE, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr + AVX2_DOUBLE_STRIDE, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr + AVX2_DOUBLE_STRIDE, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr + AVX2_DOUBLE_STRIDE, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr + AVX2_DOUBLE_STRIDE, y.v0, y.v1);
 
-    _mm256_loadu_x2_pd(v_ptr, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr, y.v0, y.v1);
 
-    _mm256_loadu_x2_pd(v_ptr + AVX2_DOUBLE_STRIDE * 2, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr + AVX2_DOUBLE_STRIDE * 2, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr + AVX2_DOUBLE_STRIDE * 2, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr + AVX2_DOUBLE_STRIDE * 2, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr + AVX2_DOUBLE_STRIDE * 2, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr + AVX2_DOUBLE_STRIDE * 2, y.v0, y.v1);
 
-    _mm256_loadu_x2_pd(v_ptr + AVX2_DOUBLE_STRIDE, x.imm0, x.imm1);
+    _mm256_loadu_x2_pd(k_ptr + AVX2_DOUBLE_STRIDE, x.k0, x.k1);
+    _mm256_loadu_x2_epi64(v_ptr + AVX2_DOUBLE_STRIDE, x.v0, x.v1);
     y = _mm256x2_sort_pd(x);
-    _mm256_storeu_x2_pd(v_ptr + AVX2_DOUBLE_STRIDE, y.imm0, y.imm1);
+    _mm256_storeu_x2_pd(k_ptr + AVX2_DOUBLE_STRIDE, y.k0, y.k1);
+    _mm256_storeu_x2_epi64(v_ptr + AVX2_DOUBLE_STRIDE, y.v0, y.v1);
 
     return SUCCESS;
 }
@@ -2871,107 +3015,143 @@ __forceinline static int shortsort_n4x16_d(const uint n, ulong* __restrict v_ptr
     }
 #endif //_DEBUG
 
-    double* v0_ptr = v_ptr;
-    double* v1_ptr = v_ptr + 16;
-    double* v2_ptr = v_ptr + 32;
-    double* v3_ptr = v_ptr + 48;
+    double* k0_ptr = k_ptr;
+    double* k1_ptr = k_ptr + 16;
+    double* k2_ptr = k_ptr + 32;
+    double* k3_ptr = k_ptr + 48;
 
-    __m256dx2 x0, x1, x2, x3, y0, y1, y2, y3;
+    ulong* v0_ptr = v_ptr;
+    ulong* v1_ptr = v_ptr + 16;
+    ulong* v2_ptr = v_ptr + 32;
+    ulong* v3_ptr = v_ptr + 48;
 
-    _mm256_loadu_x2_pd(v0_ptr, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr, x3.imm0, x3.imm1);
+    __m256dkvx2 x0, x1, x2, x3, y0, y1, y2, y3;
+
+    _mm256_loadu_x2_pd(k0_ptr, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr, y3.v0, y3.v1);
 
-    _mm256_loadu_x2_pd(v0_ptr + AVX2_DOUBLE_STRIDE * 2, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr + AVX2_DOUBLE_STRIDE * 2, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr + AVX2_DOUBLE_STRIDE * 2, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr + AVX2_DOUBLE_STRIDE * 2, x3.imm0, x3.imm1);
+    _mm256_loadu_x2_pd(k0_ptr + AVX2_DOUBLE_STRIDE * 2, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr + AVX2_DOUBLE_STRIDE * 2, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr + AVX2_DOUBLE_STRIDE * 2, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr + AVX2_DOUBLE_STRIDE * 2, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr + AVX2_DOUBLE_STRIDE * 2, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr + AVX2_DOUBLE_STRIDE * 2, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr + AVX2_DOUBLE_STRIDE * 2, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr + AVX2_DOUBLE_STRIDE * 2, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr + AVX2_DOUBLE_STRIDE * 2, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr + AVX2_DOUBLE_STRIDE * 2, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr + AVX2_DOUBLE_STRIDE * 2, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr + AVX2_DOUBLE_STRIDE * 2, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr + AVX2_DOUBLE_STRIDE * 2, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr + AVX2_DOUBLE_STRIDE * 2, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr + AVX2_DOUBLE_STRIDE * 2, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr + AVX2_DOUBLE_STRIDE * 2, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr + AVX2_DOUBLE_STRIDE * 2, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr + AVX2_DOUBLE_STRIDE * 2, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr + AVX2_DOUBLE_STRIDE * 2, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr + AVX2_DOUBLE_STRIDE * 2, y3.v0, y3.v1);
 
-    _mm256_loadu_x2_pd(v0_ptr + AVX2_DOUBLE_STRIDE, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr + AVX2_DOUBLE_STRIDE, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr + AVX2_DOUBLE_STRIDE, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr + AVX2_DOUBLE_STRIDE, x3.imm0, x3.imm1);
+    _mm256_loadu_x2_pd(k0_ptr + AVX2_DOUBLE_STRIDE, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr + AVX2_DOUBLE_STRIDE, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr + AVX2_DOUBLE_STRIDE, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr + AVX2_DOUBLE_STRIDE, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr + AVX2_DOUBLE_STRIDE, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr + AVX2_DOUBLE_STRIDE, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr + AVX2_DOUBLE_STRIDE, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr + AVX2_DOUBLE_STRIDE, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr + AVX2_DOUBLE_STRIDE, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr + AVX2_DOUBLE_STRIDE, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr + AVX2_DOUBLE_STRIDE, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr + AVX2_DOUBLE_STRIDE, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr + AVX2_DOUBLE_STRIDE, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr + AVX2_DOUBLE_STRIDE, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr + AVX2_DOUBLE_STRIDE, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr + AVX2_DOUBLE_STRIDE, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr + AVX2_DOUBLE_STRIDE, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr + AVX2_DOUBLE_STRIDE, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr + AVX2_DOUBLE_STRIDE, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr + AVX2_DOUBLE_STRIDE, y3.v0, y3.v1);
 
-    _mm256_loadu_x2_pd(v0_ptr, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr, x3.imm0, x3.imm1);
+    _mm256_loadu_x2_pd(k0_ptr, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr, y3.v0, y3.v1);
 
-    _mm256_loadu_x2_pd(v0_ptr + AVX2_DOUBLE_STRIDE * 2, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr + AVX2_DOUBLE_STRIDE * 2, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr + AVX2_DOUBLE_STRIDE * 2, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr + AVX2_DOUBLE_STRIDE * 2, x3.imm0, x3.imm1);
+    _mm256_loadu_x2_pd(k0_ptr + AVX2_DOUBLE_STRIDE * 2, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr + AVX2_DOUBLE_STRIDE * 2, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr + AVX2_DOUBLE_STRIDE * 2, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr + AVX2_DOUBLE_STRIDE * 2, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr + AVX2_DOUBLE_STRIDE * 2, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr + AVX2_DOUBLE_STRIDE * 2, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr + AVX2_DOUBLE_STRIDE * 2, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr + AVX2_DOUBLE_STRIDE * 2, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr + AVX2_DOUBLE_STRIDE * 2, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr + AVX2_DOUBLE_STRIDE * 2, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr + AVX2_DOUBLE_STRIDE * 2, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr + AVX2_DOUBLE_STRIDE * 2, y3.imm0, y3.imm1);
+    _mm256_storeu_x2_pd(k0_ptr + AVX2_DOUBLE_STRIDE * 2, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr + AVX2_DOUBLE_STRIDE * 2, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr + AVX2_DOUBLE_STRIDE * 2, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr + AVX2_DOUBLE_STRIDE * 2, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr + AVX2_DOUBLE_STRIDE * 2, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr + AVX2_DOUBLE_STRIDE * 2, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr + AVX2_DOUBLE_STRIDE * 2, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr + AVX2_DOUBLE_STRIDE * 2, y3.v0, y3.v1);
 
-    _mm256_loadu_x2_pd(v0_ptr + AVX2_DOUBLE_STRIDE, x0.imm0, x0.imm1);
-    _mm256_loadu_x2_pd(v1_ptr + AVX2_DOUBLE_STRIDE, x1.imm0, x1.imm1);
-    _mm256_loadu_x2_pd(v2_ptr + AVX2_DOUBLE_STRIDE, x2.imm0, x2.imm1);
-    _mm256_loadu_x2_pd(v3_ptr + AVX2_DOUBLE_STRIDE, x3.imm0, x3.imm1);
+    _mm256_loadu_x2_pd(k0_ptr + AVX2_DOUBLE_STRIDE, x0.k0, x0.k1);
+    _mm256_loadu_x2_pd(k1_ptr + AVX2_DOUBLE_STRIDE, x1.k0, x1.k1);
+    _mm256_loadu_x2_pd(k2_ptr + AVX2_DOUBLE_STRIDE, x2.k0, x2.k1);
+    _mm256_loadu_x2_pd(k3_ptr + AVX2_DOUBLE_STRIDE, x3.k0, x3.k1);
+    _mm256_loadu_x2_epi64(v0_ptr + AVX2_DOUBLE_STRIDE, x0.v0, x0.v1);
+    _mm256_loadu_x2_epi64(v1_ptr + AVX2_DOUBLE_STRIDE, x1.v0, x1.v1);
+    _mm256_loadu_x2_epi64(v2_ptr + AVX2_DOUBLE_STRIDE, x2.v0, x2.v1);
+    _mm256_loadu_x2_epi64(v3_ptr + AVX2_DOUBLE_STRIDE, x3.v0, x3.v1);
     y0 = _mm256x2_sort_pd(x0);
     y1 = _mm256x2_sort_pd(x1);
     y2 = _mm256x2_sort_pd(x2);
     y3 = _mm256x2_sort_pd(x3);
-    _mm256_storeu_x2_pd(v0_ptr + AVX2_DOUBLE_STRIDE, y0.imm0, y0.imm1);
-    _mm256_storeu_x2_pd(v1_ptr + AVX2_DOUBLE_STRIDE, y1.imm0, y1.imm1);
-    _mm256_storeu_x2_pd(v2_ptr + AVX2_DOUBLE_STRIDE, y2.imm0, y2.imm1);
-    _mm256_storeu_x2_pd(v3_ptr + AVX2_DOUBLE_STRIDE, y3.imm0, y3.imm1);
-
-    return SUCCESS;
-}
-
-// shortsort elems 17...31
-__forceinline static int shortsort_n17to31_d(const uint n, ulong* __restrict v_ptr, double* __restrict k_ptr) {
-#ifdef _DEBUG
-    if (n <= AVX2_DOUBLE_STRIDE * 4 || n >= AVX2_DOUBLE_STRIDE * 8) {
-        return FAILURE_BADPARAM;
-    }
-#endif //_DEBUG
-
-    combsort_h12_d(n, v_ptr);
-    paracombsort_p2x4_d(n, v_ptr);
-
-    batchsort_p4_d(n, v_ptr);
-    scansort_p4_d(n, v_ptr);
+    _mm256_storeu_x2_pd(k0_ptr + AVX2_DOUBLE_STRIDE, y0.k0, y0.k1);
+    _mm256_storeu_x2_pd(k1_ptr + AVX2_DOUBLE_STRIDE, y1.k0, y1.k1);
+    _mm256_storeu_x2_pd(k2_ptr + AVX2_DOUBLE_STRIDE, y2.k0, y2.k1);
+    _mm256_storeu_x2_pd(k3_ptr + AVX2_DOUBLE_STRIDE, y3.k0, y3.k1);
+    _mm256_storeu_x2_epi64(v0_ptr + AVX2_DOUBLE_STRIDE, y0.v0, y0.v1);
+    _mm256_storeu_x2_epi64(v1_ptr + AVX2_DOUBLE_STRIDE, y1.v0, y1.v1);
+    _mm256_storeu_x2_epi64(v2_ptr + AVX2_DOUBLE_STRIDE, y2.v0, y2.v1);
+    _mm256_storeu_x2_epi64(v3_ptr + AVX2_DOUBLE_STRIDE, y3.v0, y3.v1);
 
     return SUCCESS;
 }
@@ -2991,34 +3171,34 @@ __forceinline static int longsort_n32plus_d(const uint n, ulong* __restrict v_pt
     uint h;
 
     for (h = (uint)(n * 10uLL / 13uLL); h > 33; h = (uint)(h * 10uLL / 13uLL)) {
-        combsort_h17plus_d(n, h, v_ptr);
+        combsort_h17plus_d(n, h, v_ptr, k_ptr);
     }
     if (h >= 16) {
-        combsort_h16_d(n, v_ptr);
+        combsort_h16_d(n, v_ptr, k_ptr);
         h = h * 10 / 13;
     }
     for (; h > 12; h = h * 10 / 13) {
-        combsort_h13to15_d(n, h, v_ptr);
+        combsort_h13to15_d(n, h, v_ptr, k_ptr);
     }
     if (h >= 12) {
-        combsort_h12_d(n, v_ptr);
+        combsort_h12_d(n, v_ptr, k_ptr);
         h = h * 10 / 13;
     }
     for (; h > 8; h = h * 10 / 13) {
-        combsort_h9to11_d(n, h, v_ptr);
+        combsort_h9to11_d(n, h, v_ptr, k_ptr);
     }
     if (h >= 8) {
-        combsort_h8_d(n, v_ptr);
+        combsort_h8_d(n, v_ptr, k_ptr);
         h = h * 10 / 13;
     }
     for (; h > 4; h = h * 10 / 13) {
-        combsort_h5to7_d(n, h, v_ptr);
+        combsort_h5to7_d(n, h, v_ptr, k_ptr);
     }
 
-    paracombsort_p2x4_d(n, v_ptr);
+    paracombsort_p2x4_d(n, v_ptr, k_ptr);
 
-    batchsort_p4_d(n, v_ptr);
-    scansort_p4_d(n, v_ptr);
+    batchsort_p4_d(n, v_ptr, k_ptr);
+    scansort_p4_d(n, v_ptr, k_ptr);
 
     return SUCCESS;
 }
@@ -3027,99 +3207,122 @@ __forceinline static int longsort_n32plus_d(const uint n, ulong* __restrict v_pt
 
 #pragma region sort
 
-int sortasc_ignnan_s2_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
-    if (s != 2 || ((size_t)v_ptr % AVX2_ALIGNMENT) != 0) {
+int sortwithkeyasc_ignnan_s2_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+    if (s != 2 || ((size_t)v_ptr % AVX2_ALIGNMENT) != 0 || ((size_t)k_ptr % AVX2_ALIGNMENT) != 0) {
         return FAILURE_BADPARAM;
     }
 
-    __m256d x0, x1, x2, x3, y0, y1, y2, y3;
+    __m256dkv x0, x1, x2, x3, y0, y1, y2, y3;
 
     uint r = n;
 
     while (r >= AVX2_DOUBLE_STRIDE * 4 / 2) {
-        _mm256_load_x4_pd(v_ptr, x0, x1, x2, x3);
+        _mm256_load_x4_pd(k_ptr, x0.k, x1.k, x2.k, x3.k);
+        _mm256_load_x4_epi64(v_ptr, x0.v, x1.v, x2.v, x3.v);
 
         y0 = _mm256_sort2x2_pd(x0);
         y1 = _mm256_sort2x2_pd(x1);
         y2 = _mm256_sort2x2_pd(x2);
         y3 = _mm256_sort2x2_pd(x3);
 
-        _mm256_stream_x4_pd(v_ptr, y0, y1, y2, y3);
+        _mm256_stream_x4_pd(k_ptr, y0.k, y1.k, y2.k, y3.k);
+        _mm256_stream_x4_epi64(v_ptr, y0.v, y1.v, y2.v, y3.v);
 
+        k_ptr += AVX2_DOUBLE_STRIDE * 4;
         v_ptr += AVX2_DOUBLE_STRIDE * 4;
         r -= AVX2_DOUBLE_STRIDE * 4 / 2;
     }
     if (r >= AVX2_DOUBLE_STRIDE) {
-        _mm256_load_x2_pd(v_ptr, x0, x1);
+        _mm256_load_x2_pd(k_ptr, x0.k, x1.k);
+        _mm256_load_x2_epi64(v_ptr, x0.v, x1.v);
 
         y0 = _mm256_sort2x2_pd(x0);
         y1 = _mm256_sort2x2_pd(x1);
 
-        _mm256_stream_x2_pd(v_ptr, y0, y1);
+        _mm256_stream_x2_pd(k_ptr, y0.k, y1.k);
+        _mm256_stream_x2_epi64(v_ptr, y0.v, y1.v);
 
+        k_ptr += AVX2_DOUBLE_STRIDE * 2;
         v_ptr += AVX2_DOUBLE_STRIDE * 2;
         r -= AVX2_DOUBLE_STRIDE;
     }
     if (r >= AVX2_DOUBLE_STRIDE / 2) {
-        _mm256_load_x1_pd(v_ptr, x0);
+        _mm256_load_x1_pd(k_ptr, x0.k);
+        _mm256_load_x1_epi64(v_ptr, x0.v);
 
         y0 = _mm256_sort2x2_pd(x0);
 
-        _mm256_stream_x1_pd(v_ptr, y0);
+        _mm256_stream_x1_pd(k_ptr, y0.k);
+        _mm256_stream_x1_epi64(v_ptr, y0.v);
 
+        k_ptr += AVX2_DOUBLE_STRIDE;
         v_ptr += AVX2_DOUBLE_STRIDE;
         r -= AVX2_DOUBLE_STRIDE / 2;
     }
     if (r > 0) {
         const __m256i mask = _mm256_setmask_pd((r * 2) & AVX2_DOUBLE_REMAIN_MASK);
 
-        _mm256_maskload_x1_pd(v_ptr, x0, mask);
+        _mm256_maskload_x1_pd(k_ptr, x0.k, mask);
+        _mm256_maskload_x1_epi64(v_ptr, x0.v, mask);
 
         y0 = _mm256_sort2x2_pd(x0);
 
-        _mm256_maskstore_x1_pd(v_ptr, y0, mask);
+        _mm256_maskstore_x1_pd(k_ptr, y0.k, mask);
+        _mm256_maskstore_x1_epi64(v_ptr, y0.v, mask);
     }
 
     return SUCCESS;
 }
 
-int sortasc_ignnan_s3_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s3_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s != 3) {
         return FAILURE_BADPARAM;
     }
 
-    __m256d x0, x1, x2, x3, y0, y1, y2, y3;
+    __m256dkv x0, x1, x2, x3, y0, y1, y2, y3;
 
     uint r = n;
 
     while (r >= 5) {
-        x0 = _mm256_loadu_pd(v_ptr);
-        x1 = _mm256_loadu_pd(v_ptr + 3);
-        x2 = _mm256_loadu_pd(v_ptr + 6);
-        x3 = _mm256_loadu_pd(v_ptr + 9);
+        x0.k = _mm256_loadu_pd(k_ptr);
+        x1.k = _mm256_loadu_pd(k_ptr + 3);
+        x2.k = _mm256_loadu_pd(k_ptr + 6);
+        x3.k = _mm256_loadu_pd(k_ptr + 9);
+        x0.v = _mm256_loadu_epi64(v_ptr);
+        x1.v = _mm256_loadu_epi64(v_ptr + 3);
+        x2.v = _mm256_loadu_epi64(v_ptr + 6);
+        x3.v = _mm256_loadu_epi64(v_ptr + 9);
 
         y0 = _mm256_sort1x3_pd(x0);
         y1 = _mm256_sort1x3_pd(x1);
         y2 = _mm256_sort1x3_pd(x2);
         y3 = _mm256_sort1x3_pd(x3);
 
-        _mm256_storeu_pd(v_ptr, y0);
-        _mm256_storeu_pd(v_ptr + 3, y1);
-        _mm256_storeu_pd(v_ptr + 6, y2);
-        _mm256_storeu_pd(v_ptr + 9, y3);
+        _mm256_storeu_pd(k_ptr, y0.k);
+        _mm256_storeu_pd(k_ptr + 3, y1.k);
+        _mm256_storeu_pd(k_ptr + 6, y2.k);
+        _mm256_storeu_pd(k_ptr + 9, y3.k);
+        _mm256_storeu_epi64(v_ptr, y0.v);
+        _mm256_storeu_epi64(v_ptr + 3, y1.v);
+        _mm256_storeu_epi64(v_ptr + 6, y2.v);
+        _mm256_storeu_epi64(v_ptr + 9, y3.v);
 
+        k_ptr += AVX2_DOUBLE_STRIDE * 3;
         v_ptr += AVX2_DOUBLE_STRIDE * 3;
         r -= 4;
     }
     while (r >= 1) {
         const __m256i mask = _mm256_setmask_pd(3);
 
-        x0 = _mm256_maskload_pd(v_ptr, mask);
+        x0.k = _mm256_maskload_pd(k_ptr, mask);
+        x0.v = _mm256_maskload_epi64(v_ptr, mask);
 
         y0 = _mm256_sort1x3_pd(x0);
 
-        _mm256_maskstore_pd(v_ptr, mask, y0);
+        _mm256_maskstore_pd(k_ptr, mask, y0.k);
+        _mm256_maskstore_epi64(v_ptr, mask, y0.v);
 
+        k_ptr += 3;
         v_ptr += 3;
         r -= 1;
     }
@@ -3127,163 +3330,199 @@ int sortasc_ignnan_s3_d(const uint n, const uint s, ulong* __restrict v_ptr, dou
     return SUCCESS;
 }
 
-int sortasc_ignnan_s4_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
-    if (s != 4 || ((size_t)v_ptr % AVX2_ALIGNMENT) != 0) {
+int sortwithkeyasc_ignnan_s4_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+    if (s != 4 || ((size_t)v_ptr % AVX2_ALIGNMENT) != 0 || ((size_t)k_ptr % AVX2_ALIGNMENT) != 0) {
         return FAILURE_BADPARAM;
     }
 
-    __m256d x0, x1, x2, x3, y0, y1, y2, y3;
+    __m256dkv x0, x1, x2, x3, y0, y1, y2, y3;
 
     uint r = n;
 
     while (r >= AVX2_DOUBLE_STRIDE) {
-        _mm256_load_x4_pd(v_ptr, x0, x1, x2, x3);
+        _mm256_load_x4_pd(k_ptr, x0.k, x1.k, x2.k, x3.k);
+        _mm256_load_x4_epi64(v_ptr, x0.v, x1.v, x2.v, x3.v);
 
         y0 = _mm256_sort_pd(x0);
         y1 = _mm256_sort_pd(x1);
         y2 = _mm256_sort_pd(x2);
         y3 = _mm256_sort_pd(x3);
 
-        _mm256_stream_x4_pd(v_ptr, y0, y1, y2, y3);
+        _mm256_stream_x4_pd(k_ptr, y0.k, y1.k, y2.k, y3.k);
+        _mm256_stream_x4_epi64(v_ptr, y0.v, y1.v, y2.v, y3.v);
 
+        k_ptr += AVX2_DOUBLE_STRIDE * 4;
         v_ptr += AVX2_DOUBLE_STRIDE * 4;
         r -= AVX2_DOUBLE_STRIDE;
     }
     if (r >= AVX2_DOUBLE_STRIDE / 2) {
-        _mm256_load_x2_pd(v_ptr, x0, x1);
+        _mm256_load_x2_pd(k_ptr, x0.k, x1.k);
+        _mm256_load_x2_epi64(v_ptr, x0.v, x1.v);
 
         y0 = _mm256_sort_pd(x0);
         y1 = _mm256_sort_pd(x1);
 
-        _mm256_stream_x2_pd(v_ptr, y0, y1);
+        _mm256_stream_x2_pd(k_ptr, y0.k, y1.k);
+        _mm256_stream_x2_epi64(v_ptr, y0.v, y1.v);
 
+        k_ptr += AVX2_DOUBLE_STRIDE * 2;
         v_ptr += AVX2_DOUBLE_STRIDE * 2;
         r -= AVX2_DOUBLE_STRIDE / 2;
     }
     if (r >= AVX2_DOUBLE_STRIDE / 4) {
-        _mm256_load_x1_pd(v_ptr, x0);
+        _mm256_load_x1_pd(k_ptr, x0.k);
+        _mm256_load_x1_epi64(v_ptr, x0.v);
 
         y0 = _mm256_sort_pd(x0);
 
-        _mm256_stream_x1_pd(v_ptr, y0);
+        _mm256_stream_x1_pd(k_ptr, y0.k);
+        _mm256_stream_x1_epi64(v_ptr, y0.v);
     }
 
     return SUCCESS;
 }
 
-int sortasc_ignnan_s5_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s5_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s != 5) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < (n & (~3u)); i += 4u) {
-        shortsort_n4x5_d(s, v_ptr);
+        shortsort_n4x5_d(s, v_ptr, k_ptr);
+        k_ptr += s * 4;
         v_ptr += s * 4;
     }
     for (uint i = (n & (~3u)); i < n; i++) {
-        shortsort_n5_d(s, v_ptr);
+        shortsort_n5_d(s, v_ptr, k_ptr);
+        k_ptr += s;
         v_ptr += s;
     }
 
     return SUCCESS;
 }
 
-int sortasc_ignnan_s6_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s6_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s != 6) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < (n & (~3u)); i += 4u) {
-        shortsort_n4x6_d(s, v_ptr);
+        shortsort_n4x6_d(s, v_ptr, k_ptr);
+        k_ptr += s * 4;
         v_ptr += s * 4;
     }
     for (uint i = (n & (~3u)); i < n; i++) {
-        shortsort_n6_d(s, v_ptr);
+        shortsort_n6_d(s, v_ptr, k_ptr);
+        k_ptr += s;
         v_ptr += s;
     }
 
     return SUCCESS;
 }
 
-int sortasc_ignnan_s7_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s7_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s != 7) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < (n & (~3u)); i += 4u) {
-        shortsort_n4x7_d(s, v_ptr);
+        shortsort_n4x7_d(s, v_ptr, k_ptr);
+        k_ptr += s * 4;
         v_ptr += s * 4;
     }
     for (uint i = (n & (~3u)); i < n; i++) {
-        shortsort_n7_d(s, v_ptr);
+        shortsort_n7_d(s, v_ptr, k_ptr);
+        k_ptr += s;
         v_ptr += s;
     }
 
     return SUCCESS;
 }
 
-int sortasc_ignnan_s8_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s8_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s != AVX2_DOUBLE_STRIDE * 2) {
         return FAILURE_BADPARAM;
     }
 
-    __m256d s0, s1, s2, s3, s4, s5, s6, s7;
+    __m256dkv s0, s1, s2, s3, s4, s5, s6, s7;
 
     if (((size_t)v_ptr % AVX2_ALIGNMENT) != 0) {
         for (uint i = 0; i < (n & (~3u)); i += 4u) {
-            _mm256_loadu_x4_pd(v_ptr, s0, s1, s2, s3);
-            _mm256_loadu_x4_pd(v_ptr + AVX2_DOUBLE_STRIDE * 4, s4, s5, s6, s7);
+            _mm256_loadu_x4_pd(k_ptr, s0.k, s1.k, s2.k, s3.k);
+            _mm256_loadu_x4_pd(k_ptr + AVX2_DOUBLE_STRIDE * 4, s4.k, s5.k, s6.k, s7.k);
+            _mm256_loadu_x4_epi64(v_ptr, s0.v, s1.v, s2.v, s3.v);
+            _mm256_loadu_x4_epi64(v_ptr + AVX2_DOUBLE_STRIDE * 4, s4.v, s5.v, s6.v, s7.v);
 
-            __m256dx2 x0 = __m256dx2(s0, s1), x1 = __m256dx2(s2, s3), x2 = __m256dx2(s4, s5), x3 = __m256dx2(s6, s7);
+            __m256dkvx2 x0 = __m256dkvx2(s0.k, s1.k, s0.v, s1.v);
+            __m256dkvx2 x1 = __m256dkvx2(s2.k, s3.k, s2.v, s3.v);
+            __m256dkvx2 x2 = __m256dkvx2(s4.k, s5.k, s4.v, s5.v);
+            __m256dkvx2 x3 = __m256dkvx2(s6.k, s7.k, s6.v, s7.v);
 
-            __m256dx2 y0 = _mm256x2_sort_pd(x0);
-            __m256dx2 y1 = _mm256x2_sort_pd(x1);
-            __m256dx2 y2 = _mm256x2_sort_pd(x2);
-            __m256dx2 y3 = _mm256x2_sort_pd(x3);
+            __m256dkvx2 y0 = _mm256x2_sort_pd(x0);
+            __m256dkvx2 y1 = _mm256x2_sort_pd(x1);
+            __m256dkvx2 y2 = _mm256x2_sort_pd(x2);
+            __m256dkvx2 y3 = _mm256x2_sort_pd(x3);
 
-            _mm256_storeu_x4_pd(v_ptr, y0.imm0, y0.imm1, y1.imm0, y1.imm1);
-            _mm256_storeu_x4_pd(v_ptr + AVX2_DOUBLE_STRIDE * 4, y2.imm0, y2.imm1, y3.imm0, y3.imm1);
+            _mm256_storeu_x4_pd(k_ptr, y0.k0, y0.k1, y1.k0, y1.k1);
+            _mm256_storeu_x4_pd(k_ptr + AVX2_DOUBLE_STRIDE * 4, y2.k0, y2.k1, y3.k0, y3.k1);
+            _mm256_storeu_x4_epi64(v_ptr, y0.v0, y0.v1, y1.v0, y1.v1);
+            _mm256_storeu_x4_epi64(v_ptr + AVX2_DOUBLE_STRIDE * 4, y2.v0, y2.v1, y3.v0, y3.v1);
 
+            k_ptr += s * 4;
             v_ptr += s * 4;
         }
         for (uint i = (n & (~3u)); i < n; i++) {
-            _mm256_loadu_x2_pd(v_ptr, s0, s1);
+            _mm256_loadu_x2_pd(k_ptr, s0.k, s1.k);
+            _mm256_loadu_x2_epi64(v_ptr, s0.v, s1.v);
 
-            __m256dx2 x0 = __m256dx2(s0, s1);
+            __m256dkvx2 x0 = __m256dkvx2(s0.k, s1.k, s0.v, s1.v);
 
-            __m256dx2 y0 = _mm256x2_sort_pd(x0);
+            __m256dkvx2 y0 = _mm256x2_sort_pd(x0);
 
-            _mm256_storeu_x2_pd(v_ptr, y0.imm0, y0.imm1);
+            _mm256_storeu_x2_pd(k_ptr, y0.k0, y0.k1);
+            _mm256_storeu_x2_epi64(v_ptr, y0.v0, y0.v1);
 
+            k_ptr += s;
             v_ptr += s;
         }
     }
     else {
         for (uint i = 0; i < (n & (~3u)); i += 4u) {
-            _mm256_load_x4_pd(v_ptr, s0, s1, s2, s3);
-            _mm256_load_x4_pd(v_ptr + AVX2_DOUBLE_STRIDE * 4, s4, s5, s6, s7);
+            _mm256_load_x4_pd(k_ptr, s0.k, s1.k, s2.k, s3.k);
+            _mm256_load_x4_pd(k_ptr + AVX2_DOUBLE_STRIDE * 4, s4.k, s5.k, s6.k, s7.k);
+            _mm256_load_x4_epi64(v_ptr, s0.v, s1.v, s2.v, s3.v);
+            _mm256_load_x4_epi64(v_ptr + AVX2_DOUBLE_STRIDE * 4, s4.v, s5.v, s6.v, s7.v);
 
-            __m256dx2 x0 = __m256dx2(s0, s1), x1 = __m256dx2(s2, s3), x2 = __m256dx2(s4, s5), x3 = __m256dx2(s6, s7);
+            __m256dkvx2 x0 = __m256dkvx2(s0.k, s1.k, s0.v, s1.v);
+            __m256dkvx2 x1 = __m256dkvx2(s2.k, s3.k, s2.v, s3.v);
+            __m256dkvx2 x2 = __m256dkvx2(s4.k, s5.k, s4.v, s5.v);
+            __m256dkvx2 x3 = __m256dkvx2(s6.k, s7.k, s6.v, s7.v);
 
-            __m256dx2 y0 = _mm256x2_sort_pd(x0);
-            __m256dx2 y1 = _mm256x2_sort_pd(x1);
-            __m256dx2 y2 = _mm256x2_sort_pd(x2);
-            __m256dx2 y3 = _mm256x2_sort_pd(x3);
+            __m256dkvx2 y0 = _mm256x2_sort_pd(x0);
+            __m256dkvx2 y1 = _mm256x2_sort_pd(x1);
+            __m256dkvx2 y2 = _mm256x2_sort_pd(x2);
+            __m256dkvx2 y3 = _mm256x2_sort_pd(x3);
 
-            _mm256_store_x4_pd(v_ptr, y0.imm0, y0.imm1, y1.imm0, y1.imm1);
-            _mm256_store_x4_pd(v_ptr + AVX2_DOUBLE_STRIDE * 4, y2.imm0, y2.imm1, y3.imm0, y3.imm1);
+            _mm256_store_x4_pd(k_ptr, y0.k0, y0.k1, y1.k0, y1.k1);
+            _mm256_store_x4_pd(k_ptr + AVX2_DOUBLE_STRIDE * 4, y2.k0, y2.k1, y3.k0, y3.k1);
+            _mm256_store_x4_epi64(v_ptr, y0.v0, y0.v1, y1.v0, y1.v1);
+            _mm256_store_x4_epi64(v_ptr + AVX2_DOUBLE_STRIDE * 4, y2.v0, y2.v1, y3.v0, y3.v1);
 
+            k_ptr += s * 4;
             v_ptr += s * 4;
         }
         for (uint i = (n & (~3u)); i < n; i++) {
-            _mm256_load_x2_pd(v_ptr, s0, s1);
+            _mm256_load_x2_pd(k_ptr, s0.k, s1.k);
+            _mm256_load_x2_epi64(v_ptr, s0.v, s1.v);
 
-            __m256dx2 x0 = __m256dx2(s0, s1);
+            __m256dkvx2 x0 = __m256dkvx2(s0.k, s1.k, s0.v, s1.v);
 
-            __m256dx2 y0 = _mm256x2_sort_pd(x0);
+            __m256dkvx2 y0 = _mm256x2_sort_pd(x0);
 
-            _mm256_store_x2_pd(v_ptr, y0.imm0, y0.imm1);
+            _mm256_store_x2_pd(k_ptr, y0.k0, y0.k1);
+            _mm256_store_x2_epi64(v_ptr, y0.v0, y0.v1);
 
+            k_ptr += s;
             v_ptr += s;
         }
     }
@@ -3291,172 +3530,191 @@ int sortasc_ignnan_s8_d(const uint n, const uint s, ulong* __restrict v_ptr, dou
     return SUCCESS;
 }
 
-int sortasc_ignnan_s9_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s9_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s != 9) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < (n & (~3u)); i += 4u) {
-        shortsort_n4x9_d(s, v_ptr);
+        shortsort_n4x9_d(s, v_ptr, k_ptr);
+        k_ptr += s * 4;
         v_ptr += s * 4;
     }
     for (uint i = (n & (~3u)); i < n; i++) {
-        shortsort_n9_d(s, v_ptr);
+        shortsort_n9_d(s, v_ptr, k_ptr);
+        k_ptr += s;
         v_ptr += s;
     }
 
     return SUCCESS;
 }
 
-int sortasc_ignnan_s10_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s10_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s != 10) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < (n & (~3u)); i += 4u) {
-        shortsort_n4x10_d(s, v_ptr);
+        shortsort_n4x10_d(s, v_ptr, k_ptr);
+        k_ptr += s * 4;
         v_ptr += s * 4;
     }
     for (uint i = (n & (~3u)); i < n; i++) {
-        shortsort_n10_d(s, v_ptr);
+        shortsort_n10_d(s, v_ptr, k_ptr);
+        k_ptr += s;
         v_ptr += s;
     }
 
     return SUCCESS;
 }
 
-int sortasc_ignnan_s11_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s11_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s != 11) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < (n & (~3u)); i += 4u) {
-        shortsort_n4x11_d(s, v_ptr);
+        shortsort_n4x11_d(s, v_ptr, k_ptr);
+        k_ptr += s * 4;
         v_ptr += s * 4;
     }
     for (uint i = (n & (~3u)); i < n; i++) {
-        shortsort_n11_d(s, v_ptr);
+        shortsort_n11_d(s, v_ptr, k_ptr);
+        k_ptr += s;
         v_ptr += s;
     }
 
     return SUCCESS;
 }
 
-int sortasc_ignnan_s12_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s12_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s != 12) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < (n & (~3u)); i += 4u) {
-        shortsort_n4x12_d(s, v_ptr);
+        shortsort_n4x12_d(s, v_ptr, k_ptr);
+        k_ptr += s * 4;
         v_ptr += s * 4;
     }
     for (uint i = (n & (~3u)); i < n; i++) {
-        shortsort_n12_d(s, v_ptr);
+        shortsort_n12_d(s, v_ptr, k_ptr);
+        k_ptr += s;
         v_ptr += s;
     }
 
     return SUCCESS;
 }
 
-int sortasc_ignnan_s13_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s13_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s != 13) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < (n & (~3u)); i += 4u) {
-        shortsort_n4x13_d(s, v_ptr);
+        shortsort_n4x13_d(s, v_ptr, k_ptr);
+        k_ptr += s * 4;
         v_ptr += s * 4;
     }
     for (uint i = (n & (~3u)); i < n; i++) {
-        shortsort_n13_d(s, v_ptr);
+        shortsort_n13_d(s, v_ptr, k_ptr);
+        k_ptr += s;
         v_ptr += s;
     }
 
     return SUCCESS;
 }
 
-int sortasc_ignnan_s14_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s14_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s != 14) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < (n & (~3u)); i += 4u) {
-        shortsort_n4x14_d(s, v_ptr);
+        shortsort_n4x14_d(s, v_ptr, k_ptr);
+        k_ptr += s * 4;
         v_ptr += s * 4;
     }
     for (uint i = (n & (~3u)); i < n; i++) {
-        shortsort_n14_d(s, v_ptr);
+        shortsort_n14_d(s, v_ptr, k_ptr);
+        k_ptr += s;
         v_ptr += s;
     }
 
     return SUCCESS;
 }
 
-int sortasc_ignnan_s15_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s15_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s != 15) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < (n & (~3u)); i += 4u) {
-        shortsort_n4x15_d(s, v_ptr);
+        shortsort_n4x15_d(s, v_ptr, k_ptr);
+        k_ptr += s * 4;
         v_ptr += s * 4;
     }
     for (uint i = (n & (~3u)); i < n; i++) {
-        shortsort_n15_d(s, v_ptr);
+        shortsort_n15_d(s, v_ptr, k_ptr);
+        k_ptr += s;
         v_ptr += s;
     }
 
     return SUCCESS;
 }
 
-int sortasc_ignnan_s16_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s16_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s != 16) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < (n & (~3u)); i += 4u) {
-        shortsort_n4x16_d(s, v_ptr);
+        shortsort_n4x16_d(s, v_ptr, k_ptr);
+        k_ptr += s * 4;
         v_ptr += s * 4;
     }
     for (uint i = (n & (~3u)); i < n; i++) {
-        shortsort_n16_d(s, v_ptr);
+        shortsort_n16_d(s, v_ptr, k_ptr);
+        k_ptr += s;
         v_ptr += s;
     }
 
     return SUCCESS;
 }
 
-int sortasc_ignnan_s17to31_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s17to31_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s <= AVX2_DOUBLE_STRIDE * 4 || s >= AVX2_DOUBLE_STRIDE * 8) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < (n & (~3u)); i += 4u) {
-        permcombsort_p4x4_d(s, v_ptr);
-        scansort_p4_d(s, v_ptr);
-        scansort_p4_d(s, v_ptr + s);
-        scansort_p4_d(s, v_ptr + s * 2);
-        scansort_p4_d(s, v_ptr + s * 3);
+        permcombsort_p4x4_d(s, v_ptr, k_ptr);
+        scansort_p4_d(s, v_ptr, k_ptr);
+        scansort_p4_d(s, v_ptr + s, k_ptr + s);
+        scansort_p4_d(s, v_ptr + s * 2, k_ptr + s * 2);
+        scansort_p4_d(s, v_ptr + s * 3, k_ptr + s * 3);
+        k_ptr += s * 4;
         v_ptr += s * 4;
     }
     for (uint i = (n & (~3u)); i < n; i++) {
-        permcombsort_p4_d(s, v_ptr);
-        scansort_p4_d(s, v_ptr);
+        permcombsort_p4_d(s, v_ptr, k_ptr);
+        scansort_p4_d(s, v_ptr, k_ptr);
 
+        k_ptr += s;
         v_ptr += s;
     }
 
     return SUCCESS;
 }
 
-int sortasc_ignnan_s32plus_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
+int sortwithkeyasc_ignnan_s32plus_d(const uint n, const uint s, ulong* __restrict v_ptr, double* __restrict k_ptr) {
     if (s < AVX2_DOUBLE_STRIDE * 8 || n > MAX_SORT_STRIDE) {
         return FAILURE_BADPARAM;
     }
 
     for (uint i = 0; i < n; i++) {
-        longsort_n32plus_d(s, v_ptr);
+        longsort_n32plus_d(s, v_ptr, k_ptr);
+        k_ptr += s;
         v_ptr += s;
     }
 
