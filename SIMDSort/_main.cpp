@@ -6,9 +6,26 @@
 #include "constants.h"
 #include "Inline/inline_cmp_s.hpp"
 
+__forceinline __m256 _mm256_reverse_ps(__m256 x) {
+    __m256 z = _mm256_castpd_ps(_mm256_permute4x64_pd(_mm256_castps_pd(
+        _mm256_permute_ps(x, _MM_PERM_ABCD)), _MM_PERM_BADC)
+    );
+
+    return z;
+}
+
+__forceinline __m256 _mm256_reflect_ps(__m256 x) {
+    __m256 z = _mm256_permute2f128_ps(x, _mm256_permute_ps(x, _MM_PERM_ABCD), 0b00100000);
+
+    return z;
+}
+
 int main() {
-    sortwithkeyasc_test_d();
-    sortwithkeyasc_test_s();
+    sortasc_test_s();
+    sort_long_ndist_speed_test_s();
+    sort_long_random_speed_test_s();
+    sort_long_reverse_speed_test_s();
+    sort_long_inbalance_speed_test_s();
 
     printf("end");
     return getchar();
