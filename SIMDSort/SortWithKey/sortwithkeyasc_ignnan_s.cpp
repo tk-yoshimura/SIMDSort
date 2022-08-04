@@ -2903,7 +2903,7 @@ __forceinline static int longsort_n64plus_s(const uint n, uint* __restrict v_ptr
 #pragma region sort
 
 int sortwithkeyasc_ignnan_s2_s(const uint n, const uint s, uint* __restrict v_ptr, float* __restrict k_ptr) {
-    if (s != 2 || ((size_t)v_ptr % AVX2_ALIGNMENT) != 0 || ((size_t)k_ptr % AVX2_ALIGNMENT) != 0) {
+    if (s != 2) {
         return FAILURE_BADPARAM;
     }
 
@@ -2911,48 +2911,95 @@ int sortwithkeyasc_ignnan_s2_s(const uint n, const uint s, uint* __restrict v_pt
 
     uint r = n;
 
-    while (r >= AVX2_FLOAT_STRIDE * 4 / 2) {
-        _mm256_load_x4_ps(k_ptr, x0.k, x1.k, x2.k, x3.k);
-        _mm256_load_x4_epi32(v_ptr, x0.v, x1.v, x2.v, x3.v);
+    if (((size_t)v_ptr % AVX2_ALIGNMENT) != 0 || ((size_t)k_ptr % AVX2_ALIGNMENT) != 0) {
+        while (r >= AVX2_FLOAT_STRIDE * 4 / 2) {
+            _mm256_loadu_x4_ps(k_ptr, x0.k, x1.k, x2.k, x3.k);
+            _mm256_loadu_x4_epi32(v_ptr, x0.v, x1.v, x2.v, x3.v);
 
-        y0 = _mm256_sort4x2_ps(x0);
-        y1 = _mm256_sort4x2_ps(x1);
-        y2 = _mm256_sort4x2_ps(x2);
-        y3 = _mm256_sort4x2_ps(x3);
+            y0 = _mm256_sort4x2_ps(x0);
+            y1 = _mm256_sort4x2_ps(x1);
+            y2 = _mm256_sort4x2_ps(x2);
+            y3 = _mm256_sort4x2_ps(x3);
 
-        _mm256_stream_x4_ps(k_ptr, y0.k, y1.k, y2.k, y3.k);
-        _mm256_stream_x4_epi32(v_ptr, y0.v, y1.v, y2.v, y3.v);
+            _mm256_storeu_x4_ps(k_ptr, y0.k, y1.k, y2.k, y3.k);
+            _mm256_storeu_x4_epi32(v_ptr, y0.v, y1.v, y2.v, y3.v);
 
-        k_ptr += AVX2_FLOAT_STRIDE * 4;
-        v_ptr += AVX2_EPI32_STRIDE * 4;
-        r -= AVX2_FLOAT_STRIDE * 4 / 2;
+            k_ptr += AVX2_FLOAT_STRIDE * 4;
+            v_ptr += AVX2_EPI32_STRIDE * 4;
+            r -= AVX2_FLOAT_STRIDE * 4 / 2;
+        }
+        if (r >= AVX2_FLOAT_STRIDE) {
+            _mm256_loadu_x2_ps(k_ptr, x0.k, x1.k);
+            _mm256_loadu_x2_epi32(v_ptr, x0.v, x1.v);
+
+            y0 = _mm256_sort4x2_ps(x0);
+            y1 = _mm256_sort4x2_ps(x1);
+
+            _mm256_storeu_x2_ps(k_ptr, y0.k, y1.k);
+            _mm256_storeu_x2_epi32(v_ptr, y0.v, y1.v);
+
+            k_ptr += AVX2_FLOAT_STRIDE * 2;
+            v_ptr += AVX2_EPI32_STRIDE * 2;
+            r -= AVX2_FLOAT_STRIDE;
+        }
+        if (r >= AVX2_FLOAT_STRIDE / 2) {
+            _mm256_loadu_x1_ps(k_ptr, x0.k);
+            _mm256_loadu_x1_epi32(v_ptr, x0.v);
+
+            y0 = _mm256_sort4x2_ps(x0);
+
+            _mm256_storeu_x1_ps(k_ptr, y0.k);
+            _mm256_storeu_x1_epi32(v_ptr, y0.v);
+
+            k_ptr += AVX2_FLOAT_STRIDE;
+            v_ptr += AVX2_EPI32_STRIDE;
+            r -= AVX2_FLOAT_STRIDE / 2;
+        }
     }
-    if (r >= AVX2_FLOAT_STRIDE) {
-        _mm256_load_x2_ps(k_ptr, x0.k, x1.k);
-        _mm256_load_x2_epi32(v_ptr, x0.v, x1.v);
+    else {
+        while (r >= AVX2_FLOAT_STRIDE * 4 / 2) {
+            _mm256_load_x4_ps(k_ptr, x0.k, x1.k, x2.k, x3.k);
+            _mm256_load_x4_epi32(v_ptr, x0.v, x1.v, x2.v, x3.v);
 
-        y0 = _mm256_sort4x2_ps(x0);
-        y1 = _mm256_sort4x2_ps(x1);
+            y0 = _mm256_sort4x2_ps(x0);
+            y1 = _mm256_sort4x2_ps(x1);
+            y2 = _mm256_sort4x2_ps(x2);
+            y3 = _mm256_sort4x2_ps(x3);
 
-        _mm256_stream_x2_ps(k_ptr, y0.k, y1.k);
-        _mm256_stream_x2_epi32(v_ptr, y0.v, y1.v);
+            _mm256_stream_x4_ps(k_ptr, y0.k, y1.k, y2.k, y3.k);
+            _mm256_stream_x4_epi32(v_ptr, y0.v, y1.v, y2.v, y3.v);
 
-        k_ptr += AVX2_FLOAT_STRIDE * 2;
-        v_ptr += AVX2_EPI32_STRIDE * 2;
-        r -= AVX2_FLOAT_STRIDE;
-    }
-    if (r >= AVX2_FLOAT_STRIDE / 2) {
-        _mm256_load_x1_ps(k_ptr, x0.k);
-        _mm256_load_x1_epi32(v_ptr, x0.v);
+            k_ptr += AVX2_FLOAT_STRIDE * 4;
+            v_ptr += AVX2_EPI32_STRIDE * 4;
+            r -= AVX2_FLOAT_STRIDE * 4 / 2;
+        }
+        if (r >= AVX2_FLOAT_STRIDE) {
+            _mm256_load_x2_ps(k_ptr, x0.k, x1.k);
+            _mm256_load_x2_epi32(v_ptr, x0.v, x1.v);
 
-        y0 = _mm256_sort4x2_ps(x0);
+            y0 = _mm256_sort4x2_ps(x0);
+            y1 = _mm256_sort4x2_ps(x1);
 
-        _mm256_stream_x1_ps(k_ptr, y0.k);
-        _mm256_stream_x1_epi32(v_ptr, y0.v);
+            _mm256_stream_x2_ps(k_ptr, y0.k, y1.k);
+            _mm256_stream_x2_epi32(v_ptr, y0.v, y1.v);
 
-        k_ptr += AVX2_FLOAT_STRIDE;
-        v_ptr += AVX2_EPI32_STRIDE;
-        r -= AVX2_FLOAT_STRIDE / 2;
+            k_ptr += AVX2_FLOAT_STRIDE * 2;
+            v_ptr += AVX2_EPI32_STRIDE * 2;
+            r -= AVX2_FLOAT_STRIDE;
+        }
+        if (r >= AVX2_FLOAT_STRIDE / 2) {
+            _mm256_load_x1_ps(k_ptr, x0.k);
+            _mm256_load_x1_epi32(v_ptr, x0.v);
+
+            y0 = _mm256_sort4x2_ps(x0);
+
+            _mm256_stream_x1_ps(k_ptr, y0.k);
+            _mm256_stream_x1_epi32(v_ptr, y0.v);
+
+            k_ptr += AVX2_FLOAT_STRIDE;
+            v_ptr += AVX2_EPI32_STRIDE;
+            r -= AVX2_FLOAT_STRIDE / 2;
+        }
     }
     if (r > 0) {
         const __m256i mask = _mm256_setmask_ps((r * 2) & AVX2_FLOAT_REMAIN_MASK);
@@ -3037,7 +3084,7 @@ int sortwithkeyasc_ignnan_s3_s(const uint n, const uint s, uint* __restrict v_pt
 }
 
 int sortwithkeyasc_ignnan_s4_s(const uint n, const uint s, uint* __restrict v_ptr, float* __restrict k_ptr) {
-    if (s != 4 || ((size_t)v_ptr % AVX2_ALIGNMENT) != 0) {
+    if (s != 4) {
         return FAILURE_BADPARAM;
     }
 
@@ -3045,48 +3092,95 @@ int sortwithkeyasc_ignnan_s4_s(const uint n, const uint s, uint* __restrict v_pt
 
     uint r = n;
 
-    while (r >= AVX2_FLOAT_STRIDE) {
-        _mm256_load_x4_ps(k_ptr, x0.k, x1.k, x2.k, x3.k);
-        _mm256_load_x4_epi32(v_ptr, x0.v, x1.v, x2.v, x3.v);
+    if (((size_t)v_ptr % AVX2_ALIGNMENT) != 0 || ((size_t)k_ptr % AVX2_ALIGNMENT) != 0) {
+        while (r >= AVX2_FLOAT_STRIDE) {
+            _mm256_loadu_x4_ps(k_ptr, x0.k, x1.k, x2.k, x3.k);
+            _mm256_loadu_x4_epi32(v_ptr, x0.v, x1.v, x2.v, x3.v);
 
-        y0 = _mm256_sort2x4_ps(x0);
-        y1 = _mm256_sort2x4_ps(x1);
-        y2 = _mm256_sort2x4_ps(x2);
-        y3 = _mm256_sort2x4_ps(x3);
+            y0 = _mm256_sort2x4_ps(x0);
+            y1 = _mm256_sort2x4_ps(x1);
+            y2 = _mm256_sort2x4_ps(x2);
+            y3 = _mm256_sort2x4_ps(x3);
 
-        _mm256_stream_x4_ps(k_ptr, y0.k, y1.k, y2.k, y3.k);
-        _mm256_stream_x4_epi32(v_ptr, y0.v, y1.v, y2.v, y3.v);
+            _mm256_storeu_x4_ps(k_ptr, y0.k, y1.k, y2.k, y3.k);
+            _mm256_storeu_x4_epi32(v_ptr, y0.v, y1.v, y2.v, y3.v);
 
-        k_ptr += AVX2_FLOAT_STRIDE * 4;
-        v_ptr += AVX2_EPI32_STRIDE * 4;
-        r -= AVX2_FLOAT_STRIDE;
+            k_ptr += AVX2_FLOAT_STRIDE * 4;
+            v_ptr += AVX2_EPI32_STRIDE * 4;
+            r -= AVX2_FLOAT_STRIDE;
+        }
+        if (r >= AVX2_FLOAT_STRIDE / 2) {
+            _mm256_loadu_x2_ps(k_ptr, x0.k, x1.k);
+            _mm256_loadu_x2_epi32(v_ptr, x0.v, x1.v);
+
+            y0 = _mm256_sort2x4_ps(x0);
+            y1 = _mm256_sort2x4_ps(x1);
+
+            _mm256_storeu_x2_ps(k_ptr, y0.k, y1.k);
+            _mm256_storeu_x2_epi32(v_ptr, y0.v, y1.v);
+
+            k_ptr += AVX2_FLOAT_STRIDE * 2;
+            v_ptr += AVX2_EPI32_STRIDE * 2;
+            r -= AVX2_FLOAT_STRIDE / 2;
+        }
+        if (r >= AVX2_FLOAT_STRIDE / 4) {
+            _mm256_loadu_x1_ps(k_ptr, x0.k);
+            _mm256_loadu_x1_epi32(v_ptr, x0.v);
+
+            y0 = _mm256_sort2x4_ps(x0);
+
+            _mm256_storeu_x1_ps(k_ptr, y0.k);
+            _mm256_storeu_x1_epi32(v_ptr, y0.v);
+
+            k_ptr += AVX2_FLOAT_STRIDE;
+            v_ptr += AVX2_EPI32_STRIDE;
+            r -= AVX2_FLOAT_STRIDE / 4;
+        }
     }
-    if (r >= AVX2_FLOAT_STRIDE / 2) {
-        _mm256_load_x2_ps(k_ptr, x0.k, x1.k);
-        _mm256_load_x2_epi32(v_ptr, x0.v, x1.v);
+    else {
+        while (r >= AVX2_FLOAT_STRIDE) {
+            _mm256_load_x4_ps(k_ptr, x0.k, x1.k, x2.k, x3.k);
+            _mm256_load_x4_epi32(v_ptr, x0.v, x1.v, x2.v, x3.v);
 
-        y0 = _mm256_sort2x4_ps(x0);
-        y1 = _mm256_sort2x4_ps(x1);
+            y0 = _mm256_sort2x4_ps(x0);
+            y1 = _mm256_sort2x4_ps(x1);
+            y2 = _mm256_sort2x4_ps(x2);
+            y3 = _mm256_sort2x4_ps(x3);
 
-        _mm256_stream_x2_ps(k_ptr, y0.k, y1.k);
-        _mm256_stream_x2_epi32(v_ptr, y0.v, y1.v);
+            _mm256_stream_x4_ps(k_ptr, y0.k, y1.k, y2.k, y3.k);
+            _mm256_stream_x4_epi32(v_ptr, y0.v, y1.v, y2.v, y3.v);
 
-        k_ptr += AVX2_FLOAT_STRIDE * 2;
-        v_ptr += AVX2_EPI32_STRIDE * 2;
-        r -= AVX2_FLOAT_STRIDE / 2;
-    }
-    if (r >= AVX2_FLOAT_STRIDE / 4) {
-        _mm256_load_x1_ps(k_ptr, x0.k);
-        _mm256_load_x1_epi32(v_ptr, x0.v);
+            k_ptr += AVX2_FLOAT_STRIDE * 4;
+            v_ptr += AVX2_EPI32_STRIDE * 4;
+            r -= AVX2_FLOAT_STRIDE;
+        }
+        if (r >= AVX2_FLOAT_STRIDE / 2) {
+            _mm256_load_x2_ps(k_ptr, x0.k, x1.k);
+            _mm256_load_x2_epi32(v_ptr, x0.v, x1.v);
 
-        y0 = _mm256_sort2x4_ps(x0);
+            y0 = _mm256_sort2x4_ps(x0);
+            y1 = _mm256_sort2x4_ps(x1);
 
-        _mm256_stream_x1_ps(k_ptr, y0.k);
-        _mm256_stream_x1_epi32(v_ptr, y0.v);
+            _mm256_stream_x2_ps(k_ptr, y0.k, y1.k);
+            _mm256_stream_x2_epi32(v_ptr, y0.v, y1.v);
 
-        k_ptr += AVX2_FLOAT_STRIDE;
-        v_ptr += AVX2_EPI32_STRIDE;
-        r -= AVX2_FLOAT_STRIDE / 4;
+            k_ptr += AVX2_FLOAT_STRIDE * 2;
+            v_ptr += AVX2_EPI32_STRIDE * 2;
+            r -= AVX2_FLOAT_STRIDE / 2;
+        }
+        if (r >= AVX2_FLOAT_STRIDE / 4) {
+            _mm256_load_x1_ps(k_ptr, x0.k);
+            _mm256_load_x1_epi32(v_ptr, x0.v);
+
+            y0 = _mm256_sort2x4_ps(x0);
+
+            _mm256_stream_x1_ps(k_ptr, y0.k);
+            _mm256_stream_x1_epi32(v_ptr, y0.v);
+
+            k_ptr += AVX2_FLOAT_STRIDE;
+            v_ptr += AVX2_EPI32_STRIDE;
+            r -= AVX2_FLOAT_STRIDE / 4;
+        }
     }
     if (r > 0) {
         const __m256i mask = _mm256_setmask_ps(4);
@@ -3272,7 +3366,7 @@ int sortwithkeyasc_ignnan_s7_s(const uint n, const uint s, uint* __restrict v_pt
 }
 
 int sortwithkeyasc_ignnan_s8_s(const uint n, const uint s, uint* __restrict v_ptr, float* __restrict k_ptr) {
-    if (s != 8 || ((size_t)v_ptr % AVX2_ALIGNMENT) != 0 || ((size_t)k_ptr % AVX2_ALIGNMENT) != 0) {
+    if (s != 8) {
         return FAILURE_BADPARAM;
     }
 
@@ -3280,44 +3374,87 @@ int sortwithkeyasc_ignnan_s8_s(const uint n, const uint s, uint* __restrict v_pt
 
     uint r = n;
 
-    while (r >= 4) {
-        _mm256_load_x4_ps(k_ptr, x0.k, x1.k, x2.k, x3.k);
-        _mm256_load_x4_epi32(v_ptr, x0.v, x1.v, x2.v, x3.v);
+    if (((size_t)v_ptr % AVX2_ALIGNMENT) != 0 || ((size_t)k_ptr % AVX2_ALIGNMENT) != 0) {
+        while (r >= 4) {
+            _mm256_loadu_x4_ps(k_ptr, x0.k, x1.k, x2.k, x3.k);
+            _mm256_loadu_x4_epi32(v_ptr, x0.v, x1.v, x2.v, x3.v);
 
-        y0 = _mm256_sort_ps(x0);
-        y1 = _mm256_sort_ps(x1);
-        y2 = _mm256_sort_ps(x2);
-        y3 = _mm256_sort_ps(x3);
+            y0 = _mm256_sort_ps(x0);
+            y1 = _mm256_sort_ps(x1);
+            y2 = _mm256_sort_ps(x2);
+            y3 = _mm256_sort_ps(x3);
 
-        _mm256_stream_x4_ps(k_ptr, y0.k, y1.k, y2.k, y3.k);
-        _mm256_stream_x4_epi32(v_ptr, y0.v, y1.v, y2.v, y3.v);
+            _mm256_storeu_x4_ps(k_ptr, y0.k, y1.k, y2.k, y3.k);
+            _mm256_storeu_x4_epi32(v_ptr, y0.v, y1.v, y2.v, y3.v);
 
-        k_ptr += AVX2_FLOAT_STRIDE * 4;
-        v_ptr += AVX2_EPI32_STRIDE * 4;
-        r -= 4;
+            k_ptr += AVX2_FLOAT_STRIDE * 4;
+            v_ptr += AVX2_EPI32_STRIDE * 4;
+            r -= 4;
+        }
+        if (r >= 2) {
+            _mm256_loadu_x2_ps(k_ptr, x0.k, x1.k);
+            _mm256_loadu_x2_epi32(v_ptr, x0.v, x1.v);
+
+            y0 = _mm256_sort_ps(x0);
+            y1 = _mm256_sort_ps(x1);
+
+            _mm256_storeu_x2_ps(k_ptr, y0.k, y1.k);
+            _mm256_storeu_x2_epi32(v_ptr, y0.v, y1.v);
+
+            k_ptr += AVX2_FLOAT_STRIDE * 2;
+            v_ptr += AVX2_EPI32_STRIDE * 2;
+            r -= 2;
+        }
+        if (r > 0) {
+            _mm256_loadu_x1_ps(k_ptr, x0.k);
+            _mm256_loadu_x1_epi32(v_ptr, x0.v);
+
+            y0 = _mm256_sort_ps(x0);
+
+            _mm256_storeu_x1_ps(k_ptr, y0.k);
+            _mm256_storeu_x1_epi32(v_ptr, y0.v);
+        }
     }
-    if (r >= 2) {
-        _mm256_load_x2_ps(k_ptr, x0.k, x1.k);
-        _mm256_load_x2_epi32(v_ptr, x0.v, x1.v);
+    else {
+        while (r >= 4) {
+            _mm256_load_x4_ps(k_ptr, x0.k, x1.k, x2.k, x3.k);
+            _mm256_load_x4_epi32(v_ptr, x0.v, x1.v, x2.v, x3.v);
 
-        y0 = _mm256_sort_ps(x0);
-        y1 = _mm256_sort_ps(x1);
+            y0 = _mm256_sort_ps(x0);
+            y1 = _mm256_sort_ps(x1);
+            y2 = _mm256_sort_ps(x2);
+            y3 = _mm256_sort_ps(x3);
 
-        _mm256_stream_x2_ps(k_ptr, y0.k, y1.k);
-        _mm256_stream_x2_epi32(v_ptr, y0.v, y1.v);
+            _mm256_stream_x4_ps(k_ptr, y0.k, y1.k, y2.k, y3.k);
+            _mm256_stream_x4_epi32(v_ptr, y0.v, y1.v, y2.v, y3.v);
 
-        k_ptr += AVX2_FLOAT_STRIDE * 2;
-        v_ptr += AVX2_EPI32_STRIDE * 2;
-        r -= 2;
-    }
-    if (r > 0) {
-        _mm256_load_x1_ps(k_ptr, x0.k);
-        _mm256_load_x1_epi32(v_ptr, x0.v);
+            k_ptr += AVX2_FLOAT_STRIDE * 4;
+            v_ptr += AVX2_EPI32_STRIDE * 4;
+            r -= 4;
+        }
+        if (r >= 2) {
+            _mm256_load_x2_ps(k_ptr, x0.k, x1.k);
+            _mm256_load_x2_epi32(v_ptr, x0.v, x1.v);
 
-        y0 = _mm256_sort_ps(x0);
+            y0 = _mm256_sort_ps(x0);
+            y1 = _mm256_sort_ps(x1);
 
-        _mm256_stream_x1_ps(k_ptr, y0.k);
-        _mm256_stream_x1_epi32(v_ptr, y0.v);
+            _mm256_stream_x2_ps(k_ptr, y0.k, y1.k);
+            _mm256_stream_x2_epi32(v_ptr, y0.v, y1.v);
+
+            k_ptr += AVX2_FLOAT_STRIDE * 2;
+            v_ptr += AVX2_EPI32_STRIDE * 2;
+            r -= 2;
+        }
+        if (r > 0) {
+            _mm256_load_x1_ps(k_ptr, x0.k);
+            _mm256_load_x1_epi32(v_ptr, x0.v);
+
+            y0 = _mm256_sort_ps(x0);
+
+            _mm256_stream_x1_ps(k_ptr, y0.k);
+            _mm256_stream_x1_epi32(v_ptr, y0.v);
+        }
     }
 
     return SUCCESS;
