@@ -12,6 +12,7 @@ extern int sortdsc_test_s();
 extern int sortasc_perm_test_s();
 
 extern int sortasc_test_d();
+extern int sortdsc_test_d();
 extern int sortasc_perm_test_d();
 
 extern int sortwithkeyasc_test_s();

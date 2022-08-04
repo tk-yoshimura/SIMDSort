@@ -2624,11 +2624,11 @@ int sortasc_minnan_s8_s(const uint n, const uint s, float* v_ptr) {
             r -= 2;
         }
         if (r > 0) {
-            _mm256_load_x1_ps(v_ptr, x0);
+            _mm256_loadu_x1_ps(v_ptr, x0);
 
             y0 = _mm256_sort_ps(x0);
 
-            _mm256_stream_x1_ps(v_ptr, y0);
+            _mm256_storeu_x1_ps(v_ptr, y0);
         }
     }
     else {

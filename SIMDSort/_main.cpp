@@ -22,10 +22,9 @@ __forceinline __m256 _mm256_reflect_ps(__m256 x) {
 
 int main() {
     sortasc_test_s();
-    sort_long_ndist_speed_test_s();
-    sort_long_random_speed_test_s();
-    sort_long_reverse_speed_test_s();
-    sort_long_inbalance_speed_test_s();
+    sortdsc_test_s();
+    sortasc_test_d();
+    sortdsc_test_d();
 
     printf("end");
     return getchar();

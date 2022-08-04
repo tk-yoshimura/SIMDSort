@@ -165,6 +165,43 @@ int sortasc_test_s() {
 
             _aligned_free(v);
         }
+
+        for (uint n = 1; n <= 16; n++) {
+            float* v = (float*)malloc(s * n * sizeof(float));
+            if (v == nullptr) {
+                return FAILURE_BADALLOC;
+            }
+
+            for (uint test = 0; test < 64; test++) {
+                for (uint i = 0; i < s * n; i++) {
+                    uint r = mt();
+                    v[i] = r / (float)(~0u);
+                }
+
+                std::vector<float> t(s * n);
+                for (uint i = 0; i < s * n; i++) {
+                    t[i] = v[i];
+                }
+
+                for (uint j = 0; j < n; j++) {
+                    std::sort(t.begin() + j * s, t.begin() + (j + 1) * s);
+                }
+
+                sortasc_s(n, s, v);
+
+                for (uint i = 0; i < s * n; i++) {
+                    if (t[i] != v[i]) {
+                        printf("random ng n=%d s=%d\n", n, s);
+                        throw std::exception("err");
+                    }
+                }
+
+
+                printf("random ok n=%d s=%d\n", n, s);
+            }
+
+            free(v);
+        }
     }
 
     return 0;
@@ -210,6 +247,44 @@ int sortdsc_test_s() {
             }
 
             _aligned_free(v);
+        }
+
+        for (uint n = 1; n <= 16; n++) {
+            float* v = (float*)malloc(s * n * sizeof(float));
+            if (v == nullptr) {
+                return FAILURE_BADALLOC;
+            }
+
+            for (uint test = 0; test < 64; test++) {
+                for (uint i = 0; i < s * n; i++) {
+                    uint r = mt();
+                    v[i] = r / (float)(~0u);
+                }
+
+                std::vector<float> t(s * n);
+                for (uint i = 0; i < s * n; i++) {
+                    t[i] = v[i];
+                }
+
+                for (uint j = 0; j < n; j++) {
+                    std::sort(t.begin() + j * s, t.begin() + (j + 1) * s);
+                    std::reverse(t.begin() + j * s, t.begin() + (j + 1) * s);
+                }
+
+                sortdsc_s(n, s, v);
+
+                for (uint i = 0; i < s * n; i++) {
+                    if (t[i] != v[i]) {
+                        printf("random ng n=%d s=%d\n", n, s);
+                        throw std::exception("err");
+                    }
+                }
+
+
+                printf("random ok n=%d s=%d\n", n, s);
+            }
+
+            free(v);
         }
     }
 

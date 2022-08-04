@@ -62,6 +62,63 @@ static int sortasc_d(const uint n, const uint s, double* v_ptr) {
     }
 }
 
+static int sortdsc_d(const uint n, const uint s, double* v_ptr) {
+    if (s <= 1) {
+        return SUCCESS;
+    }
+    else if (s <= 2) {
+        return sortdsc_ignnan_s2_d(n, s, v_ptr);
+    }
+    else if (s <= 3) {
+        return sortdsc_ignnan_s3_d(n, s, v_ptr);
+    }
+    else if (s <= 4) {
+        return sortdsc_ignnan_s4_d(n, s, v_ptr);
+    }
+    else if (s <= 5) {
+        return sortdsc_ignnan_s5_d(n, s, v_ptr);
+    }
+    else if (s <= 6) {
+        return sortdsc_ignnan_s6_d(n, s, v_ptr);
+    }
+    else if (s <= 7) {
+        return sortdsc_ignnan_s7_d(n, s, v_ptr);
+    }
+    else if (s <= 8) {
+        return sortdsc_ignnan_s8_d(n, s, v_ptr);
+    }
+    else if (s <= 9) {
+        return sortdsc_ignnan_s9_d(n, s, v_ptr);
+    }
+    else if (s <= 10) {
+        return sortdsc_ignnan_s10_d(n, s, v_ptr);
+    }
+    else if (s <= 11) {
+        return sortdsc_ignnan_s11_d(n, s, v_ptr);
+    }
+    else if (s <= 12) {
+        return sortdsc_ignnan_s12_d(n, s, v_ptr);
+    }
+    else if (s <= 13) {
+        return sortdsc_ignnan_s13_d(n, s, v_ptr);
+    }
+    else if (s <= 14) {
+        return sortdsc_ignnan_s14_d(n, s, v_ptr);
+    }
+    else if (s <= 15) {
+        return sortdsc_ignnan_s15_d(n, s, v_ptr);
+    }
+    else if (s <= 16) {
+        return sortdsc_ignnan_s16_d(n, s, v_ptr);
+    }
+    else if (s < 32) {
+        return sortdsc_ignnan_s17to31_d(n, s, v_ptr);
+    }
+    else {
+        return sortdsc_ignnan_s32plus_d(n, s, v_ptr);
+    }
+}
+
 int sortasc_test_d() {
     std::mt19937 mt(1234);
 
@@ -104,6 +161,136 @@ int sortasc_test_d() {
             }
 
             _aligned_free(v);
+        }
+
+        for (uint n = 1; n <= 16; n++) {
+            double* v = (double*)malloc(s * n * sizeof(double));
+            if (v == nullptr) {
+                return FAILURE_BADALLOC;
+            }
+
+            for (uint test = 0; test < 16; test++) {
+                for (uint i = 0; i < s * n; i++) {
+                    uint r = mt();
+                    v[i] = r / (double)(~0u);
+                }
+
+                std::vector<double> t(s * n);
+                for (uint i = 0; i < s * n; i++) {
+                    t[i] = v[i];
+                }
+
+                for (uint j = 0; j < n; j++) {
+                    std::sort(t.begin() + j * s, t.begin() + (j + 1) * s);
+                }
+
+                sortasc_d(n, s, v);
+
+                for (uint i = 0; i < s * n; i++) {
+                    if (t[i] != v[i]) {
+                        std::vector<double> u(s * n);
+                        memcpy_s(u.data(), s * n * sizeof(double), v, s * n * sizeof(double));
+
+                        printf("random ng n=%d s=%d\n", n, s);
+                        throw std::exception("err");
+                    }
+                }
+
+
+                printf("random ok n=%d s=%d\n", n, s);
+            }
+
+            free(v);
+        }
+    }
+
+    return 0;
+}
+
+int sortdsc_test_d() {
+    std::mt19937 mt(1234);
+
+    for (uint s = 16; s <= 128; s++) {
+        for (uint n = 1; n <= 16; n++) {
+            double* v = (double*)_aligned_malloc(s * n * sizeof(double), AVX2_ALIGNMENT);
+            if (v == nullptr) {
+                return FAILURE_BADALLOC;
+            }
+
+            for (uint test = 0; test < 16; test++) {
+                for (uint i = 0; i < s * n; i++) {
+                    uint r = mt();
+                    v[i] = r / (double)(~0u);
+                }
+
+                std::vector<double> t(s * n);
+                for (uint i = 0; i < s * n; i++) {
+                    t[i] = v[i];
+                }
+
+                for (uint j = 0; j < n; j++) {
+                    std::sort(t.begin() + j * s, t.begin() + (j + 1) * s);
+                    std::reverse(t.begin() + j * s, t.begin() + (j + 1) * s);
+                }
+
+                sortdsc_d(n, s, v);
+
+                for (uint i = 0; i < s * n; i++) {
+                    if (t[i] != v[i]) {
+                        std::vector<double> u(s * n);
+                        memcpy_s(u.data(), s * n * sizeof(double), v, s * n * sizeof(double));
+
+                        printf("random ng n=%d s=%d\n", n, s);
+                        throw std::exception("err");
+                    }
+                }
+
+
+                printf("random ok n=%d s=%d\n", n, s);
+            }
+
+            _aligned_free(v);
+        }
+
+        for (uint n = 1; n <= 16; n++) {
+            double* v = (double*)malloc(s * n * sizeof(double));
+            if (v == nullptr) {
+                return FAILURE_BADALLOC;
+            }
+
+            for (uint test = 0; test < 16; test++) {
+                for (uint i = 0; i < s * n; i++) {
+                    uint r = mt();
+                    v[i] = r / (double)(~0u);
+                }
+
+                std::vector<double> t(s * n);
+                for (uint i = 0; i < s * n; i++) {
+                    t[i] = v[i];
+                }
+
+                for (uint j = 0; j < n; j++) {
+                    std::sort(t.begin() + j * s, t.begin() + (j + 1) * s);
+                    std::reverse(t.begin() + j * s, t.begin() + (j + 1) * s);
+                }
+
+                sortdsc_d(n, s, v);
+
+                for (uint i = 0; i < s * n; i++) {
+                    if (t[i] != v[i]) {
+                        std::vector<double> u(s * n);
+                        memcpy_s(u.data(), s * n * sizeof(double), v, s * n * sizeof(double));
+
+                        printf("random ng n=%d s=%d\n", n, s);
+                        throw std::exception("err");
+                    }
+                }
+
+
+                printf("random ok n=%d s=%d\n", n, s);
+            }
+
+            free(v);
         }
     }
 
