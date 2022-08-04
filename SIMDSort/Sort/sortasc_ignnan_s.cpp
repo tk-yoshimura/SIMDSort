@@ -2631,7 +2631,7 @@ int sortasc_ignnan_s8_s(const uint n, const uint s, float* v_ptr) {
             _mm256_storeu_x1_ps(v_ptr, y0);
         }
     }
-    else{
+    else {
         while (r >= 4) {
             _mm256_load_x4_ps(v_ptr, x0, x1, x2, x3);
 

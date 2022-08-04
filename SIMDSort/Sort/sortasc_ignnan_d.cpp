@@ -2417,7 +2417,7 @@ int sortasc_ignnan_s2_d(const uint n, const uint s, double* v_ptr) {
 
     uint r = n;
 
-    if (((size_t)v_ptr % AVX2_ALIGNMENT) != 0) {        
+    if (((size_t)v_ptr % AVX2_ALIGNMENT) != 0) {
         while (r >= AVX2_DOUBLE_STRIDE * 4 / 2) {
             _mm256_loadu_x4_pd(v_ptr, x0, x1, x2, x3);
 
