@@ -117,6 +117,36 @@
     <ClCompile Include="Tests\sortwithkey_test_d.cpp">
       <Filter>Source\Tests</Filter>
     </ClCompile>
+    <ClCompile Include="SortWithKey\sortwithkeydsc_ignnan_d.cpp">
+      <Filter>Source\SortWithKey</Filter>
+    </ClCompile>
+    <ClCompile Include="SortWithKey\sortwithkeydsc_ignnan_s.cpp">
+      <Filter>Source\SortWithKey</Filter>
+    </ClCompile>
+    <ClCompile Include="SortWithKey\sortwithkeydsc_maxnan_d.cpp">
+      <Filter>Source\SortWithKey</Filter>
+    </ClCompile>
+    <ClCompile Include="SortWithKey\sortwithkeydsc_maxnan_s.cpp">
+      <Filter>Source\SortWithKey</Filter>
+    </ClCompile>
+    <ClCompile Include="SortWithKey\sortwithkeyasc_maxnan_d.cpp">
+      <Filter>Source\SortWithKey</Filter>
+    </ClCompile>
+    <ClCompile Include="SortWithKey\sortwithkeyasc_maxnan_s.cpp">
+      <Filter>Source\SortWithKey</Filter>
+    </ClCompile>
+    <ClCompile Include="SortWithKey\sortwithkeyasc_minnan_s.cpp">
+      <Filter>Source\SortWithKey</Filter>
+    </ClCompile>
+    <ClCompile Include="SortWithKey\sortwithkeydsc_minnan_d.cpp">
+      <Filter>Source\SortWithKey</Filter>
+    </ClCompile>
+    <ClCompile Include="SortWithKey\sortwithkeydsc_minnan_s.cpp">
+      <Filter>Source\SortWithKey</Filter>
+    </ClCompile>
+    <ClCompile Include="SortWithKey\sortwithkeyasc_minnan_d.cpp">
+      <Filter>Source\SortWithKey</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="simdsort.h">
