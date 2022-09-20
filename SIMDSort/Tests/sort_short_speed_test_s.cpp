@@ -6,66 +6,6 @@
 #include "../simdsort.h"
 #include "../Sort/sort.h"
 
-static int sortasc_s(const uint n, const uint s, float* v_ptr) {
-    if (s <= 1) {
-        return SUCCESS;
-    }
-    else if (s <= 2) {
-        return sortasc_ignnan_s2_s(n, s, v_ptr);
-    }
-    else if (s <= 3) {
-        return sortasc_ignnan_s3_s(n, s, v_ptr);
-    }
-    else if (s <= 4) {
-        return sortasc_ignnan_s4_s(n, s, v_ptr);
-    }
-    else if (s <= 5) {
-        return sortasc_ignnan_s5_s(n, s, v_ptr);
-    }
-    else if (s <= 6) {
-        return sortasc_ignnan_s6_s(n, s, v_ptr);
-    }
-    else if (s <= 7) {
-        return sortasc_ignnan_s7_s(n, s, v_ptr);
-    }
-    else if (s <= 8) {
-        return sortasc_ignnan_s8_s(n, s, v_ptr);
-    }
-    else if (s <= 9) {
-        return sortasc_ignnan_s9_s(n, s, v_ptr);
-    }
-    else if (s <= 10) {
-        return sortasc_ignnan_s10_s(n, s, v_ptr);
-    }
-    else if (s <= 11) {
-        return sortasc_ignnan_s11_s(n, s, v_ptr);
-    }
-    else if (s <= 12) {
-        return sortasc_ignnan_s12_s(n, s, v_ptr);
-    }
-    else if (s <= 13) {
-        return sortasc_ignnan_s13_s(n, s, v_ptr);
-    }
-    else if (s <= 14) {
-        return sortasc_ignnan_s14_s(n, s, v_ptr);
-    }
-    else if (s <= 15) {
-        return sortasc_ignnan_s15_s(n, s, v_ptr);
-    }
-    else if (s <= 16) {
-        return sortasc_ignnan_s16_s(n, s, v_ptr);
-    }
-    else if (s < 32) {
-        return sortasc_ignnan_s17to31_s(n, s, v_ptr);
-    }
-    else if (s < 64) {
-        return sortasc_ignnan_s32to63_s(n, s, v_ptr);
-    }
-    else {
-        return sortasc_ignnan_s64plus_s(n, s, v_ptr);
-    }
-}
-
 int sort_short_random_speed_test_s() {
     std::ofstream ofs;
     ofs.open("bin/sorts_short_random_speed.txt");
@@ -98,7 +38,7 @@ int sort_short_random_speed_test_s() {
             
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_s(n, s, y.data());
+            sortasc_ignnan_s(n, s, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 
@@ -162,7 +102,7 @@ int sort_short_inbalance_speed_test_s() {
 
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_s(n, s, y.data());
+            sortasc_ignnan_s(n, s, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 
@@ -223,7 +163,7 @@ int sort_short_reverse_speed_test_s() {
 
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_s(n, s, y.data());
+            sortasc_ignnan_s(n, s, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 
@@ -288,7 +228,7 @@ int sort_short_ndist_speed_test_s() {
 
             auto avxsortclock = std::chrono::system_clock::now();
 
-            sortasc_s(n, s, y.data());
+            sortasc_ignnan_s(n, s, y.data());
 
             auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 

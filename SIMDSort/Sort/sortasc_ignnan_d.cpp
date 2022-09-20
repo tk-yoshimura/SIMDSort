@@ -2918,3 +2918,64 @@ int sortasc_ignnan_s32plus_d(const uint n, const uint s, double* v_ptr) {
 }
 
 #pragma endregion sort
+
+#pragma region sort_allstride
+
+int sortasc_ignnan_d(const uint n, const uint s, double* v_ptr) {
+    if (s <= 1) {
+        return SUCCESS;
+    }
+    else if (s <= 2) {
+        return sortasc_ignnan_s2_d(n, s, v_ptr);
+    }
+    else if (s <= 3) {
+        return sortasc_ignnan_s3_d(n, s, v_ptr);
+    }
+    else if (s <= 4) {
+        return sortasc_ignnan_s4_d(n, s, v_ptr);
+    }
+    else if (s <= 5) {
+        return sortasc_ignnan_s5_d(n, s, v_ptr);
+    }
+    else if (s <= 6) {
+        return sortasc_ignnan_s6_d(n, s, v_ptr);
+    }
+    else if (s <= 7) {
+        return sortasc_ignnan_s7_d(n, s, v_ptr);
+    }
+    else if (s <= 8) {
+        return sortasc_ignnan_s8_d(n, s, v_ptr);
+    }
+    else if (s <= 9) {
+        return sortasc_ignnan_s9_d(n, s, v_ptr);
+    }
+    else if (s <= 10) {
+        return sortasc_ignnan_s10_d(n, s, v_ptr);
+    }
+    else if (s <= 11) {
+        return sortasc_ignnan_s11_d(n, s, v_ptr);
+    }
+    else if (s <= 12) {
+        return sortasc_ignnan_s12_d(n, s, v_ptr);
+    }
+    else if (s <= 13) {
+        return sortasc_ignnan_s13_d(n, s, v_ptr);
+    }
+    else if (s <= 14) {
+        return sortasc_ignnan_s14_d(n, s, v_ptr);
+    }
+    else if (s <= 15) {
+        return sortasc_ignnan_s15_d(n, s, v_ptr);
+    }
+    else if (s <= 16) {
+        return sortasc_ignnan_s16_d(n, s, v_ptr);
+    }
+    else if (s < 32) {
+        return sortasc_ignnan_s17to31_d(n, s, v_ptr);
+    }
+    else {
+        return sortasc_ignnan_s32plus_d(n, s, v_ptr);
+    }
+}
+
+#pragma endregion sort_allstride

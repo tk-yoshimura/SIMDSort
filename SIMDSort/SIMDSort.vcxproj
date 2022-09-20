@@ -130,6 +130,7 @@
     <ClInclude Include="constants.h" />
     <ClInclude Include="Inline\inline_blend_epi.hpp" />
     <ClInclude Include="Inline\inline_cmp_d.hpp" />
+    <ClInclude Include="Inline\inline_cmp_ep64.hpp" />
     <ClInclude Include="Inline\inline_cmp_s.hpp" />
     <ClInclude Include="Inline\inline_cmp_ep32.hpp" />
     <ClInclude Include="Inline\inline_loadstore_xn_d.hpp" />

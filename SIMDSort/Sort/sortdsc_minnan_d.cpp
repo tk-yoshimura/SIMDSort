@@ -2918,3 +2918,64 @@ int sortdsc_minnan_s32plus_d(const uint n, const uint s, double* v_ptr) {
 }
 
 #pragma endregion sort
+
+#pragma region sort_allstride
+
+int sortdsc_minnan_d(const uint n, const uint s, double* v_ptr) {
+    if (s <= 1) {
+        return SUCCESS;
+    }
+    else if (s <= 2) {
+        return sortdsc_minnan_s2_d(n, s, v_ptr);
+    }
+    else if (s <= 3) {
+        return sortdsc_minnan_s3_d(n, s, v_ptr);
+    }
+    else if (s <= 4) {
+        return sortdsc_minnan_s4_d(n, s, v_ptr);
+    }
+    else if (s <= 5) {
+        return sortdsc_minnan_s5_d(n, s, v_ptr);
+    }
+    else if (s <= 6) {
+        return sortdsc_minnan_s6_d(n, s, v_ptr);
+    }
+    else if (s <= 7) {
+        return sortdsc_minnan_s7_d(n, s, v_ptr);
+    }
+    else if (s <= 8) {
+        return sortdsc_minnan_s8_d(n, s, v_ptr);
+    }
+    else if (s <= 9) {
+        return sortdsc_minnan_s9_d(n, s, v_ptr);
+    }
+    else if (s <= 10) {
+        return sortdsc_minnan_s10_d(n, s, v_ptr);
+    }
+    else if (s <= 11) {
+        return sortdsc_minnan_s11_d(n, s, v_ptr);
+    }
+    else if (s <= 12) {
+        return sortdsc_minnan_s12_d(n, s, v_ptr);
+    }
+    else if (s <= 13) {
+        return sortdsc_minnan_s13_d(n, s, v_ptr);
+    }
+    else if (s <= 14) {
+        return sortdsc_minnan_s14_d(n, s, v_ptr);
+    }
+    else if (s <= 15) {
+        return sortdsc_minnan_s15_d(n, s, v_ptr);
+    }
+    else if (s <= 16) {
+        return sortdsc_minnan_s16_d(n, s, v_ptr);
+    }
+    else if (s < 32) {
+        return sortdsc_minnan_s17to31_d(n, s, v_ptr);
+    }
+    else {
+        return sortdsc_minnan_s32plus_d(n, s, v_ptr);
+    }
+}
+
+#pragma endregion sort_allstride

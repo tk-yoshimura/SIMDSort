@@ -29,7 +29,7 @@ int sort_limit_random_test_s() {
 
     auto avxsortclock = std::chrono::system_clock::now();
 
-    sortasc_ignnan_s64plus_s(1, n, y.data());
+    sortasc_ignnan_s(1, n, y.data());
 
     auto avxsorttime = std::chrono::system_clock::now() - avxsortclock;
 

@@ -5,120 +5,6 @@
 #include "../simdsort.h"
 #include "../Sort/sort.h"
 
-static int sortasc_d(const uint n, const uint s, double* v_ptr) {
-    if (s <= 1) {
-        return SUCCESS;
-    }
-    else if (s <= 2) {
-        return sortasc_ignnan_s2_d(n, s, v_ptr);
-    }
-    else if (s <= 3) {
-        return sortasc_ignnan_s3_d(n, s, v_ptr);
-    }
-    else if (s <= 4) {
-        return sortasc_ignnan_s4_d(n, s, v_ptr);
-    }
-    else if (s <= 5) {
-        return sortasc_ignnan_s5_d(n, s, v_ptr);
-    }
-    else if (s <= 6) {
-        return sortasc_ignnan_s6_d(n, s, v_ptr);
-    }
-    else if (s <= 7) {
-        return sortasc_ignnan_s7_d(n, s, v_ptr);
-    }
-    else if (s <= 8) {
-        return sortasc_ignnan_s8_d(n, s, v_ptr);
-    }
-    else if (s <= 9) {
-        return sortasc_ignnan_s9_d(n, s, v_ptr);
-    }
-    else if (s <= 10) {
-        return sortasc_ignnan_s10_d(n, s, v_ptr);
-    }
-    else if (s <= 11) {
-        return sortasc_ignnan_s11_d(n, s, v_ptr);
-    }
-    else if (s <= 12) {
-        return sortasc_ignnan_s12_d(n, s, v_ptr);
-    }
-    else if (s <= 13) {
-        return sortasc_ignnan_s13_d(n, s, v_ptr);
-    }
-    else if (s <= 14) {
-        return sortasc_ignnan_s14_d(n, s, v_ptr);
-    }
-    else if (s <= 15) {
-        return sortasc_ignnan_s15_d(n, s, v_ptr);
-    }
-    else if (s <= 16) {
-        return sortasc_ignnan_s16_d(n, s, v_ptr);
-    }
-    else if (s < 32) {
-        return sortasc_ignnan_s17to31_d(n, s, v_ptr);
-    }
-    else {
-        return sortasc_ignnan_s32plus_d(n, s, v_ptr);
-    }
-}
-
-static int sortdsc_d(const uint n, const uint s, double* v_ptr) {
-    if (s <= 1) {
-        return SUCCESS;
-    }
-    else if (s <= 2) {
-        return sortdsc_ignnan_s2_d(n, s, v_ptr);
-    }
-    else if (s <= 3) {
-        return sortdsc_ignnan_s3_d(n, s, v_ptr);
-    }
-    else if (s <= 4) {
-        return sortdsc_ignnan_s4_d(n, s, v_ptr);
-    }
-    else if (s <= 5) {
-        return sortdsc_ignnan_s5_d(n, s, v_ptr);
-    }
-    else if (s <= 6) {
-        return sortdsc_ignnan_s6_d(n, s, v_ptr);
-    }
-    else if (s <= 7) {
-        return sortdsc_ignnan_s7_d(n, s, v_ptr);
-    }
-    else if (s <= 8) {
-        return sortdsc_ignnan_s8_d(n, s, v_ptr);
-    }
-    else if (s <= 9) {
-        return sortdsc_ignnan_s9_d(n, s, v_ptr);
-    }
-    else if (s <= 10) {
-        return sortdsc_ignnan_s10_d(n, s, v_ptr);
-    }
-    else if (s <= 11) {
-        return sortdsc_ignnan_s11_d(n, s, v_ptr);
-    }
-    else if (s <= 12) {
-        return sortdsc_ignnan_s12_d(n, s, v_ptr);
-    }
-    else if (s <= 13) {
-        return sortdsc_ignnan_s13_d(n, s, v_ptr);
-    }
-    else if (s <= 14) {
-        return sortdsc_ignnan_s14_d(n, s, v_ptr);
-    }
-    else if (s <= 15) {
-        return sortdsc_ignnan_s15_d(n, s, v_ptr);
-    }
-    else if (s <= 16) {
-        return sortdsc_ignnan_s16_d(n, s, v_ptr);
-    }
-    else if (s < 32) {
-        return sortdsc_ignnan_s17to31_d(n, s, v_ptr);
-    }
-    else {
-        return sortdsc_ignnan_s32plus_d(n, s, v_ptr);
-    }
-}
-
 int sortasc_test_d() {
     std::mt19937 mt(1234);
 
@@ -144,7 +30,7 @@ int sortasc_test_d() {
                     std::sort(t.begin() + j * s, t.begin() + (j + 1) * s);
                 }
 
-                sortasc_d(n, s, v);
+                sortasc_ignnan_d(n, s, v);
 
                 for (uint i = 0; i < s * n; i++) {
                     if (t[i] != v[i]) {
@@ -184,7 +70,7 @@ int sortasc_test_d() {
                     std::sort(t.begin() + j * s, t.begin() + (j + 1) * s);
                 }
 
-                sortasc_d(n, s, v);
+                sortasc_ignnan_d(n, s, v);
 
                 for (uint i = 0; i < s * n; i++) {
                     if (t[i] != v[i]) {
@@ -233,7 +119,7 @@ int sortdsc_test_d() {
                     std::reverse(t.begin() + j * s, t.begin() + (j + 1) * s);
                 }
 
-                sortdsc_d(n, s, v);
+                sortdsc_ignnan_d(n, s, v);
 
                 for (uint i = 0; i < s * n; i++) {
                     if (t[i] != v[i]) {
@@ -274,7 +160,7 @@ int sortdsc_test_d() {
                     std::reverse(t.begin() + j * s, t.begin() + (j + 1) * s);
                 }
 
-                sortdsc_d(n, s, v);
+                sortdsc_ignnan_d(n, s, v);
 
                 for (uint i = 0; i < s * n; i++) {
                     if (t[i] != v[i]) {
@@ -319,7 +205,7 @@ int sortasc_perm_test_d() {
             t[i] = (double)(((i + c) * 31) % s);
         }
 
-        sortasc_d(1, s, t);
+        sortasc_ignnan_d(1, s, t);
 
         for (uint i = 1; i < s; i++) {
             if (t[i - 1u] >= t[i]) {
@@ -357,7 +243,7 @@ int sortasc_perm_test_d() {
                 t[i] = ((i + c) * 31) % s;
             }
 
-            sortasc_d(1, s, t);
+            sortasc_ignnan_d(1, s, t);
 
             for (uint i = 1; i < s; i++) {
                 if (t[i - 1u] >= t[i]) {

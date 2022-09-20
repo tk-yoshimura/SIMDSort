@@ -3669,3 +3669,67 @@ int sortwithkeydsc_minnan_s64plus_s(const uint n, const uint s, uint* __restrict
 }
 
 #pragma endregion sort
+
+#pragma region sort_allstride
+
+int sortwithkeydsc_minnan_s(const uint n, const uint s, uint* __restrict v_ptr, float* __restrict k_ptr) {
+    if (s <= 1) {
+        return SUCCESS;
+    }
+    else if (s <= 2) {
+        return sortwithkeydsc_minnan_s2_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s <= 3) {
+        return sortwithkeydsc_minnan_s3_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s <= 4) {
+        return sortwithkeydsc_minnan_s4_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s <= 5) {
+        return sortwithkeydsc_minnan_s5_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s <= 6) {
+        return sortwithkeydsc_minnan_s6_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s <= 7) {
+        return sortwithkeydsc_minnan_s7_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s <= 8) {
+        return sortwithkeydsc_minnan_s8_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s <= 9) {
+        return sortwithkeydsc_minnan_s9_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s <= 10) {
+        return sortwithkeydsc_minnan_s10_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s <= 11) {
+        return sortwithkeydsc_minnan_s11_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s <= 12) {
+        return sortwithkeydsc_minnan_s12_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s <= 13) {
+        return sortwithkeydsc_minnan_s13_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s <= 14) {
+        return sortwithkeydsc_minnan_s14_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s <= 15) {
+        return sortwithkeydsc_minnan_s15_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s <= 16) {
+        return sortwithkeydsc_minnan_s16_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s < 32) {
+        return sortwithkeydsc_minnan_s17to31_s(n, s, v_ptr, k_ptr);
+    }
+    else if (s < 64) {
+        return sortwithkeydsc_minnan_s32to63_s(n, s, v_ptr, k_ptr);
+    }
+    else {
+        return sortwithkeydsc_minnan_s64plus_s(n, s, v_ptr, k_ptr);
+    }
+}
+
+#pragma endregion sort_allstride
